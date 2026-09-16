@@ -1,113 +1,68 @@
 "use client";
 
 import { memo } from "react";
-import {
-  Code2,
-  Database,
-  GitBranch,
-  Layers,
-  Palette,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
-import { Reveal } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
 
-type SkillGroup = {
-  title: string;
-  description: string;
-  Icon: LucideIcon;
-  items: string[];
-};
-
-const SKILL_GROUPS: SkillGroup[] = [
+const SKILL_GROUPS = [
   {
-    title: "Frontend Development",
-    description: "Building responsive interfaces with modern React and TypeScript.",
-    Icon: Code2,
-    items: ["React", "TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "Next.js"],
+    title: "Front-End Development",
+    description: "Building responsive interfaces using modern React and TypeScript.",
+    items: ["React", "TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "JSX"],
   },
   {
-    title: "Styling & UI",
-    description: "Crafting polished designs with utility-first CSS and design systems.",
-    Icon: Palette,
-    items: ["TailwindCSS", "Styled Components", "CSS Grid", "Flexbox", "Responsive Design", "Figma"],
+    title: "Styling & UI Frameworks",
+    description: "Crafting designs with utility-first CSS and frameworks.",
+    items: ["TailwindCSS", "Bootstrap", "Styled Components", "CSS Grid", "Flexbox", "Responsive Design"],
   },
   {
-    title: "State & Architecture",
-    description: "Managing complex state with modern React paradigms.",
-    Icon: Layers,
-    items: ["Redux", "Context API", "React Hooks", "Custom Hooks", "Component Design", "Clean Code"],
+    title: "State Management & Hooks",
+    description: "Managing complex state using modern React paradigms.",
+    items: ["Redux", "Context API", "React Hooks", "Custom Hooks", "useEffect", "useReducer"],
   },
   {
     title: "Full-Stack Foundations",
-    description: "Expanding beyond the frontend with Node.js and databases.",
-    Icon: Database,
+    description: "Expanding beyond frontend via Node.js and databases.",
     items: ["Node.js", "Express", "REST APIs", "MongoDB", "PostgreSQL", "Socket.io"],
   },
   {
-    title: "Tools & Workflow",
-    description: "Modern tooling for efficient development and deployment.",
-    Icon: GitBranch,
-    items: ["Git", "GitHub", "VS Code", "npm/yarn", "Vite", "Vercel"],
+    title: "Developer Tools & Workflow",
+    description: "Utilizing modern tooling for efficient development and deployment.",
+    items: ["Git", "VS Code", "Figma", "npm/yarn", "Vite", "Webpack"],
   },
   {
     title: "Performance & Quality",
-    description: "Fast, reliable apps through optimization and testing.",
-    Icon: Zap,
-    items: ["Jest", "React Testing Library", "Lighthouse", "Web Vitals", "Accessibility", "SEO"],
+    description: "Ensuring fast, reliable apps through optimization and testing.",
+    items: ["React Testing Library", "Jest", "Lighthouse", "Web Vitals", "Accessibility (a11y)", "Performance Optimization"],
   },
 ];
 
 function SkillsComponent() {
   return (
-    <section id="skills" className="relative px-6 py-28">
-      <div
-        aria-hidden
-        className="absolute -left-48 top-1/4 -z-10 h-96 w-96 rounded-full bg-red-900/10 blur-[120px]"
-      />
-
-      <div className="mx-auto w-full max-w-6xl space-y-14">
-        <Reveal>
-          <SectionHeading
-            index="03"
-            eyebrow="Skills"
-            title={
-              <>
-                My <span className="text-gradient-red">toolbox</span>
-              </>
-            }
-            description="The technologies and practices I use to turn ideas into products."
-          />
-        </Reveal>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {SKILL_GROUPS.map((group, i) => (
-            <Reveal key={group.title} delay={(i % 3) * 0.1}>
-              <article className="card-glow group h-full space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-sm transition-colors duration-300 hover:border-red-500/50">
-                <span className="inline-flex rounded-xl border border-red-500/20 bg-red-500/10 p-2.5 text-red-500 transition-transform duration-300 group-hover:scale-110">
-                  <group.Icon className="h-5 w-5" />
-                </span>
-                <div className="space-y-2">
-                  <h3 className="font-display text-base font-semibold text-white">
-                    {group.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-white/50">
-                    {group.description}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {group.items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-white/60 transition-colors duration-300 hover:border-red-500/50 hover:text-red-400"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
+    <section id="skills" className="relative px-6 py-20 bg-black">
+      <div className="mx-auto w-full max-w-6xl space-y-12">
+        <div className="space-y-4 text-center lg:text-left">
+          <p className="text-xs uppercase tracking-[0.35em] text-red-700 font-semibold">Skills</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white">Front-end expertise</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {SKILL_GROUPS.map((group) => (
+            <article
+              key={group.title}
+              className="rounded-2xl border-2 border-red-700 bg-transparent p-6 space-y-3 hover:border-red-600 transition duration-300"
+            >
+              <h3 className="text-base font-semibold text-white">{group.title}</h3>
+              <p className="text-white/60 text-sm leading-relaxed">{group.description}</p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="text-xs px-3 py-1 rounded-2xl bg-white/5 text-white/80 border border-white/10 hover:border-red-700 hover:text-red-700 transition"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </article>
           ))}
         </div>
       </div>

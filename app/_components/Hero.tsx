@@ -1,165 +1,74 @@
 "use client";
 
 import { memo } from "react";
-import { motion } from "motion/react";
-import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
-import { FlipWords } from "./FlipWords";
+import { FlipWords } from "../../_util/herotxt";
 
-const WORDS = ["intuitive", "responsive", "performant", "accessible"] as const;
-
-const STACK = [
-  "React",
-  "TypeScript",
-  "Next.js",
-  "TailwindCSS",
-  "Node.js",
-  "PostgreSQL",
-  "Git",
-  "Figma",
-] as const;
-
-const SOCIALS = [
-  { label: "GitHub", href: "https://github.com/Luz-Lucas", Icon: Github },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/lucas-luz", Icon: Linkedin },
-  { label: "Email", href: "mailto:lucaspmluz@hotmail.com", Icon: Mail },
-] as const;
-
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] as const },
-  },
-};
+const WORDS = ["intuitive", "responsive", "performant"] as const;
 
 function HeroComponent() {
   return (
-    <section
-      id="home"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pb-24 pt-32"
-    >
-      {/* Red aura behind the headline */}
-      <div
-        aria-hidden
-        className="animate-aura absolute left-1/2 top-1/2 h-[420px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/15 blur-[130px]"
-      />
+    <section id="home" className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden bg-black">
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="mx-auto w-full max-w-4xl space-y-8 text-center"
-      >
-        {/* Terminal-style location line */}
-        <motion.p
-          variants={item}
-          className="font-mono text-xs tracking-widest text-white/40"
-        >
-          <span className="text-red-500">~</span>/minas-gerais/brazil{" "}
-          <span className="animate-pulse text-red-500">▊</span>
-        </motion.p>
+      <div className="mx-auto w-full max-w-4xl space-y-10 text-center animate-slide-in-top">
+        <div className="space-y-8">
+          {/* Location badge */}
+          <div className="inline-block">
+            <p className="text-xs uppercase tracking-[0.35em] text-white border border-white/30 text-white/70 rounded-2xl px-6 py-3 backdrop-blur-sm hover:border-white/50 hover:text-white transition duration-300 font-semibold">
+              M I N A S &nbsp; G E R A I S &nbsp; • &nbsp; B R A Z I L
+            </p>
+          </div>
 
-        {/* Availability badge */}
-        <motion.div variants={item} className="flex justify-center">
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 font-mono text-xs tracking-wider text-white/70 backdrop-blur-sm">
-            <span className="animate-pulse-dot h-2 w-2 rounded-full bg-green-500" />
-            Available for new projects
-          </span>
-        </motion.div>
+          {/* Main heading */}
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight tracking-tight text-white">
+              Junior <span className="text-red-600">Frontend</span> Developer
+            </h1>
+            <p className="text-2xl md:text-3xl font-light text-white/60">
+              Crafting <span className="text-red-700 font-semibold"><FlipWords words={WORDS} /></span> experiences
+            </p>
+          </div>
 
-        {/* Headline */}
-        <motion.div variants={item} className="space-y-6">
-          <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl lg:text-8xl">
-            Frontend
-            <span className="block text-gradient-red">Developer</span>
-          </h1>
-          <p className="font-display text-xl font-medium text-white/50 md:text-2xl">
-            Crafting{" "}
-            <span className="text-red-400">
-              <FlipWords words={WORDS} />
-            </span>{" "}
-            web experiences
+          {/* Description */}
+          <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
+            Software Engineering student building user-centric web experiences. Balancing studies with real-world development at CP2 Junior Company to become a full-stack contributor.
           </p>
-        </motion.div>
 
-        {/* Description */}
-        <motion.p
-          variants={item}
-          className="mx-auto max-w-2xl text-base leading-relaxed text-white/50 md:text-lg"
-        >
-          I&apos;m Lucas Pereira — Software Engineering student building
-          user-centric products with React and TypeScript at CP2 Junior
-          Company, on the path to full-stack.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          variants={item}
-          className="flex flex-col items-center justify-center gap-4 pt-2 sm:flex-row"
-        >
-          <a
-            href="#projects"
-            className="group inline-flex items-center gap-2 rounded-full bg-red-600 px-8 py-4 font-mono text-sm font-semibold tracking-wider text-white shadow-lg shadow-red-600/25 transition-all duration-300 hover:bg-red-500 hover:shadow-red-500/40"
-          >
-            View Projects
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.03] px-8 py-4 font-mono text-sm font-semibold tracking-wider text-white/80 backdrop-blur-sm transition-all duration-300 hover:border-red-500/60 hover:bg-red-500/10 hover:text-white"
-          >
-            Get in Touch
-          </a>
-        </motion.div>
-
-        {/* Socials */}
-        <motion.div variants={item} className="flex items-center justify-center gap-3 pt-2">
-          {SOCIALS.map(({ label, href, Icon }) => (
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <a
-              key={label}
-              href={href}
-              target={href.startsWith("http") ? "_blank" : undefined}
-              rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              aria-label={label}
-              className="rounded-full border border-white/10 bg-white/[0.03] p-3 text-white/50 transition-all duration-300 hover:border-red-500/60 hover:bg-red-500/10 hover:text-red-400"
+              href="#projects"
+              className="group relative px-8 py-4 rounded-2xl bg-red-700 text-white font-bold text-center overflow-hidden transition duration-300 hover:bg-red-800 text-sm uppercase tracking-widest"
             >
-              <Icon className="h-4 w-4" />
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                View Projects
+              </span>
+              <div className="absolute inset-0 bg-red-800 -z-10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </a>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Tech stack marquee */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="absolute bottom-20 left-0 w-full overflow-hidden"
-      >
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#060606] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#060606] to-transparent" />
-        <div className="animate-marquee flex w-max gap-12 py-2">
-          {[...STACK, ...STACK].map((tech, i) => (
-            <span
-              key={`${tech}-${i}`}
-              className="font-mono text-xs uppercase tracking-[0.3em] text-white/25"
+            <a
+              href="#contact"
+              className="px-8 py-4 rounded-2xl border border-white/40 text-white font-semibold text-center hover:border-white hover:bg-white/10 transition duration-300 text-sm uppercase tracking-widest"
             >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </motion.div>
+              Get in Touch
+            </a>
+          </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-        <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/20 p-1.5">
-          <div className="animate-scroll-wheel h-1.5 w-1 rounded-full bg-red-500" />
+          {/* Tags */}
+          <div className="flex flex-wrap justify-center gap-4 pt-6">
+            {["Software Engineering Student", "Agile Enthusiast", "Portuguese • English"].map((tag) => (
+              <span key={tag} className="text-xs text-white/60 px-4 py-2 border border-white/20 rounded-2xl hover:border-white/40 hover:text-white transition text-center">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border border-white/30 rounded-full flex items-center justify-center">
+            <svg className="w-3 h-3 text-red-600 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 15a.75.75 0 01-.75-.75v-9.69l-1.72 1.72a.75.75 0 11-1.06-1.06l3-3a.75.75 0 011.06 0l3 3a.75.75 0 11-1.06 1.06l-1.72-1.72v9.69A.75.75 0 0110 15z" clipRule="evenodd" />
+            </svg>
+          </div>
         </div>
       </div>
     </section>

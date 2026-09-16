@@ -1,5 +1,3 @@
-import { fetchGitHubProjects } from "@/lib/github";
-import { Navbar } from "./_components/Navbar";
 import { Hero } from "./_components/Hero";
 import { About } from "./_components/About";
 import { Projects } from "./_components/Projects";
@@ -8,19 +6,15 @@ import { Experience } from "./_components/Experience";
 import { Faq } from "./_components/Faq";
 import { Contact } from "./_components/Contact";
 import { Footer } from "./_components/Footer";
+import { Navbar } from "./_components/Navbar";
 
-// Re-fetch GitHub projects at most once per hour (ISR)
-export const revalidate = 3600;
-
-export default async function Home() {
-  const projects = await fetchGitHubProjects();
-
+export default function Home() {
   return (
-    <main>
+    <main className="text-white">
       <Navbar />
       <Hero />
       <About />
-      <Projects projects={projects} />
+      <Projects />
       <Skills />
       <Experience />
       <Faq />

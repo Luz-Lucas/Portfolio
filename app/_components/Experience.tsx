@@ -1,114 +1,89 @@
 "use client";
 
 import { memo } from "react";
-import { Briefcase, GraduationCap, type LucideIcon } from "lucide-react";
-import { Reveal } from "./Reveal";
-import { SectionHeading } from "./SectionHeading";
 
-type ExperienceEntry = {
-  role: string;
-  company: string;
-  period: string;
-  description: string;
-  highlights: string[];
-  Icon: LucideIcon;
-};
-
-const EXPERIENCES: ExperienceEntry[] = [
+const EXPERIENCES = [
   {
     role: "Junior Developer",
     company: "CP2 Junior Company",
-    period: "2024 — Present",
+    period: "2024 - Present",
     description:
-      "Building responsive, client-facing web applications with React and TypeScript in cross-functional teams.",
+      "Building responsive, client-facing web applications using React and TypeScript in cross-functional teams.",
     highlights: [
       "Developed 5+ client projects using React and TypeScript",
       "Implemented responsive designs improving mobile UX",
       "Participated in Agile ceremonies and code reviews",
     ],
-    Icon: Briefcase,
   },
   {
     role: "Software Engineering Student",
     company: "University",
-    period: "2022 — Present",
+    period: "2022 - Present",
     description:
       "Pursuing a Software Engineering degree alongside extracurricular coding projects.",
     highlights: [
-      "Active member of the programming community",
-      "Advanced coursework in algorithms and data structures",
+      "Active member of programming community",
+      "Completed advanced coursework in algorithms and data structures",
       "Led team projects in Agile development courses",
     ],
-    Icon: GraduationCap,
   },
-];
+] as const;
 
 function ExperienceComponent() {
   return (
-    <section id="experience" className="relative overflow-hidden px-6 py-28">
-      <div
-        aria-hidden
-        className="absolute -right-48 bottom-1/4 -z-10 h-96 w-96 rounded-full bg-red-600/10 blur-[120px]"
-      />
+    <section
+      id="experience"
+      className="relative overflow-hidden bg-black px-6 py-20"
+    >
+      <div className="absolute bottom-1/4 right-0 -z-10 h-96 w-96 rounded-full bg-red-600/10 blur-3xl" />
 
-      <div className="mx-auto w-full max-w-4xl space-y-14">
-        <Reveal>
-          <SectionHeading
-            index="04"
-            eyebrow="Experience"
-            title={
-              <>
-                The journey{" "}
-                <span className="text-gradient-red">so far</span>
-              </>
-            }
-            description="Combining academic foundations with real-world product work."
-          />
-        </Reveal>
+      <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
 
-        {/* Timeline */}
-        <div className="relative space-y-10 before:absolute before:left-[19px] before:top-2 before:h-[calc(100%-16px)] before:w-px before:bg-gradient-to-b before:from-red-500/60 before:via-white/10 before:to-transparent md:space-y-12">
-          {EXPERIENCES.map((exp, i) => (
-            <Reveal key={`${exp.company}-${exp.role}`} delay={i * 0.15}>
-              <article className="relative pl-16">
-                {/* Timeline node */}
-                <span className="absolute left-0 top-1 inline-flex rounded-xl border border-red-500/30 bg-[#0d0d0d] p-2.5 text-red-500">
-                  <exp.Icon className="h-4 w-4" />
-                </span>
+      <div className="mx-auto w-full max-w-6xl space-y-12">
+        <div className="space-y-4 text-center lg:text-left">
+          <p className="text-xs font-black uppercase tracking-[0.35em] text-red-600">
+            Experience
+          </p>
+          <h2 className="text-5xl font-black text-white md:text-6xl">
+            Professional journey &<span className="block text-red-600">education</span>
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-white/70 lg:mx-0">
+            Combining academic knowledge with real-world experience at CP2.
+          </p>
+        </div>
 
-                <div className="card-glow space-y-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-sm transition-colors duration-300 hover:border-red-500/40 md:p-8">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-display text-lg font-semibold text-white">
-                        {exp.role}
-                      </h3>
-                      <p className="mt-0.5 text-sm font-medium text-red-400">
-                        {exp.company}
-                      </p>
-                    </div>
-                    <span className="w-fit rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 font-mono text-[11px] tracking-wider text-white/50">
-                      {exp.period}
-                    </span>
-                  </div>
-
-                  <p className="text-sm leading-relaxed text-white/60">
-                    {exp.description}
-                  </p>
-
-                  <ul className="space-y-2 border-t border-white/5 pt-4">
-                    {exp.highlights.map((highlight) => (
-                      <li
-                        key={highlight}
-                        className="flex items-start gap-3 text-sm text-white/50"
-                      >
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-500" />
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
+        <div className="space-y-6">
+          {EXPERIENCES.map((exp) => (
+            <article
+              key={`${exp.company}-${exp.role}`}
+              className="space-y-3 rounded-2xl border-2 border-red-700 bg-transparent p-6 transition duration-300 hover:border-red-600"
+            >
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-lg font-semibold text-white">{exp.role}</h3>
+                  <p className="font-medium text-red-700">{exp.company}</p>
                 </div>
-              </article>
-            </Reveal>
+                <span className="whitespace-nowrap text-xs text-white/50">
+                  {exp.period}
+                </span>
+              </div>
+
+              <p className="text-sm leading-relaxed text-white/70">
+                {exp.description}
+              </p>
+
+              <ul className="space-y-1 pt-2">
+                {exp.highlights.map((highlight) => (
+                  <li
+                    key={highlight}
+                    className="flex items-start gap-2 text-xs text-white/60"
+                  >
+                    <span className="mt-0.5 font-bold text-red-700">•</span>
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
           ))}
         </div>
       </div>
