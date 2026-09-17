@@ -8,7 +8,7 @@ import { Reveal } from "./meia-tinta/Reveal";
 const STATS = [
   { value: "2024", label: "Início na CP2" },
   { value: "100", label: "Lighthouse" },
-  { value: "2022", label: "Início da graduação" },
+  { value: "2023", label: "Início da graduação" },
 ] as const;
 
 /**
