@@ -1,43 +1,86 @@
 "use client";
 
 import { memo } from "react";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
+import { SectionHeading } from "./ambar/SectionHeading";
+import { Reveal } from "./ambar/Reveal";
 
-const FAQS = [
+const NOTES = [
   {
-    question: "How do you balance college with work at CP2?",
-    answer: "Using Agile methodologies, strict time management, and sprint planning helps me efficiently handle coursework and real-world projects.",
+    question: "Como você concilia a faculdade com o trabalho na CP2?",
+    answer:
+      "Uso metodologias ágeis, gestão rígida de tempo e planejamento de sprints para lidar com as disciplinas e os projetos reais de forma eficiente.",
   },
   {
-    question: "What's your React experience?",
-    answer: "Proficient in React hooks, Context API, and Redux, demonstrated through complex projects like e-commerce dashboards and task managers.",
+    question: "Qual sua experiência com React?",
+    answer:
+      "Tenho domínio de hooks, Context API e Redux, demonstrado em projetos complexos como dashboards de e-commerce e gerenciadores de tarefas.",
   },
   {
-    question: "What is your full-stack approach?",
-    answer: "My focus is front-end, but I integrate React with Node.js/Express and databases (MongoDB/PostgreSQL) to build complete applications.",
+    question: "Qual sua abordagem para full-stack?",
+    answer:
+      "Meu foco é front-end, mas integro React com Node.js/Express e bancos de dados (MongoDB/PostgreSQL) para construir aplicações completas.",
   },
   {
-    question: "How did you achieve a 100/100 Lighthouse score?",
-    answer: "By prioritizing code splitting, lazy loading, optimized images, efficient CSS, and smooth animations while meeting accessibility standards.",
+    question: "Como você alcançou 100/100 no Lighthouse?",
+    answer:
+      "Priorizando code splitting, lazy loading, imagens otimizadas, CSS eficiente e animações suaves, sempre respeitando os padrões de acessibilidade.",
   },
-];
+] as const;
 
+/**
+ * Ex-FAQ, agora um acordeão de filetes ("Notas de margem"). Usa o
+ * `Disclosure` do `@headlessui/react` (já instalado) diretamente — sem
+ * depender do wrapper em `components/animate-ui`, que é código morto e
+ * sai na limpeza. `static` no painel mantém o conteúdo sempre no DOM para
+ * a transição de altura em CSS puro (`grid-template-rows`) funcionar sem
+ * medir alturas em JS.
+ */
 function FaqComponent() {
   return (
-    <section id="faq" className="relative px-6 py-20 bg-black">
-      <div className="mx-auto w-full max-w-6xl space-y-12">
-        <div className="space-y-4 text-center lg:text-left">
-          <p className="text-xs uppercase tracking-[0.35em] text-red-700 font-semibold">FAQ</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">Questions & Answers</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {FAQS.map((faq) => (
-            <article
-              key={faq.question}
-              className="rounded-2xl border border-white/10 bg-transparent p-6 space-y-3 hover:border-white/20 transition duration-300"
-            >
-              <h3 className="text-base font-semibold text-white hover:text-red-700 transition duration-300">{faq.question}</h3>
-              <p className="text-white/70 text-sm leading-relaxed">{faq.answer}</p>
-            </article>
+    <section id="faq" className="relative px-6 py-24 md:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <Reveal>
+          <SectionHeading number="05" eyebrow="Notas" title="Perguntas de margem" />
+        </Reveal>
+
+        <div className="mx-auto mt-16 max-w-3xl divide-y divide-line border-y border-line">
+          {NOTES.map((note, index) => (
+            <Disclosure key={note.question} as="div">
+              {({ open }) => (
+                <>
+                  <DisclosureButton className="focus-ambar flex w-full items-start justify-between gap-6 py-5 text-left">
+                    <span className="flex items-baseline gap-4">
+                      <span className="font-mono text-xs text-terracotta-text">
+                        0{index + 1}
+                      </span>
+                      <span className="font-display text-xl font-medium text-ink">
+                        {note.question}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`flex-shrink-0 font-mono text-lg text-ink-muted transition-transform duration-300 ${
+                        open ? "rotate-45" : ""
+                      }`}
+                    >
+                      +
+                    </span>
+                  </DisclosureButton>
+                  <DisclosurePanel
+                    static
+                    className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+                    style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="max-w-2xl pb-6 pl-9 text-sm leading-relaxed text-ink-muted">
+                        {note.answer}
+                      </p>
+                    </div>
+                  </DisclosurePanel>
+                </>
+              )}
+            </Disclosure>
           ))}
         </div>
       </div>

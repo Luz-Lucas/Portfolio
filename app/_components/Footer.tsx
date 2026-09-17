@@ -1,34 +1,48 @@
 "use client";
 
 import { memo } from "react";
+import { NAV_LINKS } from "@/lib/nav";
+import { useAnchorNav } from "@/lib/hooks/useAnchorNav";
+import { Divider } from "./ambar/Divider";
 
-const LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Experience", href: "#experience" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
-] as const;
-
+/**
+ * O verso do cartão de visita — monograma, filete com o nome espaçado em
+ * mono, os mesmos links da navbar (fonte única em `lib/nav.ts`, antes
+ * duplicados literalmente aqui).
+ */
 function FooterComponent() {
+  const { onNavClick } = useAnchorNav();
+
   return (
-    <footer className="relative px-6 py-12 border-t border-white/10 bg-black">
-      <div className="mx-auto w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-xs text-white/60 uppercase tracking-widest font-semibold">
-          © 2026 Lucas Pereira
+    <footer className="relative px-6 pb-12 pt-4 md:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <Divider />
+        <div className="flex flex-col items-center gap-8 py-10 text-center">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line font-display text-sm font-medium text-terracotta-text">
+            LP
+          </span>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-ink">
+            Lucas Pereira
+          </p>
+          <nav
+            className="flex flex-wrap justify-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-[0.15em]"
+            aria-label="Navegação do rodapé"
+          >
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(event) => onNavClick(event, link.href)}
+                className="focus-ambar text-ink-muted transition-colors hover:text-terracotta-text"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-muted">
+            © 2026 Lucas Pereira
+          </p>
         </div>
-        <nav className="flex flex-wrap justify-center md:justify-end gap-6 text-xs">
-          {LINKS.map((link) => (
-            <a 
-              key={link.href} 
-              href={link.href} 
-              className="text-white/60 hover:text-white hover:text-red-700 transition-colors duration-300 uppercase tracking-widest"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
       </div>
     </footer>
   );
