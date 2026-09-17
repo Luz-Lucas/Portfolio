@@ -1,17 +1,18 @@
 /**
- * Categoria ou status curto — ex. a linguagem de um repositório. `gold`
- * é raro por design: reservado para um destaque por tela.
+ * Categoria ou status curto — ex. a linguagem de um repositório, ou o
+ * selo "Disponível para trabalho" do Hero. `gold` é raro por design:
+ * reservado para um destaque por tela.
  */
 export function Badge({
   tone = "neutral",
   children,
 }: {
-  tone?: "neutral" | "terracotta" | "gold";
+  tone?: "neutral" | "ember" | "gold";
   children: React.ReactNode;
 }) {
   const toneClass = {
     neutral: "bg-surface-raised text-ink-muted border-line",
-    terracotta: "bg-terracotta-soft text-terracotta-text border-transparent",
+    ember: "bg-ember-soft text-ember-text border-transparent",
     gold: "bg-gold-soft text-ink border-transparent",
   }[tone];
 

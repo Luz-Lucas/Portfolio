@@ -57,7 +57,7 @@ export function MobileMenu({
             <button
               type="button"
               onClick={onClose}
-              className="focus-ambar rounded-sm p-2 font-mono text-xs uppercase tracking-[0.2em] text-ink"
+              className="focus-ember rounded-sm p-2 font-mono text-xs uppercase tracking-[0.2em] text-ink"
             >
               Fechar &times;
             </button>
@@ -72,12 +72,12 @@ export function MobileMenu({
                   onNavClick(event, link.href);
                   onClose();
                 }}
-                className="focus-ambar group flex items-baseline gap-4 border-b border-line py-4"
+                className="focus-ember group flex items-baseline gap-4 border-b border-line py-4"
               >
-                <span className="font-mono text-xs text-terracotta-text">
+                <span className="font-mono text-xs text-ember-text">
                   0{index + 1}
                 </span>
-                <span className="font-display text-3xl font-medium text-ink transition-colors group-hover:text-terracotta-text">
+                <span className="font-display text-3xl text-ink transition-colors group-hover:text-ember-text">
                   {link.label}
                 </span>
               </a>

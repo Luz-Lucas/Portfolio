@@ -15,7 +15,7 @@ function NavbarComponent() {
         <a
           href="#home"
           onClick={(event) => onNavClick(event, "#home")}
-          className="focus-ambar flex h-9 w-9 items-center justify-center rounded-sm border border-line font-display text-sm font-medium text-terracotta-text"
+          className="focus-ember flex h-9 w-9 items-center justify-center rounded-sm border border-line font-display text-sm text-ember-text"
         >
           LP
         </a>
@@ -29,7 +29,7 @@ function NavbarComponent() {
               key={link.href}
               href={link.href}
               onClick={(event) => onNavClick(event, link.href)}
-              className="focus-ambar relative py-1 text-ink-muted transition-colors hover:text-ink after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-terracotta after:transition-all hover:after:w-full"
+              className="focus-ember relative py-1 text-ink-muted transition-colors hover:text-ink after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full"
             >
               {link.label}
             </a>
@@ -39,7 +39,7 @@ function NavbarComponent() {
         <a
           href="#contact"
           onClick={(event) => onNavClick(event, "#contact")}
-          className="focus-ambar hidden md:inline-flex items-center rounded-full border border-terracotta-deep px-6 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-terracotta-text transition-colors hover:bg-terracotta-deep hover:text-on-terracotta"
+          className="focus-ember hidden md:inline-flex items-center rounded-full border border-ember-deep px-6 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-ember-text transition-colors hover:bg-ember-deep hover:text-on-ember"
         >
           Contato
         </a>
@@ -47,7 +47,7 @@ function NavbarComponent() {
         <button
           type="button"
           onClick={() => setMenuOpen(true)}
-          className="focus-ambar flex flex-col gap-1.5 p-2 md:hidden"
+          className="focus-ember flex flex-col gap-1.5 p-2 md:hidden"
           aria-label="Abrir menu"
           aria-haspopup="dialog"
           aria-expanded={menuOpen}

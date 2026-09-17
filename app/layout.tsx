@@ -1,21 +1,33 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Anton, Playfair_Display, Work_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PageFrame } from "@/app/_components/PageFrame";
 import { SmoothScroll } from "@/app/_components/SmoothScroll";
 
-const fraunces = Fraunces({
+// Anton só existe no peso 400 — pedir 900 quebra o build, mesmo sendo
+// visualmente um black/900.
+const anton = Anton({
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-fraunces",
+  weight: ["400"],
+  variable: "--font-anton",
   display: "swap",
 });
 
-const inter = Inter({
+// Único uso: a palavra que troca no subtítulo do Hero (FlipWords).
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["600"],
+  style: ["italic"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const workSans = Work_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-work-sans",
   display: "swap",
 });
 
@@ -50,7 +62,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1c1815",
+  themeColor: "#0d0d0d",
   colorScheme: "dark",
 };
 
@@ -62,16 +74,15 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${anton.variable} ${playfair.variable} ${workSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased bg-surface text-ink">
         <a
           href="#conteudo"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-6 focus:left-6 focus:z-[100] focus:rounded-md focus:bg-terracotta-deep focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-terracotta"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-6 focus:left-6 focus:z-[100] focus:rounded-md focus:bg-ember-deep focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-on-ember"
         >
           Pular para o conteúdo
         </a>
-        <div className="grain" aria-hidden="true" />
         <PageFrame>
           <SmoothScroll>{children}</SmoothScroll>
         </PageFrame>

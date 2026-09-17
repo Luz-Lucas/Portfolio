@@ -2,8 +2,8 @@
 
 import { memo } from "react";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-import { SectionHeading } from "./ambar/SectionHeading";
-import { Reveal } from "./ambar/Reveal";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
+import { Reveal } from "./meia-tinta/Reveal";
 
 const NOTES = [
   {
@@ -49,12 +49,12 @@ function FaqComponent() {
             <Disclosure key={note.question} as="div">
               {({ open }) => (
                 <>
-                  <DisclosureButton className="focus-ambar flex w-full items-start justify-between gap-6 py-5 text-left">
+                  <DisclosureButton className="focus-ember flex w-full items-start justify-between gap-6 py-5 text-left">
                     <span className="flex items-baseline gap-4">
-                      <span className="font-mono text-xs text-terracotta-text">
+                      <span className="font-mono text-xs text-ember-text">
                         0{index + 1}
                       </span>
-                      <span className="font-display text-xl font-medium text-ink">
+                      <span className="font-sans text-lg font-semibold text-ink">
                         {note.question}
                       </span>
                     </span>

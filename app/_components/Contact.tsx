@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { SectionHeading } from "./ambar/SectionHeading";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
 
 type Status = "idle" | "sent" | "error";
 
@@ -18,13 +18,13 @@ function ContactLine({
 }) {
   return (
     <div className="border-b border-line pb-3">
-      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-terracotta-text">
+      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-ember-text">
         {label}
       </p>
       <a
         href={href}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="focus-ambar mt-1 block text-base text-ink transition-colors hover:text-terracotta-text"
+        className="focus-ember mt-1 block text-base text-ink transition-colors hover:text-ember-text"
       >
         {children}
       </a>
@@ -36,9 +36,9 @@ function ContactLine({
  * Formulário embutido na página — sem card, sem caixa. Continua no
  * formsubmit.co (funciona hoje, sem segredo nem infraestrutura extra) mas
  * corrige o que faltava: rótulos de fato associados aos campos, anel de
- * foco do Âmbar em vez de `outline-none`, uma região `aria-live` para o
- * status em vez de substituir o formulário inteiro, foco movido para a
- * mensagem de sucesso/erro, e um honeypot para reduzir spam de bot.
+ * foco em vez de `outline-none`, uma região `aria-live` para o status em
+ * vez de substituir o formulário inteiro, foco movido para a mensagem de
+ * sucesso/erro, e um honeypot para reduzir spam de bot.
  */
 function ContactComponent() {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +89,7 @@ function ContactComponent() {
   };
 
   const fieldClass =
-    "focus-ambar peer w-full border-0 border-b border-line bg-transparent px-0 py-2.5 text-ink placeholder:text-ink-muted/50 transition-colors focus:border-terracotta-deep";
+    "focus-ember peer w-full border-0 border-b border-line bg-transparent px-0 py-2.5 text-ink placeholder:text-ink-muted/50 transition-colors focus:border-ember-deep";
   const labelClass = "block font-mono text-[11px] uppercase tracking-[0.25em] text-ink-muted";
 
   return (
@@ -101,7 +101,7 @@ function ContactComponent() {
           align="left"
           title={
             <>
-              Vamos <em className="italic text-terracotta-text">conversar</em>?
+              Vamos <span className="text-ember-text">conversar</span>?
             </>
           }
         />
@@ -201,7 +201,7 @@ function ContactComponent() {
                   rows={5}
                   placeholder="Conte-me sobre seu projeto..."
                   required
-                  className={`${fieldClass} ruled min-h-[160px] resize-y border-b-0 pt-3 leading-[1.6em]`}
+                  className={`${fieldClass} halftone min-h-[160px] resize-y border-b-0 pt-3`}
                 />
               </div>
 
@@ -210,7 +210,7 @@ function ContactComponent() {
                 tabIndex={-1}
                 role="status"
                 aria-live="polite"
-                className="min-h-[1.5em] font-display text-sm italic text-terracotta-text focus:outline-none"
+                className="min-h-[1.5em] text-sm text-ember-text focus:outline-none"
               >
                 {status === "sent" && "Mensagem enviada — retorno em breve."}
                 {status === "error" &&
@@ -220,7 +220,7 @@ function ContactComponent() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="focus-ambar inline-flex items-center justify-center rounded-full bg-terracotta-deep px-10 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-on-terracotta transition-colors hover:bg-terracotta disabled:cursor-not-allowed disabled:opacity-50"
+                className="focus-ember inline-flex items-center justify-center rounded-full bg-ember-deep px-10 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-on-ember transition-colors hover:bg-ember disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? "Enviando..." : "Enviar mensagem"}
               </button>

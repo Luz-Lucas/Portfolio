@@ -4,8 +4,7 @@ import { memo, useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "motion/react";
 import { FlipWords } from "./FlipWords";
-import { Frame } from "./ambar/Frame";
-import { Seal } from "./ambar/Seal";
+import { Badge } from "./meia-tinta/Badge";
 import { useAnchorNav } from "@/lib/hooks/useAnchorNav";
 
 const WORDS = ["intuitivas", "responsivas", "performáticas"] as const;
@@ -40,13 +39,14 @@ function HeroComponent() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden pt-28 pb-20 md:pt-36"
     >
-      {/* Retrato — sangra pela borda direita, duotone, parallaxe leve */}
+      {/* Retrato — única aparição da foto no site. Sangra pela borda
+          direita, meio-tom em vez de duotone colorido, parallaxe leve. */}
       <motion.div
         style={{ y: portraitY }}
         className="pointer-events-none absolute inset-y-0 right-0 hidden w-[38%] md:block"
         aria-hidden="true"
       >
-        <Frame className="relative h-full w-full">
+        <div className="halftone relative h-full w-full border-l border-line">
           <Image
             src="/aboutimg.png"
             alt=""
@@ -55,11 +55,7 @@ function HeroComponent() {
             priority
             className="object-cover object-top grayscale contrast-125"
           />
-          <div className="absolute inset-0 bg-terracotta-deep/25 mix-blend-color" />
           <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/10 to-transparent" />
-        </Frame>
-        <div className="absolute -left-9 top-10 z-10 hidden lg:block">
-          <Seal />
         </div>
       </motion.div>
 
@@ -74,12 +70,12 @@ function HeroComponent() {
 
           <div className="space-y-4">
             <h1
-              className="font-display font-medium leading-[0.95] text-ink text-balance"
+              className="font-display uppercase leading-[0.9] text-ink text-balance"
               style={{ fontSize: "clamp(2.75rem, 8vw, 6rem)" }}
             >
-              Desenvolvedor <em className="text-terracotta-text italic">front-end</em>
+              Desenvolvedor <span className="text-ember-text">front-end</span>
             </h1>
-            <p className="font-display text-2xl text-ink-muted md:text-3xl">
+            <p className="font-sans text-2xl text-ink-muted md:text-3xl">
               Construindo experiências <FlipWords words={WORDS} />
             </p>
           </div>
@@ -91,28 +87,29 @@ function HeroComponent() {
             desenvolvedor full-stack.
           </p>
 
-          <div className="flex flex-col gap-4 pt-2 sm:flex-row">
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             <a
               href="#projects"
               onClick={(event) => onNavClick(event, "#projects")}
-              className="focus-ambar inline-flex items-center justify-center rounded-full bg-terracotta-deep px-8 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-on-terracotta transition-colors hover:bg-terracotta"
+              className="focus-ember inline-flex items-center justify-center rounded-full bg-ember-deep px-8 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-on-ember transition-colors hover:bg-ember"
             >
               Ver projetos
             </a>
             <a
               href="#contact"
               onClick={(event) => onNavClick(event, "#contact")}
-              className="focus-ambar inline-flex items-center justify-center rounded-full border border-line px-8 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-ink transition-colors hover:border-terracotta-text hover:text-terracotta-text"
+              className="focus-ember inline-flex items-center justify-center rounded-full border border-line px-8 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-ink transition-colors hover:border-ember-text hover:text-ember-text"
             >
               Entrar em contato
             </a>
+            <Badge tone="gold">Disponível para trabalho</Badge>
           </div>
 
           <div className="grid grid-cols-1 gap-6 border-t border-line pt-8 sm:grid-cols-3">
             {MICRO_COLUMNS.map((column) => (
               <div key={column.label}>
-                <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-terracotta-text">
-                  <span aria-hidden="true">◆</span>
+                <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-ember-text">
+                  <span aria-hidden="true">●</span>
                   {column.label}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">
@@ -136,7 +133,7 @@ function HeroComponent() {
           Role
         </span>
         <motion.span
-          className="h-12 w-px origin-top bg-terracotta"
+          className="h-12 w-px origin-top bg-ember"
           initial={{ scaleY: 0 }}
           animate={{ scaleY: [0, 1, 0] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}

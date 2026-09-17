@@ -3,13 +3,6 @@
 import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
 
-const DIAMOND_POSITIONS = [
-  "top-0 left-0 -translate-x-1/2 -translate-y-1/2",
-  "top-0 right-0 translate-x-1/2 -translate-y-1/2",
-  "bottom-0 left-0 -translate-x-1/2 translate-y-1/2",
-  "bottom-0 right-0 translate-x-1/2 translate-y-1/2",
-] as const;
-
 /** Seções observadas para o numeral de margem — mesma ordem da página. */
 const SECTIONS = [
   { id: "about", label: "Sobre", number: "01" },
@@ -69,34 +62,22 @@ function ScrollProgressEdge() {
     <motion.div
       aria-hidden="true"
       style={{ scaleX }}
-      className="fixed top-0 left-0 right-0 h-[2px] origin-left bg-terracotta-deep z-50"
+      className="fixed top-0 left-0 right-0 h-[2px] origin-left bg-ember-deep z-50"
     />
   );
 }
 
 /**
- * Moldura fixa da página: filete de 1px recuado da borda com losangos nos
- * cantos, aresta superior virando terracota conforme o progresso de
- * scroll, e o numeral da seção corrente na margem — o cabeçalho de revista.
- * Puramente decorativo: `pointer-events-none` em tudo.
+ * Barra de progresso de scroll no topo + numeral da seção corrente na
+ * margem — o mecanismo de wayfinding que sobrevive do Âmbar (é a peça que
+ * o usuário disse ter gostado). A moldura fixa com losangos e o grão de
+ * papel do Âmbar saem daqui: preto e branco liso fazem o trabalho pesado
+ * no Meia-Tinta, sem papel de parede decorativo.
  */
 export function PageFrame({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ScrollProgressEdge />
-      <div
-        aria-hidden="true"
-        className="hidden md:block fixed inset-7 z-40 pointer-events-none border border-line"
-      >
-        {DIAMOND_POSITIONS.map((position) => (
-          <span
-            key={position}
-            className={`absolute ${position} text-terracotta text-[10px] leading-none bg-surface px-[3px]`}
-          >
-            &#9670;
-          </span>
-        ))}
-      </div>
       <SectionIndicator />
       {children}
     </>

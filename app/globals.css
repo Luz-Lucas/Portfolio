@@ -1,50 +1,46 @@
 @import "tailwindcss";
 
 /*
- * Âmbar — tema Noturno.
- * Carvão quente (nunca preto puro), tinta clara, terracota como único
- * acento frequente, dourado reservado para um selo por tela.
- * Origem: /home/only/Documents/files/ambar (tokens.json, ramo "noturno").
+ * Meia-Tinta — tema Noir.
+ * Preto e branco de alto contraste, ember como único acento quente
+ * frequente, dourado reservado para um selo por tela.
+ * Origem: /home/only/Documents/files/meia-tinta (tokens.json, ramo "noir").
  */
 @theme {
-  --color-surface: #1c1815;
-  --color-surface-raised: #2b241f;
-  --color-line: #3a322a;
-  --color-ink: #ede6d8;
-  --color-ink-muted: #a89a87;
+  --color-surface: #0d0d0d;
+  --color-surface-raised: #1a1a1a;
+  --color-line: #2e2b25;
+  --color-ink: #f2efe6;
+  --color-ink-muted: #a39d8f;
 
-  --color-terracotta: #b5502e;
-  --color-terracotta-deep: #8c3b20;
-  --color-terracotta-text: #e08659;
-  --color-terracotta-soft: #32201a;
-  --color-on-terracotta: #fdf6ee;
+  --color-ember: #e2601f;
+  --color-ember-deep: #b84a1e;
+  --color-ember-text: #ff9457;
+  --color-ember-soft: #2e1d12;
+  --color-on-ember: #fffdf8;
 
-  --color-gold: #b08a4e;
-  --color-gold-soft: #2e2716;
+  --color-gold: #b08d2e;
+  --color-gold-soft: #2a2412;
 
-  --font-display: var(--font-fraunces), "Playfair Display", Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-anton), "Archivo Black", sans-serif;
+  --font-editorial: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
 
   --radius-sm: 2px;
   --radius-md: 8px;
-  --radius-lg: 20px;
+  --radius-lg: 16px;
 
-  --shadow-card: 0 8px 24px #00000066;
+  --shadow-card: 0 8px 24px #00000080;
 }
 
-@utility focus-ambar {
+@utility focus-ember {
   &:focus-visible {
     outline: none;
     box-shadow:
       0 0 0 2px var(--color-surface),
-      0 0 0 4px var(--color-terracotta-deep);
+      0 0 0 4px var(--color-ember-deep);
   }
-}
-
-/* Bordas finas — sempre 1px em `line`, nunca grossas nem com sombra pesada */
-@utility rule-line {
-  border-color: var(--color-line);
 }
 
 html {
@@ -67,59 +63,26 @@ body {
 }
 
 ::selection {
-  background: var(--color-terracotta-soft);
+  background: var(--color-ember-soft);
   color: var(--color-ink);
 }
 
-/* Grão de papel — SVG feTurbulence em data-URI, fixo sobre toda a página.
-   É o que separa um carvão "impresso" de um dark mode qualquer. */
-.grain {
-  position: fixed;
+/* Textura de meio-tom — pontos em radial-gradient, o recurso do sistema no
+   lugar de gradiente liso. Usado com intenção em só dois lugares (retrato
+   do Hero, fundo do textarea de Contato), nunca como papel de parede da
+   página inteira. */
+.halftone {
+  position: relative;
+}
+.halftone::after {
+  content: "";
+  position: absolute;
   inset: 0;
-  z-index: 60;
   pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Papel pautado — fundo do textarea de contato, hairlines alinhadas ao
-   line-height do texto. */
-.ruled {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent,
-    transparent calc(1.6em - 1px),
-    var(--color-line) calc(1.6em - 1px),
-    var(--color-line) 1.6em
-  );
-  background-position: 0 0.35em;
-}
-
-/* Marquee de fundo (Ofício) — CSS puro, pausa sob reduced-motion */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.marquee-track {
-  animation: marquee 40s linear infinite;
-}
-
-/* Rotação lenta do selo dourado do hero */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.animate-spin-slow {
-  animation: spin-slow 24s linear infinite;
+  background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
+  background-size: 6px 6px;
+  opacity: 0.1;
+  mix-blend-mode: screen;
 }
 
 /* Rede de segurança final: qualquer animação/transição não coberta pelas

@@ -2,8 +2,8 @@
 
 import { memo, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { SectionHeading } from "./ambar/SectionHeading";
-import { NumberedStep } from "./ambar/NumberedStep";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
+import { StatBadge } from "./meia-tinta/StatBadge";
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
 import { useIsWideViewport } from "@/lib/hooks/useIsWideViewport";
 
@@ -39,42 +39,45 @@ type Experience = (typeof EXPERIENCES)[number];
 /**
  * Fallback vertical — o que o servidor sempre renderiza primeiro, e o que
  * permanece sob `prefers-reduced-motion`, em telas pequenas, ou sem JS.
- * Reaproveita o `NumberedStep` do Âmbar.
+ * O marcador numerado usa o `StatBadge` do Meia-Tinta (numeral + empresa)
+ * no lugar do `NumberedStep` do Âmbar.
  */
 function VerticalFallback({ experiences }: { experiences: readonly Experience[] }) {
   return (
     <div className="mx-auto mt-16 w-full max-w-3xl space-y-10">
       {experiences.map((exp, index) => (
-        <NumberedStep
-          key={exp.company}
-          number={String(index + 1).padStart(2, "0")}
-          title={`${exp.role} — ${exp.company} · ${exp.period}`}
-          description={
-            <>
-              <span className="block">{exp.description}</span>
-              <ul className="mt-3 space-y-1.5">
-                {exp.highlights.map((highlight) => (
-                  <li key={highlight} className="flex items-start gap-2">
-                    <span aria-hidden="true" className="mt-0.5 text-terracotta">
-                      ◆
-                    </span>
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          }
-        />
+        <div key={exp.company} className="flex gap-6">
+          <StatBadge value={String(index + 1).padStart(2, "0")} label={exp.company} />
+          <div className="flex-1 pt-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h3 className="font-display text-xl uppercase text-ink">{exp.role}</h3>
+              <span className="whitespace-nowrap font-mono text-xs text-ink-muted">
+                {exp.period}
+              </span>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-ink-muted">{exp.description}</p>
+            <ul className="mt-3 space-y-1.5">
+              {exp.highlights.map((highlight) => (
+                <li key={highlight} className="flex items-start gap-2 text-sm text-ink-muted">
+                  <span aria-hidden="true" className="mt-1.5 text-ember">
+                    ●
+                  </span>
+                  <span>{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       ))}
     </div>
   );
 }
 
 /**
- * A faixa horizontal sticky — o segundo dispositivo cinematográfico do
- * redesign. Monta como um componente novo (não uma alternância de branch
- * dentro do mesmo componente) para que `useScroll` sempre encontre o nó do
- * DOM já anexado no seu próprio ciclo de montagem.
+ * A faixa horizontal sticky. Monta como um componente novo (não uma
+ * alternância de branch dentro do mesmo componente) para que `useScroll`
+ * sempre encontre o nó do DOM já anexado no seu próprio ciclo de
+ * montagem.
  *
  * Nenhum elemento focável dentro do trilho — é a regra que decidiu que
  * Trajetória (texto puro) ganhasse este tratamento, e não Projetos (que
@@ -95,30 +98,30 @@ function HorizontalRail({ experiences }: { experiences: readonly Experience[] })
           style={{ x }}
           className="flex gap-10 px-6 will-change-transform md:px-10"
         >
-          {experiences.map((exp) => (
+          {experiences.map((exp, index) => (
             <article
               key={exp.company}
               className="w-[85vw] max-w-xl flex-shrink-0 rounded-sm border border-line bg-surface-raised p-8 shadow-card md:p-10"
             >
-              <div className="flex items-center justify-between gap-4">
-                <h3 className="font-display text-2xl font-medium text-ink">
-                  {exp.role}
-                </h3>
-                <span className="whitespace-nowrap font-mono text-xs text-ink-muted">
-                  {exp.period}
-                </span>
+              <div className="flex items-start gap-5">
+                <StatBadge value={String(index + 1).padStart(2, "0")} label={exp.company} />
+                <div className="flex-1 pt-1">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h3 className="font-display text-2xl uppercase text-ink">{exp.role}</h3>
+                    <span className="whitespace-nowrap font-mono text-xs text-ink-muted">
+                      {exp.period}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <p className="mt-1 font-mono text-xs uppercase tracking-[0.15em] text-terracotta-text">
-                {exp.company}
-              </p>
               <p className="mt-4 text-sm leading-relaxed text-ink-muted">
                 {exp.description}
               </p>
               <ul className="mt-5 space-y-2 border-t border-line pt-5">
                 {exp.highlights.map((highlight) => (
                   <li key={highlight} className="flex items-start gap-2 text-sm text-ink-muted">
-                    <span aria-hidden="true" className="mt-1 text-terracotta">
-                      ◆
+                    <span aria-hidden="true" className="mt-1.5 text-ember">
+                      ●
                     </span>
                     <span>{highlight}</span>
                   </li>

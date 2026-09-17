@@ -40,7 +40,7 @@ export function ProjectCard({
         <div className="flex items-start justify-between gap-6">
           <span
             aria-hidden="true"
-            className="font-display text-6xl font-medium leading-none text-terracotta-text/35 md:text-8xl"
+            className="font-display text-6xl leading-none text-ember-text/35 md:text-8xl"
           >
             {number}
           </span>
@@ -49,7 +49,7 @@ export function ProjectCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Abrir ${project.name} no GitHub`}
-            className="focus-ambar flex-shrink-0 rounded-full border border-line p-3 text-ink-muted transition-colors hover:border-terracotta-text hover:text-terracotta-text"
+            className="focus-ember flex-shrink-0 rounded-full border border-line p-3 text-ink-muted transition-colors hover:border-ember-text hover:text-ember-text"
           >
             <ExternalLink className="h-4 w-4" />
           </a>
@@ -59,7 +59,7 @@ export function ProjectCard({
           href={project.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="focus-ambar w-fit font-display text-3xl font-medium text-ink transition-colors hover:text-terracotta-text md:text-4xl"
+          className="focus-ember w-fit font-display text-3xl text-ink transition-colors hover:text-ember-text md:text-4xl"
         >
           {project.name}
         </a>
@@ -70,7 +70,7 @@ export function ProjectCard({
 
         <div className="mt-2 flex flex-wrap items-center gap-6 border-t border-line pt-5 font-mono text-xs uppercase tracking-[0.15em] text-ink-muted">
           <span className="flex items-center gap-2">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-terracotta" />
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-ember" />
             {project.language}
           </span>
           <span className="flex items-center gap-1.5">

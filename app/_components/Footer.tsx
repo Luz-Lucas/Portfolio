@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { NAV_LINKS } from "@/lib/nav";
 import { useAnchorNav } from "@/lib/hooks/useAnchorNav";
-import { Divider } from "./ambar/Divider";
+import { Divider } from "./meia-tinta/Divider";
 
 /**
  * O verso do cartão de visita — monograma, filete com o nome espaçado em
@@ -18,7 +18,7 @@ function FooterComponent() {
       <div className="mx-auto w-full max-w-6xl">
         <Divider />
         <div className="flex flex-col items-center gap-8 py-10 text-center">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line font-display text-sm font-medium text-terracotta-text">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line font-display text-sm text-ember-text">
             LP
           </span>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-ink">
@@ -33,7 +33,7 @@ function FooterComponent() {
                 key={link.href}
                 href={link.href}
                 onClick={(event) => onNavClick(event, link.href)}
-                className="focus-ambar text-ink-muted transition-colors hover:text-terracotta-text"
+                className="focus-ember text-ink-muted transition-colors hover:text-ember-text"
               >
                 {link.label}
               </a>

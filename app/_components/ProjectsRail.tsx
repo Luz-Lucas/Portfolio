@@ -22,7 +22,7 @@ export function ProjectsRail({ projects }: { projects: GitHubProject[] }) {
           <span
             key={ids[index]}
             className={`font-mono text-[11px] transition-colors ${
-              index === activeIndex ? "text-terracotta-text" : "text-line"
+              index === activeIndex ? "text-ember-text" : "text-line"
             }`}
           >
             {index === activeIndex ? "◆" : "○"}

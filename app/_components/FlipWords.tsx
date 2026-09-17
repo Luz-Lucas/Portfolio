@@ -11,10 +11,12 @@ type FlipWordsProps = {
 
 /**
  * Antes um flip 3D em `rotateX` — o clichê visual de portfólio gerado.
- * Agora um crossfade com blur leve em Fraunces itálico: mesma
- * funcionalidade (troca automática de palavra a cada `interval`), registro
- * editorial. `MotionConfig reducedMotion="user"` (montado em SmoothScroll)
- * reduz isto a um corte seco sob reduced-motion.
+ * Agora um crossfade com blur leve em Playfair Display itálico
+ * (`font-editorial`) — o único lugar da página com essa família, já que
+ * Anton (`font-display`) não tem itálico. Mesma funcionalidade (troca
+ * automática de palavra a cada `interval`). `MotionConfig
+ * reducedMotion="user"` (montado em SmoothScroll) reduz isto a um corte
+ * seco sob reduced-motion.
  */
 export const FlipWords: React.FC<FlipWordsProps> = React.memo(
   ({ words, className = "", interval = 2200 }) => {
@@ -41,7 +43,7 @@ export const FlipWords: React.FC<FlipWordsProps> = React.memo(
             animate={{ opacity: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, filter: "blur(8px)" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="inline-block font-display italic"
+            className="inline-block font-editorial italic"
           >
             {currentWord}
           </motion.span>
