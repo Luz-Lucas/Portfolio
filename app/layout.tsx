@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PageFrame } from "@/app/_components/PageFrame";
 import { SmoothScroll } from "@/app/_components/SmoothScroll";
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 
 // Anton só existe no peso 400 — pedir 900 quebra o build, mesmo sendo
 // visualmente um black/900.
@@ -36,11 +37,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   display: "swap",
 });
-
-const SITE_URL = "https://lucaspereira.dev";
-const SITE_TITLE = "Lucas Pereira — Desenvolvedor Front-end";
-const SITE_DESCRIPTION =
-  "Portfólio de Lucas Pereira, estudante de Engenharia de Software e desenvolvedor front-end em Minas Gerais, Brasil — React, TypeScript e interfaces responsivas.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
