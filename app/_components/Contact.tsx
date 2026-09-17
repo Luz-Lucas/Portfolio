@@ -117,7 +117,7 @@ function ContactComponent() {
               </ContactLine>
               <ContactLine
                 label="LinkedIn"
-                href="https://www.linkedin.com/in/lucas-luz"
+                href="https://www.linkedin.com/in/lucas-luz-0b0368432/"
                 external
               >
                 linkedin.com/in/lucas-luz
