@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { SectionHeading } from "./ambar/SectionHeading";
 import { NumberedStep } from "./ambar/NumberedStep";
@@ -21,9 +21,33 @@ const EXPERIENCES = [
     ],
   },
   {
+    role: "Especialização em Gestão de Pessoas e Recursos",
+    company: "CP2 Junior Company",
+    period: "2024 — atual",
+    description:
+      "Atuação complementar dentro da CP2, organizando pessoas e recursos entre projetos e apoiando o time no dia a dia.",
+    highlights: [
+      "Apoio na organização de tarefas e prazos entre membros do time",
+      "Alinhamento entre áreas técnicas e de negócio",
+      "Acompanhamento de entregas e alocação de recursos",
+    ],
+  },
+  {
+    role: "Desenvolvedor Full Stack",
+    company: "Freelancer",
+    period: "2023 — atual",
+    description:
+      "Desenvolvimento de aplicações web completas para clientes independentes, do front-end ao back-end.",
+    highlights: [
+      "Entrega de projetos ponta a ponta, do design à implantação",
+      "Integração de front-end em React com APIs e bancos de dados",
+      "Comunicação direta com clientes para levantar requisitos e prazos",
+    ],
+  },
+  {
     role: "Estudante de Engenharia de Software",
     company: "Universidade",
-    period: "2022 — atual",
+    period: "2023 — atual",
     description:
       "Cursando graduação em Engenharia de Software, além de projetos extracurriculares de programação.",
     highlights: [
@@ -46,7 +70,7 @@ function VerticalFallback({ experiences }: { experiences: readonly Experience[] 
     <div className="mx-auto mt-16 w-full max-w-3xl space-y-10">
       {experiences.map((exp, index) => (
         <NumberedStep
-          key={exp.company}
+          key={`${exp.company}-${exp.role}`}
           number={String(index + 1).padStart(2, "0")}
           title={`${exp.role} — ${exp.company} · ${exp.period}`}
           description={
@@ -76,28 +100,56 @@ function VerticalFallback({ experiences }: { experiences: readonly Experience[] 
  * dentro do mesmo componente) para que `useScroll` sempre encontre o nó do
  * DOM já anexado no seu próprio ciclo de montagem.
  *
+ * O deslocamento horizontal é medido em pixels a partir da largura real do
+ * trilho (`scrollWidth` menos a largura do viewport), não um percentual
+ * fixo — assim o número de cards pode mudar sem precisar recalibrar a
+ * mão um "-62%" mágico a cada edição de conteúdo.
+ *
  * Nenhum elemento focável dentro do trilho — é a regra que decidiu que
  * Trajetória (texto puro) ganhasse este tratamento, e não Projetos (que
  * tem links).
  */
 function HorizontalRail({ experiences }: { experiences: readonly Experience[] }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const updateDistance = () => {
+      const viewportWidth = track.parentElement?.clientWidth ?? window.innerWidth;
+      setScrollDistance(Math.max(track.scrollWidth - viewportWidth, 0));
+    };
+
+    updateDistance();
+    const observer = new ResizeObserver(updateDistance);
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [experiences]);
+
   const { scrollYProgress } = useScroll({
     target: wrapperRef,
     offset: ["start start", "end end"],
   });
-  const x = useTransform(scrollYProgress, [0, 1], ["2%", "-62%"]);
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
 
   return (
-    <div ref={wrapperRef} className="relative mt-16 h-[280vh]">
+    <div
+      ref={wrapperRef}
+      className="relative mt-16"
+      style={{ height: `${Math.max(experiences.length * 130, 200)}vh` }}
+    >
       <div className="sticky top-0 flex h-svh items-center overflow-hidden">
         <motion.div
+          ref={trackRef}
           style={{ x }}
           className="flex gap-10 px-6 will-change-transform md:px-10"
         >
           {experiences.map((exp) => (
             <article
-              key={exp.company}
+              key={`${exp.company}-${exp.role}`}
               className="w-[85vw] max-w-xl flex-shrink-0 rounded-sm border border-line bg-surface-raised p-8 shadow-card md:p-10"
             >
               <div className="flex items-center justify-between gap-4">
