@@ -1,197 +1,99 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Meia-Tinta — tema Noir.
+ * Preto e branco de alto contraste, ember como único acento quente
+ * frequente, dourado reservado para um selo por tela.
+ * Origem: /home/only/Documents/files/meia-tinta (tokens.json, ramo "noir").
+ */
+@theme {
+  --color-surface: #0d0d0d;
+  --color-surface-raised: #1a1a1a;
+  --color-line: #2e2b25;
+  --color-ink: #f2efe6;
+  --color-ink-muted: #a39d8f;
 
-/* Custom animations for Marlboro theme */
-@keyframes shimmer {
-  0%, 100% {
-    opacity: 0.1;
-    transform: translateX(-100%);
-  }
-  50% {
-    opacity: 0.3;
-    transform: translateX(100%);
-  }
+  --color-ember: #e2601f;
+  --color-ember-deep: #b84a1e;
+  --color-ember-text: #ff9457;
+  --color-ember-soft: #2e1d12;
+  --color-on-ember: #fffdf8;
+
+  --color-gold: #b08d2e;
+  --color-gold-soft: #2a2412;
+
+  --font-display: var(--font-anton), "Archivo Black", sans-serif;
+  --font-editorial: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: 2px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  --shadow-card: 0 8px 24px #00000080;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.4;
+@utility focus-ember {
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--color-surface),
+      0 0 0 4px var(--color-ember-deep);
   }
-  25% {
-    transform: translateY(-20px) translateX(10px);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(-40px) translateX(-10px);
-    opacity: 0.3;
-  }
-  75% {
-    transform: translateY(-20px) translateX(10px);
-    opacity: 0.5;
-  }
-}
-
-@keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5),
-                inset 0 0 20px rgba(220, 38, 38, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(220, 38, 38, 0.8),
-                inset 0 0 20px rgba(220, 38, 38, 0.2);
-  }
-}
-
-@keyframes slide-in-top {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-in-bottom {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --animation-shimmer: shimmer 3s infinite;
-  --animation-float: float 6s ease-in-out infinite;
-  --animation-glow-pulse: glow-pulse 2s ease-in-out infinite;
-  --animation-slide-in-top: slide-in-top 0.6s ease-out;
-  --animation-slide-in-bottom: slide-in-bottom 0.6s ease-out;
-  --animation-fade-in: fade-in 0.6s ease-out;
-}
-
-:root {
-  --radius: 0rem;
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #0a0a0a;
-  --card-foreground: #ffffff;
-  --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
-  --primary: #DC2626;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ffffff;
-  --muted: #111111;
-  --muted-foreground: rgba(255,255,255,0.5);
-  --accent: #EF4444;
-  --accent-foreground: #ffffff;
-  --destructive: #DC2626;
-  --border: rgba(255,255,255,0.12);
-  --input: rgba(255,255,255,0.08);
-  --ring: #DC2626;
-}
-
-body {
-  background-color: #000;
-  color: #fff;
-  font-family: var(--font-montserrat), system-ui, sans-serif;
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--color-surface);
+  color-scheme: dark;
 }
 
-.animate-shimmer {
-  animation: shimmer 3s infinite;
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
-.animate-slide-in-top {
-  animation: slide-in-top 0.6s ease-out;
-}
-
-.animate-slide-in-bottom {
-  animation: slide-in-bottom 0.6s ease-out;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
-}
-
-/* Gradient radial */
-.bg-gradient-radial {
-  background-image: radial-gradient(var(--tw-gradient-stops));
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+/* Rolagem suave nativa só como rede de segurança (JS desligado / Lenis não
+   montado). Com Lenis ativo, o componente cuida da suavização real. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
-  body {
-    @apply bg-background text-foreground;
+}
+
+::selection {
+  background: var(--color-ember-soft);
+  color: var(--color-ink);
+}
+
+/* Textura de meio-tom — pontos em radial-gradient, o recurso do sistema no
+   lugar de gradiente liso. Usado com intenção em só dois lugares (retrato
+   do Hero, fundo do textarea de Contato), nunca como papel de parede da
+   página inteira. */
+.halftone {
+  position: relative;
+}
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--color-ink) 1px, transparent 1px);
+  background-size: 6px 6px;
+  opacity: 0.1;
+  mix-blend-mode: screen;
+}
+
+/* Rede de segurança final: qualquer animação/transição não coberta pelas
+   checagens de JS (MotionConfig, usePrefersReducedMotion) para de se mover. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

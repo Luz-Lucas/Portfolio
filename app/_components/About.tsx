@@ -1,37 +1,55 @@
 "use client";
 
 import { memo } from "react";
-import Image from "next/image";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
+import { StatBadge } from "./meia-tinta/StatBadge";
+import { Reveal } from "./meia-tinta/Reveal";
 
+const STATS = [
+  { value: "2024", label: "Início na CP2" },
+  { value: "100", label: "Lighthouse" },
+  { value: "2023", label: "Início da graduação" },
+] as const;
+
+/**
+ * A foto do retrato aparece só uma vez no site (no Hero). Aqui, no lugar
+ * do retrato duplicado, uma fileira de `StatBadge` com fatos que já
+ * existem no conteúdo do site — nada inventado.
+ */
 function AboutComponent() {
   return (
-    <section id="about" className="relative px-6 py-20 bg-black">
-      <div className="mx-auto w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="relative w-full max-w-md mx-auto aspect-[4/5]">
-          <Image
-            src="/aboutimg.png"
-            alt="Lucas working"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain opacity-90"
-            quality={100}
-          />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none" />
-        </div>
-        
-        <div className="space-y-8 text-center lg:text-left">
-          <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-red-700 font-semibold">About</p>
-            <h2 className="text-4xl md:text-5xl font-bold mt-2 text-white">Student & Developer</h2>
+    <section id="about" className="relative px-6 py-24 md:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <Reveal>
+          <SectionHeading number="01" eyebrow="Sobre" title="Nota do autor" align="left" />
+        </Reveal>
+
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="space-y-6 lg:col-span-8">
+            <Reveal>
+              <p className="text-lg leading-relaxed text-ink-muted">
+                Estudante de Engenharia de Software natural de Minas Gerais,
+                atuando como desenvolvedor júnior na CP2. Construo aplicações
+                voltadas ao cliente com React e TypeScript, com foco em
+                interfaces responsivas e performáticas.
+              </p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="text-lg leading-relaxed text-ink-muted">
+                Domino ferramentas modernas de front-end e venho me
+                expandindo para full-stack. Trabalho bem em times ágeis,
+                valorizando revisões de código e pair programming para
+                entregar um trabalho de qualidade.
+              </p>
+            </Reveal>
           </div>
-          
-          <div className="space-y-4 text-white/70 leading-relaxed">
-            <p>
-              Software Engineering student from Minas Gerais, working as a Junior Developer at CP2. I build client-facing apps using React and TypeScript, focusing on responsive, performant interfaces.
-            </p>
-            <p>
-              Skilled in modern front-end tools and expanding into full-stack. I thrive in Agile teams, valuing code reviews and pair programming to deliver high-quality code.
-            </p>
+
+          <div className="lg:col-span-4">
+            <Reveal delay={0.15} className="flex flex-wrap gap-8 lg:flex-col lg:items-start lg:gap-6">
+              {STATS.map((stat) => (
+                <StatBadge key={stat.label} value={stat.value} label={stat.label} />
+              ))}
+            </Reveal>
           </div>
         </div>
       </div>

@@ -1,68 +1,82 @@
 "use client";
 
 import { memo } from "react";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
+import { Reveal } from "./meia-tinta/Reveal";
 
 const SKILL_GROUPS = [
   {
-    title: "Front-End Development",
-    description: "Building responsive interfaces using modern React and TypeScript.",
+    title: "Desenvolvimento Front-end",
+    description: "Construindo interfaces responsivas com React e TypeScript moderno.",
     items: ["React", "TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "JSX"],
   },
   {
-    title: "Styling & UI Frameworks",
-    description: "Crafting designs with utility-first CSS and frameworks.",
-    items: ["TailwindCSS", "Bootstrap", "Styled Components", "CSS Grid", "Flexbox", "Responsive Design"],
+    title: "Estilização & UI",
+    description: "Criando layouts com CSS utilitário e frameworks de interface.",
+    items: ["TailwindCSS", "Bootstrap", "Styled Components", "CSS Grid", "Flexbox", "Design responsivo"],
   },
   {
-    title: "State Management & Hooks",
-    description: "Managing complex state using modern React paradigms.",
-    items: ["Redux", "Context API", "React Hooks", "Custom Hooks", "useEffect", "useReducer"],
+    title: "Estado & Hooks",
+    description: "Gerenciando estado complexo com paradigmas modernos do React.",
+    items: ["Redux", "Context API", "React Hooks", "Hooks customizados", "useEffect", "useReducer"],
   },
   {
-    title: "Full-Stack Foundations",
-    description: "Expanding beyond frontend via Node.js and databases.",
+    title: "Fundamentos Full-stack",
+    description: "Expandindo além do front-end via Node.js e bancos de dados.",
     items: ["Node.js", "Express", "REST APIs", "MongoDB", "PostgreSQL", "Socket.io"],
   },
   {
-    title: "Developer Tools & Workflow",
-    description: "Utilizing modern tooling for efficient development and deployment.",
+    title: "Ferramentas & Fluxo",
+    description: "Usando ferramentas modernas para desenvolvimento e deploy eficientes.",
     items: ["Git", "VS Code", "Figma", "npm/yarn", "Vite", "Webpack"],
   },
   {
-    title: "Performance & Quality",
-    description: "Ensuring fast, reliable apps through optimization and testing.",
-    items: ["React Testing Library", "Jest", "Lighthouse", "Web Vitals", "Accessibility (a11y)", "Performance Optimization"],
+    title: "Performance & Qualidade",
+    description: "Garantindo apps rápidos e confiáveis com otimização e testes.",
+    items: ["React Testing Library", "Jest", "Lighthouse", "Web Vitals", "Acessibilidade", "Otimização de performance"],
   },
-];
+] as const;
 
+/**
+ * O mesmo índice tipográfico do Âmbar, sem o marquee de fundo — era
+ * decoração pura e o corte mais barato para "mais minimalista" nesta
+ * seção.
+ */
 function SkillsComponent() {
   return (
-    <section id="skills" className="relative px-6 py-20 bg-black">
-      <div className="mx-auto w-full max-w-6xl space-y-12">
-        <div className="space-y-4 text-center lg:text-left">
-          <p className="text-xs uppercase tracking-[0.35em] text-red-700 font-semibold">Skills</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">Front-end expertise</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SKILL_GROUPS.map((group) => (
-            <article
-              key={group.title}
-              className="rounded-2xl border-2 border-red-700 bg-transparent p-6 space-y-3 hover:border-red-600 transition duration-300"
-            >
-              <h3 className="text-base font-semibold text-white">{group.title}</h3>
-              <p className="text-white/60 text-sm leading-relaxed">{group.description}</p>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {group.items.map((item) => (
-                  <span
-                    key={item}
-                    className="text-xs px-3 py-1 rounded-2xl bg-white/5 text-white/80 border border-white/10 hover:border-red-700 hover:text-red-700 transition"
-                  >
-                    {item}
-                  </span>
-                ))}
+    <section id="skills" className="relative px-6 py-24 md:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <Reveal>
+          <SectionHeading number="03" eyebrow="Ofício" title="Do que sou feito" />
+        </Reveal>
+
+        <div className="mt-16 divide-y divide-line border-y border-line">
+          {SKILL_GROUPS.map((group, index) => (
+            <Reveal key={group.title} delay={index * 0.04}>
+              <div className="grid grid-cols-1 gap-3 py-8 md:grid-cols-12 md:items-baseline md:gap-8">
+                <span className="font-mono text-sm text-ember-text md:col-span-1">
+                  0{index + 1}
+                </span>
+                <div className="md:col-span-4">
+                  <h3 className="font-display text-2xl uppercase text-ink">
+                    {group.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+                    {group.description}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-x-5 gap-y-2 md:col-span-7">
+                  {group.items.map((item) => (
+                    <span
+                      key={item}
+                      className="font-mono text-xs uppercase tracking-[0.06em] text-ink-muted"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>

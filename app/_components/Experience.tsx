@@ -1,92 +1,212 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { SectionHeading } from "./meia-tinta/SectionHeading";
+import { StatBadge } from "./meia-tinta/StatBadge";
+import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion";
+import { useIsWideViewport } from "@/lib/hooks/useIsWideViewport";
 
 const EXPERIENCES = [
   {
-    role: "Junior Developer",
+    role: "Desenvolvedor Júnior",
     company: "CP2 Junior Company",
-    period: "2024 - Present",
+    period: "2024 — atual",
     description:
-      "Building responsive, client-facing web applications using React and TypeScript in cross-functional teams.",
+      "Construindo aplicações web responsivas e voltadas ao cliente com React e TypeScript em times multidisciplinares.",
     highlights: [
-      "Developed 5+ client projects using React and TypeScript",
-      "Implemented responsive designs improving mobile UX",
-      "Participated in Agile ceremonies and code reviews",
+      "Desenvolvi mais de 5 projetos de clientes com React e TypeScript",
+      "Implementei designs responsivos, melhorando a experiência mobile",
+      "Participei de cerimônias ágeis e revisões de código",
     ],
   },
   {
-    role: "Software Engineering Student",
-    company: "University",
-    period: "2022 - Present",
+    role: "Especialização em Gestão de Pessoas e Recursos",
+    company: "CP2 Junior Company",
+    period: "2024 — atual",
     description:
-      "Pursuing a Software Engineering degree alongside extracurricular coding projects.",
+      "Atuação complementar dentro da CP2, organizando pessoas e recursos entre projetos e apoiando o time no dia a dia.",
     highlights: [
-      "Active member of programming community",
-      "Completed advanced coursework in algorithms and data structures",
-      "Led team projects in Agile development courses",
+      "Apoio na organização de tarefas e prazos entre membros do time",
+      "Alinhamento entre áreas técnicas e de negócio",
+      "Acompanhamento de entregas e alocação de recursos",
+    ],
+  },
+  {
+    role: "Desenvolvedor Full Stack",
+    company: "Freelancer",
+    period: "2023 — atual",
+    description:
+      "Desenvolvimento de aplicações web completas para clientes independentes, do front-end ao back-end.",
+    highlights: [
+      "Entrega de projetos ponta a ponta, do design à implantação",
+      "Integração de front-end em React com APIs e bancos de dados",
+      "Comunicação direta com clientes para levantar requisitos e prazos",
+    ],
+  },
+  {
+    role: "Estudante de Engenharia de Software",
+    company: "Universidade",
+    period: "2023 — atual",
+    description:
+      "Cursando graduação em Engenharia de Software, além de projetos extracurriculares de programação.",
+    highlights: [
+      "Membro ativo da comunidade de programação",
+      "Cursei disciplinas avançadas de algoritmos e estruturas de dados",
+      "Liderei projetos em equipe em disciplinas de desenvolvimento ágil",
     ],
   },
 ] as const;
 
-function ExperienceComponent() {
+type Experience = (typeof EXPERIENCES)[number];
+
+/**
+ * Fallback vertical — o que o servidor sempre renderiza primeiro, e o que
+ * permanece sob `prefers-reduced-motion`, em telas pequenas, ou sem JS.
+ * O marcador numerado usa o `StatBadge` do Meia-Tinta (numeral + empresa)
+ * no lugar do `NumberedStep` do Âmbar.
+ */
+function VerticalFallback({ experiences }: { experiences: readonly Experience[] }) {
   return (
-    <section
-      id="experience"
-      className="relative overflow-hidden bg-black px-6 py-20"
-    >
-      <div className="absolute bottom-1/4 right-0 -z-10 h-96 w-96 rounded-full bg-red-600/10 blur-3xl" />
-
-      <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
-
-      <div className="mx-auto w-full max-w-6xl space-y-12">
-        <div className="space-y-4 text-center lg:text-left">
-          <p className="text-xs font-black uppercase tracking-[0.35em] text-red-600">
-            Experience
-          </p>
-          <h2 className="text-5xl font-black text-white md:text-6xl">
-            Professional journey &<span className="block text-red-600">education</span>
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-white/70 lg:mx-0">
-            Combining academic knowledge with real-world experience at CP2.
-          </p>
+    <div className="mx-auto mt-16 w-full max-w-3xl space-y-10">
+      {experiences.map((exp, index) => (
+        <div key={`${exp.company}-${exp.role}`} className="flex gap-6">
+          <StatBadge value={String(index + 1).padStart(2, "0")} label={exp.company} />
+          <div className="flex-1 pt-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h3 className="font-display text-xl uppercase text-ink">{exp.role}</h3>
+              <span className="whitespace-nowrap font-mono text-xs text-ink-muted">
+                {exp.period}
+              </span>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-ink-muted">{exp.description}</p>
+            <ul className="mt-3 space-y-1.5">
+              {exp.highlights.map((highlight) => (
+                <li key={highlight} className="flex items-start gap-2 text-sm text-ink-muted">
+                  <span aria-hidden="true" className="mt-1.5 text-ember">
+                    ●
+                  </span>
+                  <span>{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
+      ))}
+    </div>
+  );
+}
 
-        <div className="space-y-6">
-          {EXPERIENCES.map((exp) => (
+/**
+ * A faixa horizontal sticky. Monta como um componente novo (não uma
+ * alternância de branch dentro do mesmo componente) para que `useScroll`
+ * sempre encontre o nó do DOM já anexado no seu próprio ciclo de
+ * montagem.
+ *
+ * O deslocamento horizontal é medido em pixels a partir da largura real do
+ * trilho (`scrollWidth` menos a largura do viewport), não um percentual
+ * fixo — assim o número de cards pode mudar sem precisar recalibrar a
+ * mão um "-62%" mágico a cada edição de conteúdo.
+ *
+ * Nenhum elemento focável dentro do trilho — é a regra que decidiu que
+ * Trajetória (texto puro) ganhasse este tratamento, e não Projetos (que
+ * tem links).
+ */
+function HorizontalRail({ experiences }: { experiences: readonly Experience[] }) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const updateDistance = () => {
+      const viewportWidth = track.parentElement?.clientWidth ?? window.innerWidth;
+      setScrollDistance(Math.max(track.scrollWidth - viewportWidth, 0));
+    };
+
+    updateDistance();
+    const observer = new ResizeObserver(updateDistance);
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [experiences]);
+
+  const { scrollYProgress } = useScroll({
+    target: wrapperRef,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="relative mt-16"
+      style={{ height: `${Math.max(experiences.length * 130, 200)}vh` }}
+    >
+      <div className="sticky top-0 flex h-svh items-center overflow-hidden">
+        <motion.div
+          ref={trackRef}
+          style={{ x }}
+          className="flex gap-10 px-6 will-change-transform md:px-10"
+        >
+          {experiences.map((exp, index) => (
             <article
               key={`${exp.company}-${exp.role}`}
-              className="space-y-3 rounded-2xl border-2 border-red-700 bg-transparent p-6 transition duration-300 hover:border-red-600"
+              className="w-[85vw] max-w-xl flex-shrink-0 rounded-sm border border-line bg-surface-raised p-8 shadow-card md:p-10"
             >
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-white">{exp.role}</h3>
-                  <p className="font-medium text-red-700">{exp.company}</p>
+              <div className="flex items-start gap-5">
+                <StatBadge value={String(index + 1).padStart(2, "0")} label={exp.company} />
+                <div className="flex-1 pt-1">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h3 className="font-display text-2xl uppercase text-ink">{exp.role}</h3>
+                    <span className="whitespace-nowrap font-mono text-xs text-ink-muted">
+                      {exp.period}
+                    </span>
+                  </div>
                 </div>
-                <span className="whitespace-nowrap text-xs text-white/50">
-                  {exp.period}
-                </span>
               </div>
-
-              <p className="text-sm leading-relaxed text-white/70">
+              <p className="mt-4 text-sm leading-relaxed text-ink-muted">
                 {exp.description}
               </p>
-
-              <ul className="space-y-1 pt-2">
+              <ul className="mt-5 space-y-2 border-t border-line pt-5">
                 {exp.highlights.map((highlight) => (
-                  <li
-                    key={highlight}
-                    className="flex items-start gap-2 text-xs text-white/60"
-                  >
-                    <span className="mt-0.5 font-bold text-red-700">•</span>
+                  <li key={highlight} className="flex items-start gap-2 text-sm text-ink-muted">
+                    <span aria-hidden="true" className="mt-1.5 text-ember">
+                      ●
+                    </span>
                     <span>{highlight}</span>
                   </li>
                 ))}
               </ul>
             </article>
           ))}
-        </div>
+        </motion.div>
       </div>
+    </div>
+  );
+}
+
+function ExperienceComponent() {
+  const reducedMotion = usePrefersReducedMotion();
+  const isWide = useIsWideViewport();
+  const enhanced = isWide && !reducedMotion;
+
+  return (
+    <section id="experience" className="relative px-6 py-24 md:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <SectionHeading
+          number="04"
+          eyebrow="Trajetória"
+          title="Percurso profissional & formação"
+        />
+      </div>
+
+      {enhanced ? (
+        <HorizontalRail experiences={EXPERIENCES} />
+      ) : (
+        <VerticalFallback experiences={EXPERIENCES} />
+      )}
     </section>
   );
 }

@@ -1,44 +1,63 @@
 "use client";
 
-import { memo } from "react";
-
-const LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Experience", href: "#experience" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
-] as const;
+import { memo, useState } from "react";
+import { NAV_LINKS } from "@/lib/nav";
+import { useAnchorNav } from "@/lib/hooks/useAnchorNav";
+import { MobileMenu } from "./MobileMenu";
 
 function NavbarComponent() {
+  const { onNavClick } = useAnchorNav();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-50 bg-black/95 backdrop-blur-lg border-b border-white/10">
-      <div className="mx-auto w-full max-w-6xl px-6 py-4 flex items-center justify-between">
-        <a 
-          href="#home" 
-          className="text-lg uppercase tracking-[0.35em] text-white font-bold hover:text-red-700 transition duration-300"
+    <header className="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur-sm">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-10">
+        <a
+          href="#home"
+          onClick={(event) => onNavClick(event, "#home")}
+          className="focus-ember flex h-9 w-9 items-center justify-center rounded-sm border border-line font-display text-sm text-ember-text"
         >
-          Lucas
+          LP
         </a>
-        <nav className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest" aria-label="Main navigation">
-          {LINKS.map((link) => (
+
+        <nav
+          className="hidden md:flex items-center gap-8 font-mono text-xs uppercase tracking-[0.2em]"
+          aria-label="Navegação principal"
+        >
+          {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-white/70 hover:text-white hover:text-red-700 transition-colors duration-300"
+              onClick={(event) => onNavClick(event, link.href)}
+              className="focus-ember relative py-1 text-ink-muted transition-colors hover:text-ink after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-ember after:transition-all hover:after:w-full"
             >
               {link.label}
             </a>
           ))}
         </nav>
+
         <a
           href="#contact"
-          className="text-xs font-semibold uppercase tracking-widest px-6 py-2.5 border border-red-700 text-red-700 hover:bg-red-700 hover:text-white transition-all duration-300 rounded-2xl"
+          onClick={(event) => onNavClick(event, "#contact")}
+          className="focus-ember hidden md:inline-flex items-center rounded-full border border-ember-deep px-6 py-2.5 font-mono text-xs uppercase tracking-[0.2em] text-ember-text transition-colors hover:bg-ember-deep hover:text-on-ember"
         >
-          Contact
+          Contato
         </a>
+
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          className="focus-ember flex flex-col gap-1.5 p-2 md:hidden"
+          aria-label="Abrir menu"
+          aria-haspopup="dialog"
+          aria-expanded={menuOpen}
+        >
+          <span className="h-px w-6 bg-ink" />
+          <span className="h-px w-6 bg-ink" />
+        </button>
       </div>
+
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </header>
   );
 }

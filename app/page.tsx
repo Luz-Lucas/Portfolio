@@ -7,14 +7,17 @@ import { Faq } from "./_components/Faq";
 import { Contact } from "./_components/Contact";
 import { Footer } from "./_components/Footer";
 import { Navbar } from "./_components/Navbar";
+import { fetchGitHubProjects } from "@/lib/github";
 
-export default function Home() {
+export default async function Home() {
+  const projects = await fetchGitHubProjects();
+
   return (
-    <main className="text-white">
+    <main id="conteudo">
       <Navbar />
       <Hero />
       <About />
-      <Projects />
+      <Projects projects={projects} />
       <Skills />
       <Experience />
       <Faq />
