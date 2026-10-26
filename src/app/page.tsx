@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Desktop } from '@/desktop/Desktop';
+import { Experience } from '@/scene/Experience';
 import { getProjects } from '@/lib/projects';
 import { getSiteContent } from '@/lib/content';
 
@@ -40,7 +40,7 @@ export default async function Home() {
           </li>
         </ul>
       </section>
-      <Desktop content={content} projects={projects} mode="scene" />
+      <Experience content={content} projects={projects} />
     </main>
   );
 }
