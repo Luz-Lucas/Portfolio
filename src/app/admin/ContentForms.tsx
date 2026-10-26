@@ -15,13 +15,17 @@ function useSave(key: ContentKey) {
   const status = pending ? (
     <span className="admin-status">Salvando...</span>
   ) : result ? (
-    <span className={result.ok ? 'admin-ok' : 'admin-error'}>{result.ok ? 'Salvo' : result.error}</span>
+    <span className={result.ok ? 'admin-ok' : 'admin-error'} role="status">
+      {result.ok ? '✓ Salvo — o site atualiza em alguns segundos' : result.error}
+    </span>
   ) : null;
   return { save, pending, status };
 }
 
-export function Card({ title, children, onSave, pending, status }: {
+export function Card({ title, hint, children, onSave, pending, status }: {
   title: string;
+  /** O que esta seção controla no site. */
+  hint?: string;
   children: ReactNode;
   onSave: () => void;
   pending: boolean;
@@ -35,7 +39,12 @@ export function Card({ title, children, onSave, pending, status }: {
         onSave();
       }}
     >
-      <h2>{title}</h2>
+      <div className="admin-card-head">
+        <div>
+          <h2>{title}</h2>
+          {hint && <p className="admin-hint">{hint}</p>}
+        </div>
+      </div>
       {children}
       <div className="admin-actions">
         <button type="submit" className="admin-primary" disabled={pending}>
@@ -83,8 +92,8 @@ export function ReadmeForm({ initial }: { initial: SiteContent['readme'] }) {
   const [body, setBody] = useState(initial.body);
   const s = useSave('readme');
   return (
-    <Card title="Leia-me.txt" onSave={() => s.save({ body })} {...s}>
-      <Field label="Texto (aceita **negrito** e [links](https://...))">
+    <Card title="Leia-me.txt" hint="Janela que abre sozinha na primeira visita. Aceita **negrito** e [links](https://...)." onSave={() => s.save({ body })} {...s}>
+      <Field label="Texto">
         <textarea rows={6} value={body} onChange={(e) => setBody(e.target.value)} />
       </Field>
     </Card>
@@ -96,7 +105,7 @@ export function AboutForm({ initial }: { initial: SiteContent['about'] }) {
   const s = useSave('about');
   const set = (k: keyof typeof about) => (e: { target: { value: string } }) => setAbout({ ...about, [k]: e.target.value });
   return (
-    <Card title="Sobre mim" onSave={() => s.save({ ...about, photoUrl: about.photoUrl || null })} {...s}>
+    <Card title="Sobre mim" hint="App Sobre mim: nome, cargo, foto e bio." onSave={() => s.save({ ...about, photoUrl: about.photoUrl || null })} {...s}>
       <div className="admin-grid">
         <Field label="Nome">
           <input value={about.name} onChange={set('name')} />
@@ -127,7 +136,7 @@ export function ContactForm({ initial }: { initial: SiteContent['contact'] }) {
   const s = useSave('contact');
   const set = (k: keyof typeof c) => (e: { target: { value: string } }) => setC({ ...c, [k]: e.target.value });
   return (
-    <Card title="Contato e links" onSave={() => s.save(c)} {...s}>
+    <Card title="Contato e links" hint="App Contato e comandos contato/whoami do Prompt. O formulário envia para o e-mail daqui." onSave={() => s.save(c)} {...s}>
       <div className="admin-grid">
         <Field label="E-mail">
           <input type="email" value={c.email} onChange={set('email')} />
@@ -149,7 +158,7 @@ export function SkillsForm({ initial }: { initial: SkillGroup[] }) {
   const setGroup = (gi: number, g: SkillGroup) => setGroups(groups.map((x, i) => (i === gi ? g : x)));
 
   return (
-    <Card title="Skills" onSave={() => s.save(groups)} {...s}>
+    <Card title="Skills" hint="Grupos do app Skills. Sem nível, a skill aparece como etiqueta; com nível, como barra." onSave={() => s.save(groups)} {...s}>
       {groups.map((g, gi) => (
         <fieldset key={gi} className="admin-group">
           <legend>
@@ -227,6 +236,7 @@ export function ExperienceForm({ initial }: { initial: ExperienceItem[] }) {
   return (
     <Card
       title="Experiência e formação"
+      hint="Linha do tempo do app Experiência: empregos primeiro, depois formação, do mais recente ao mais antigo."
       onSave={() =>
         s.save(items.map((it) => ({ ...it, highlights: it.highlights?.map((h) => h.trim()).filter(Boolean) })))
       }

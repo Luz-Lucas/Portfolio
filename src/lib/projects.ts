@@ -14,39 +14,32 @@ export type ProjectRow = {
   cover_url: string | null;
 };
 
+/** Repositório sem configuração salva: aparece, a menos que seja fork ou arquivado. */
+export const visibleByDefault = (repo: GithubRepo) => !repo.fork && !repo.archived;
+
+/**
+ * Todo repositório aparece, exceto os ocultados no admin (forks e arquivados começam ocultos).
+ * Ordem: os que têm linha salva, pela ordem salva; depois os demais, por estrelas.
+ */
 export function mergeProjects(repos: GithubRepo[], rows: ProjectRow[]): Project[] {
-  const byId = new Map(repos.map((r) => [r.id, r]));
-  return rows
-    .filter((row) => row.visible && byId.has(row.repo_id))
-    .sort((a, b) => a.sort - b.sort)
-    .map((row) => {
-      const repo = byId.get(row.repo_id)!;
-      return {
-        repoId: repo.id,
-        name: repo.name,
-        description: row.description ?? repo.description ?? '',
-        url: repo.html_url,
-        demoUrl: row.demo_url ?? (repo.homepage || null),
-        coverUrl: row.cover_url,
-        languages: [...new Set([repo.language, ...repo.topics].filter((l): l is string => Boolean(l)))],
-        stars: repo.stargazers_count,
-        updatedAt: repo.pushed_at,
-      };
-    });
-}
-
-const DEFAULT_COUNT = 6;
-
-/** Sem curadoria salva: os repositórios próprios (sem forks/arquivados) com mais estrelas. */
-export function pickDefaultProjects(repos: GithubRepo[]): Project[] {
-  const top = repos
-    .filter((r) => !r.fork && !r.archived)
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-    .slice(0, DEFAULT_COUNT);
-  return mergeProjects(
-    top,
-    top.map((r, i) => ({ repo_id: r.id, visible: true, sort: i, description: null, demo_url: null, cover_url: null })),
-  );
+  const rowById = new Map(rows.map((r) => [r.repo_id, r]));
+  const shown = repos.filter((repo) => rowById.get(repo.id)?.visible ?? visibleByDefault(repo));
+  const saved = shown.filter((r) => rowById.has(r.id)).sort((a, b) => rowById.get(a.id)!.sort - rowById.get(b.id)!.sort);
+  const rest = shown.filter((r) => !rowById.has(r.id)).sort((a, b) => b.stargazers_count - a.stargazers_count);
+  return [...saved, ...rest].map((repo) => {
+    const row = rowById.get(repo.id);
+    return {
+      repoId: repo.id,
+      name: repo.name,
+      description: row?.description ?? repo.description ?? '',
+      url: repo.html_url,
+      demoUrl: row?.demo_url ?? (repo.homepage || null),
+      coverUrl: row?.cover_url ?? null,
+      languages: [...new Set([repo.language, ...repo.topics].filter((l): l is string => Boolean(l)))],
+      stars: repo.stargazers_count,
+      updatedAt: repo.pushed_at,
+    };
+  });
 }
 
 const loadRows = unstable_cache(
@@ -65,7 +58,7 @@ export async function getProjects(): Promise<ProjectsResult> {
   const rows = isSupabaseConfigured() ? await loadRows() : [];
   try {
     const repos = await fetchPublicRepos(username);
-    return rows.length ? mergeProjects(repos, rows) : pickDefaultProjects(repos);
+    return mergeProjects(repos, rows);
   } catch (err) {
     console.error('[projects] GitHub indisponível:', err);
     return { error: 'github_unavailable' };
@@ -74,11 +67,14 @@ export async function getProjects(): Promise<ProjectsResult> {
 
 export type AdminProject = { repo: GithubRepo | null; row: ProjectRow | null };
 
-/** Linhas curadas primeiro (pela ordem salva, incluindo as órfãs), depois os repos ainda não curados. */
+/** Mesma ordem do site: linhas salvas (pela ordem salva, incluindo as órfãs), depois os demais por estrelas. */
 export function combineAdminProjects(repos: GithubRepo[], rows: ProjectRow[]): AdminProject[] {
   const byId = new Map(repos.map((r) => [r.id, r]));
   const curated = [...rows].sort((a, b) => a.sort - b.sort).map((row) => ({ repo: byId.get(row.repo_id) ?? null, row }));
   const rowIds = new Set(rows.map((r) => r.repo_id));
-  const rest = repos.filter((r) => !rowIds.has(r.id)).map((repo) => ({ repo, row: null }));
+  const rest = repos
+    .filter((r) => !rowIds.has(r.id))
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .map((repo) => ({ repo, row: null }));
   return [...curated, ...rest];
 }

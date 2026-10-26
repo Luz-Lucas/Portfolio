@@ -36,9 +36,15 @@ const row = (repo_id: number, extra: Partial<ProjectRow> = {}): ProjectRow => ({
 });
 
 describe('mergeProjects', () => {
-  it('returns only visible rows ordered by sort', () => {
-    const out = mergeProjects([repo(1), repo(2), repo(3)], [row(1, { sort: 2 }), row(2, { visible: false }), row(3, { sort: 1 })]);
-    expect(out.map((p) => p.repoId)).toEqual([3, 1]);
+  it('shows every own repo except the hidden ones; forks and archived start hidden', () => {
+    const repos = [repo(1, { stargazers_count: 1 }), repo(2, { stargazers_count: 5 }), repo(3, { fork: true }), repo(4, { archived: true }), repo(5, { fork: true })];
+    const rows = [row(1, { visible: false }), row(3, { visible: true, sort: 0 })];
+    expect(mergeProjects(repos, rows).map((p) => p.repoId)).toEqual([3, 2]);
+  });
+
+  it('orders saved rows by sort first, then the remaining repos by stars', () => {
+    const repos = [repo(1, { stargazers_count: 1 }), repo(2, { stargazers_count: 9 }), repo(3, { stargazers_count: 5 })];
+    expect(mergeProjects(repos, [row(1, { sort: 0 })]).map((p) => p.repoId)).toEqual([1, 2, 3]);
   });
 
   it('row overrides win over the repo; homepage is the demo fallback', () => {
@@ -79,22 +85,11 @@ describe('getProjects', () => {
     fetchPublicRepos.mockResolvedValue([repo(1), repo(2)]);
     select.mockResolvedValue({ data: [row(2)], error: null });
     const out = await getProjects();
-    expect(Array.isArray(out) && out.map((p) => p.repoId)).toEqual([2]);
+    expect(Array.isArray(out) && out.map((p) => p.repoId)).toEqual([2, 1]);
   });
 });
 
 describe('getProjects without curation', () => {
-  it('shows the top 6 own repos by stars when nothing was curated yet', async () => {
-    const { pickDefaultProjects } = await import('@/lib/projects');
-    const repos = [
-      repo(1, { stargazers_count: 1 }),
-      repo(2, { stargazers_count: 9, fork: true }),
-      repo(3, { stargazers_count: 8, archived: true }),
-      ...[4, 5, 6, 7, 8, 9, 10].map((id) => repo(id, { stargazers_count: id })),
-    ];
-    expect(pickDefaultProjects(repos).map((p) => p.repoId)).toEqual([10, 9, 8, 7, 6, 5]);
-  });
-
   it('getProjects falls back to the defaults when the curation table is empty', async () => {
     fetchPublicRepos.mockResolvedValue([repo(1, { stargazers_count: 3 }), repo(2, { stargazers_count: 5 })]);
     select.mockResolvedValue({ data: [], error: null });
