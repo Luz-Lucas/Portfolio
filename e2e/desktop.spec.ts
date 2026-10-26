@@ -21,6 +21,8 @@ test('desktop sits inside the monitor and covers ≥ 60% of the viewport height'
 test('apps open inside the monitor and "Tela cheia" fills the viewport', async ({ page }) => {
   await page.getByRole('list', { name: 'Área de trabalho' }).getByRole('button', { name: 'Projetos' }).click();
   await expect(page.getByRole('dialog', { name: 'Projetos' })).toBeVisible();
+  const userSelect = await page.locator('.p3d-window-body').first().evaluate((el) => getComputedStyle(el).userSelect);
+  expect(userSelect).toBe('text');
   await page.getByRole('button', { name: 'Tela cheia' }).click();
   const box = await page.getByTestId('screen-overlay').boundingBox();
   expect(box).toMatchObject({ x: 0, y: 0, width: 1440, height: 900 });
