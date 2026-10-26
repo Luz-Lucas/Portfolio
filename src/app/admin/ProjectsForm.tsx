@@ -14,7 +14,7 @@ const toItems = (list: AdminProject[]): Item[] =>
     row: row ?? { repo_id: repo!.id, visible: false, sort: 0, description: null, demo_url: null, cover_url: null },
   }));
 
-export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
+export function ProjectsForm({ initial, githubError = false }: { initial: AdminProject[]; githubError?: boolean }) {
   const [items, setItems] = useState(() => toItems(initial));
   const [pending, start] = useTransition();
   const [result, setResult] = useState<ActionResult | null>(null);
@@ -50,6 +50,11 @@ export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
   return (
     <div className="admin-card">
       <h2>Projetos do GitHub</h2>
+      {githubError && (
+        <p className="admin-error" role="alert">
+          O GitHub não respondeu agora. A curadoria salva aparece abaixo; tente &quot;Atualizar do GitHub&quot; em alguns minutos.
+        </p>
+      )}
       <p className="admin-hint">Marque &quot;Exibir&quot;, ordene com ↑ ↓ e salve. Campos vazios usam os dados do GitHub.</p>
       <div className="admin-actions">
         <button type="button" disabled={pending} onClick={() => start(() => refreshGithub().then(() => location.reload()))}>
@@ -68,7 +73,9 @@ export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
                   {it.repo.archived && <span className="admin-badge">arquivado</span>}
                 </label>
               ) : (
-                <span className="admin-error">Repositório #{it.row.repo_id} não encontrado no GitHub</span>
+                <span className="admin-error">
+                  Repositório #{it.row.repo_id} {githubError ? '(GitHub indisponível)' : 'não encontrado no GitHub'}
+                </span>
               )}
               <span className="admin-row-controls">
                 <button type="button" aria-label="Subir" disabled={i === 0} onClick={() => setItems(moveItem(items, i, i - 1))}>
@@ -82,7 +89,7 @@ export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
                 >
                   ↓
                 </button>
-                {!it.repo && (
+                {!it.repo && !githubError && (
                   <button type="button" onClick={() => remove(i)}>
                     Remover
                   </button>

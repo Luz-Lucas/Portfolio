@@ -63,11 +63,18 @@ export async function refreshGithub(): Promise<void> {
   revalidateTag('github');
 }
 
-export async function listAdminProjects(): Promise<AdminProject[]> {
+export async function listAdminProjects(): Promise<{ projects: AdminProject[]; githubError: boolean }> {
   await requireAdmin();
   const username = process.env.GITHUB_USERNAME;
+  let githubError = false;
+  // GitHub fora do ar não pode travar o resto do painel (textos, currículo, skills).
+  const reposPromise = (username ? fetchPublicRepos(username) : Promise.resolve([])).catch((err) => {
+    console.error('[admin] GitHub indisponível:', err);
+    githubError = true;
+    return [];
+  });
   const [repos, rows] = await Promise.all([
-    username ? fetchPublicRepos(username) : Promise.resolve([]),
+    reposPromise,
     createAdminClient()
       .from('projects')
       .select('repo_id, visible, sort, description, demo_url, cover_url')
@@ -76,7 +83,7 @@ export async function listAdminProjects(): Promise<AdminProject[]> {
         return (data ?? []) as ProjectRow[];
       }),
   ]);
-  return combineAdminProjects(repos, rows);
+  return { projects: combineAdminProjects(repos, rows), githubError };
 }
 
 export async function uploadCv(form: FormData): Promise<ActionResult> {

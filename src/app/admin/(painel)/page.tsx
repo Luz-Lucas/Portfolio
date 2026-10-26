@@ -21,7 +21,11 @@ export default async function AdminPage() {
             </>
           ),
         },
-        { id: 'projetos', label: 'Projetos', content: <ProjectsForm initial={projects} /> },
+        {
+          id: 'projetos',
+          label: 'Projetos',
+          content: <ProjectsForm initial={projects.projects} githubError={projects.githubError} />,
+        },
         { id: 'skills', label: 'Skills', content: <SkillsForm initial={content.skills} /> },
         { id: 'curriculo', label: 'Currículo', content: <CvForm currentUrl={content.cvUrl} /> },
         { id: 'experiencia', label: 'Experiência', content: <ExperienceForm initial={content.experience} /> },
