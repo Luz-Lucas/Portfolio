@@ -1,6 +1,7 @@
 import { loadAdminContent } from '@/lib/admin-data';
 import { listAdminProjects } from '../actions';
 import { AdminTabs } from '../AdminTabs';
+import { CvForm } from '../CvForm';
 import { ProjectsForm } from '../ProjectsForm';
 import { AboutForm, ContactForm, ExperienceForm, ReadmeForm, SkillsForm } from '../ContentForms';
 
@@ -22,6 +23,7 @@ export default async function AdminPage() {
         },
         { id: 'projetos', label: 'Projetos', content: <ProjectsForm initial={projects} /> },
         { id: 'skills', label: 'Skills', content: <SkillsForm initial={content.skills} /> },
+        { id: 'curriculo', label: 'Currículo', content: <CvForm currentUrl={content.cvUrl} /> },
         { id: 'experiencia', label: 'Experiência', content: <ExperienceForm initial={content.experience} /> },
       ]}
     />

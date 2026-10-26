@@ -6,6 +6,7 @@ import { requireAdmin } from '@/lib/auth';
 import type { ContentKey } from '@/lib/content';
 import { contentSchemas } from '@/lib/content-schemas';
 import { fetchPublicRepos } from '@/lib/github';
+import { checkFile, EXTENSIONS } from '@/lib/uploads';
 import { combineAdminProjects, type AdminProject, type ProjectRow } from '@/lib/projects';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -76,4 +77,45 @@ export async function listAdminProjects(): Promise<AdminProject[]> {
       }),
   ]);
   return combineAdminProjects(repos, rows);
+}
+
+export async function uploadCv(form: FormData): Promise<ActionResult> {
+  await requireAdmin();
+  const checked = await checkFile(form.get('file') as File | null, 'cv');
+  if (!checked.ok) return checked;
+
+  const db = createAdminClient();
+  const { data: current } = await db.from('content').select('value').eq('key', 'cv').maybeSingle();
+  const previousPath = (current?.value as { path?: string } | undefined)?.path;
+
+  const path = `curriculo-${Date.now()}.pdf`;
+  const bucket = db.storage.from('cv');
+  const { error: upErr } = await bucket.upload(path, checked.bytes, { contentType: 'application/pdf' });
+  if (upErr) return { ok: false, error: `Falha no upload: ${upErr.message}` };
+
+  const url = bucket.getPublicUrl(path).data.publicUrl;
+  const { error } = await db.from('content').upsert({ key: 'cv', value: { url, path }, updated_at: new Date().toISOString() });
+  if (error) {
+    await bucket.remove([path]);
+    return { ok: false, error: `Erro ao salvar: ${error.message}` };
+  }
+  if (previousPath && previousPath !== path) await bucket.remove([previousPath]);
+
+  revalidateTag('content');
+  return { ok: true };
+}
+
+export async function uploadImage(
+  form: FormData,
+  purpose: 'photo' | 'cover',
+): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  await requireAdmin();
+  const checked = await checkFile(form.get('file') as File | null, 'image');
+  if (!checked.ok) return checked;
+
+  const path = `${purpose}/${Date.now()}.${EXTENSIONS[checked.type]}`;
+  const bucket = createAdminClient().storage.from('images');
+  const { error } = await bucket.upload(path, checked.bytes, { contentType: checked.type });
+  if (error) return { ok: false, error: `Falha no upload: ${error.message}` };
+  return { ok: true, url: bucket.getPublicUrl(path).data.publicUrl };
 }

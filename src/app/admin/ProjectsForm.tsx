@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import type { ReactNode } from 'react';
 import { moveItem } from '@/lib/list';
 import type { AdminProject, ProjectRow } from '@/lib/projects';
 import { deleteProjectRow, refreshGithub, saveProjects, type ActionResult } from './actions';
+import { ImageUpload } from './ImageUpload';
 
 type Item = { repo: AdminProject['repo']; row: ProjectRow };
 
@@ -14,10 +14,7 @@ const toItems = (list: AdminProject[]): Item[] =>
     row: row ?? { repo_id: repo!.id, visible: false, sort: 0, description: null, demo_url: null, cover_url: null },
   }));
 
-export function ProjectsForm({ initial, coverSlot }: {
-  initial: AdminProject[];
-  coverSlot?: (set: (url: string) => void) => ReactNode;
-}) {
+export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
   const [items, setItems] = useState(() => toItems(initial));
   const [pending, start] = useTransition();
   const [result, setResult] = useState<ActionResult | null>(null);
@@ -102,7 +99,7 @@ export function ProjectsForm({ initial, coverSlot }: {
                   <span>URL da capa</span>
                   <input value={it.row.cover_url ?? ''} onChange={(e) => patch(i, { cover_url: nullable(e.target.value) })} />
                 </label>
-                {coverSlot?.((url) => patch(i, { cover_url: url }))}
+                <ImageUpload purpose="cover" onUploaded={(url) => patch(i, { cover_url: url })} />
               </div>
             )}
           </li>

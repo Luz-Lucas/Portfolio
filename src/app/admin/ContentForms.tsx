@@ -6,6 +6,7 @@ import type { ExperienceItem, SiteContent, SkillGroup } from '@/content/types';
 import type { ContentKey } from '@/lib/content';
 import { moveItem, without } from '@/lib/list';
 import { saveContent, type ActionResult } from './actions';
+import { ImageUpload } from './ImageUpload';
 
 function useSave(key: ContentKey) {
   const [pending, start] = useTransition();
@@ -90,7 +91,7 @@ export function ReadmeForm({ initial }: { initial: SiteContent['readme'] }) {
   );
 }
 
-export function AboutForm({ initial, photoSlot }: { initial: SiteContent['about']; photoSlot?: (set: (url: string) => void) => ReactNode }) {
+export function AboutForm({ initial }: { initial: SiteContent['about'] }) {
   const [about, setAbout] = useState(initial);
   const s = useSave('about');
   const set = (k: keyof typeof about) => (e: { target: { value: string } }) => setAbout({ ...about, [k]: e.target.value });
@@ -113,7 +114,7 @@ export function AboutForm({ initial, photoSlot }: { initial: SiteContent['about'
       <Field label="URL da foto">
         <input value={about.photoUrl ?? ''} onChange={set('photoUrl')} placeholder="https://..." />
       </Field>
-      {photoSlot?.((url) => setAbout((a) => ({ ...a, photoUrl: url })))}
+      <ImageUpload purpose="photo" onUploaded={(url) => setAbout((a) => ({ ...a, photoUrl: url }))} />
       <Field label="Bio">
         <textarea rows={6} value={about.bio} onChange={set('bio')} />
       </Field>
