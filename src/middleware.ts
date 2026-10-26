@@ -1,10 +1,11 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { supabaseAnonKey, supabaseUrl } from '@/lib/supabase/env';
 
 /** Renova a sessão do Supabase nas rotas do admin. */
 export async function middleware(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = supabaseUrl();
+  const key = supabaseAnonKey();
   let response = NextResponse.next({ request });
   if (!url || !key) return response;
 
