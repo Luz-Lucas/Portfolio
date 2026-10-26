@@ -57,3 +57,14 @@ export async function getProjects(): Promise<ProjectsResult> {
     return { error: 'github_unavailable' };
   }
 }
+
+export type AdminProject = { repo: GithubRepo | null; row: ProjectRow | null };
+
+/** Linhas curadas primeiro (pela ordem salva, incluindo as órfãs), depois os repos ainda não curados. */
+export function combineAdminProjects(repos: GithubRepo[], rows: ProjectRow[]): AdminProject[] {
+  const byId = new Map(repos.map((r) => [r.id, r]));
+  const curated = [...rows].sort((a, b) => a.sort - b.sort).map((row) => ({ repo: byId.get(row.repo_id) ?? null, row }));
+  const rowIds = new Set(rows.map((r) => r.repo_id));
+  const rest = repos.filter((r) => !rowIds.has(r.id)).map((repo) => ({ repo, row: null }));
+  return [...curated, ...rest];
+}

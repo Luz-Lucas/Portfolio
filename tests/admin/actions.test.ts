@@ -6,7 +6,7 @@ const upsert = vi.fn();
 const revalidateTag = vi.fn();
 vi.mock('@/lib/auth', () => ({ requireAdmin }));
 vi.mock('@/lib/supabase/admin', () => ({ createAdminClient: () => ({ from: () => ({ upsert }) }) }));
-vi.mock('next/cache', () => ({ revalidateTag }));
+vi.mock('next/cache', () => ({ revalidateTag, unstable_cache: (fn: unknown) => fn }));
 
 const { saveContent } = await import('@/app/admin/actions');
 
