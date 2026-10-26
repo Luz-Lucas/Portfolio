@@ -496,3 +496,43 @@
   display: flex;
   gap: 8px;
 }
+
+.p3d-window-body:has(.p3d-terminal) {
+  padding: 0;
+}
+
+.p3d-terminal {
+  min-height: 100%;
+  padding: 6px;
+  background: #000;
+  color: #c0c0c0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.3;
+  user-select: text;
+}
+
+.p3d-terminal pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+}
+
+.p3d-prompt {
+  display: flex;
+}
+
+.p3d-prompt input,
+.p3d-prompt input:focus {
+  flex: 1;
+  height: auto;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  caret-color: #c0c0c0;
+}
