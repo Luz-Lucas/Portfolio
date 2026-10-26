@@ -22,13 +22,20 @@ export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
   const patch = (i: number, p: Partial<ProjectRow>) =>
     setItems(items.map((it, j) => (j === i ? { ...it, row: { ...it.row, ...p } } : it)));
 
-  const nullable = (v: string) => (v.trim() ? v.trim() : null);
+  // Guarda o texto cru enquanto digita; normaliza só ao salvar.
+  const nullable = (v: string | null) => (v?.trim() ? v.trim() : null);
+  const clean = (r: ProjectRow): ProjectRow => ({
+    ...r,
+    description: nullable(r.description),
+    demo_url: nullable(r.demo_url),
+    cover_url: nullable(r.cover_url),
+  });
 
   function save() {
     // Visíveis no topo, mantendo a ordem relativa escolhida.
     const ordered = [...items.filter((i) => i.row.visible && i.repo), ...items.filter((i) => !(i.row.visible && i.repo))];
     setItems(ordered);
-    start(async () => setResult(await saveProjects(ordered.filter((i) => i.repo).map((i) => i.row))));
+    start(async () => setResult(await saveProjects(ordered.filter((i) => i.repo).map((i) => clean(i.row)))));
   }
 
   function remove(i: number) {
@@ -88,16 +95,16 @@ export function ProjectsForm({ initial }: { initial: AdminProject[] }) {
                   <span>Descrição (padrão: {it.repo.description || 'vazia'})</span>
                   <input
                     value={it.row.description ?? ''}
-                    onChange={(e) => patch(i, { description: nullable(e.target.value) })}
+                    onChange={(e) => patch(i, { description: e.target.value })}
                   />
                 </label>
                 <label className="admin-field">
                   <span>Demo (padrão: {it.repo.homepage || 'nenhuma'})</span>
-                  <input value={it.row.demo_url ?? ''} onChange={(e) => patch(i, { demo_url: nullable(e.target.value) })} />
+                  <input value={it.row.demo_url ?? ''} onChange={(e) => patch(i, { demo_url: e.target.value })} />
                 </label>
                 <label className="admin-field">
                   <span>URL da capa</span>
-                  <input value={it.row.cover_url ?? ''} onChange={(e) => patch(i, { cover_url: nullable(e.target.value) })} />
+                  <input value={it.row.cover_url ?? ''} onChange={(e) => patch(i, { cover_url: e.target.value })} />
                 </label>
                 <ImageUpload purpose="cover" onUploaded={(url) => patch(i, { cover_url: url })} />
               </div>
