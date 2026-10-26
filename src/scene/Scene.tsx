@@ -9,7 +9,8 @@ import { bakedToBasic, glowTexture, ribbonUVs, vaporMaterial } from './materials
 import { projectScreenRect, type ScreenRect } from './screenRect';
 
 const MODEL = '/models/desk.glb';
-useGLTF.preload(MODEL, true);
+const DRACO = '/draco/'; // decoder hospedado no próprio site (sem depender do gstatic)
+useGLTF.preload(MODEL, DRACO);
 
 type Props = {
   phase: IntroPhase;
@@ -26,7 +27,7 @@ const LED_OFF = new THREE.Color('#14301a');
 const LED_ON = new THREE.Color('#39ff5a');
 
 function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgress'>) {
-  const { scene } = useGLTF(MODEL, true);
+  const { scene } = useGLTF(MODEL, DRACO);
   const camera = useRef<THREE.PerspectiveCamera>(null);
   const size = useThree((s) => s.size);
 

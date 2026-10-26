@@ -5,9 +5,13 @@ test.skip(({ isMobile }) => isMobile, 'intro 3D só no desktop');
 
 const phase = (page: import('@playwright/test').Page) => page.locator('[data-intro-phase]');
 
-test('first visit reaches the desktop within 5 s', async ({ page }) => {
+test('first visit reaches the desktop without third-party decoders', async ({ page }) => {
+  const external: string[] = [];
+  page.on('request', (r) => !r.url().startsWith('http://localhost') && !r.url().startsWith('data:') && !r.url().startsWith('blob:') && external.push(r.url()));
   await page.goto('/');
   await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
+  expect(external).toEqual([]);
+  await expect(page.locator('[data-fallback]')).toHaveCount(0);
 });
 
 test('clicking during the dolly skips to the desktop', async ({ page }) => {
