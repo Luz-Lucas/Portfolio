@@ -27,13 +27,21 @@ test('apps open inside the monitor and "Tela cheia" fills the viewport', async (
   await page.getByRole('button', { name: 'Voltar ao monitor' }).click();
 });
 
-test('mobile-size fallback: no glb download below 768px', async ({ browser }) => {
+test('mobile-size fallback: no glb and no three.js below 768px', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 812 } });
   const page = await ctx.newPage();
   const glb: string[] = [];
+  const threeChunks: string[] = [];
   page.on('request', (r) => r.url().endsWith('.glb') && glb.push(r.url()));
+  page.on('response', async (r) => {
+    if (!r.url().endsWith('.js')) return;
+    const body = await r.text().catch(() => '');
+    if (body.includes('WebGLRenderer') || body.includes('MeshBasicMaterial')) threeChunks.push(r.url());
+  });
   await page.goto('/');
   await expect(page.locator('[data-intro-phase]')).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
+  await page.waitForLoadState('networkidle');
   expect(glb).toEqual([]);
+  expect(threeChunks).toEqual([]);
   await ctx.close();
 });

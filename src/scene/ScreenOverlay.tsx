@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { DESKTOP_LOGICAL, type ScreenRect } from './screenRect';
+import { DESKTOP_LOGICAL, type ScreenRect } from './stage';
 
 type Props = { rect: ScreenRect; maximized: boolean; children: (scale: number) => ReactNode };
 

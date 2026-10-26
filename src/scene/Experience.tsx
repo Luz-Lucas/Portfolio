@@ -8,7 +8,7 @@ import { BootScreen } from './BootScreen';
 import { LoadingScreen } from './LoadingScreen';
 import { PowerOnEffect } from './PowerOnEffect';
 import { ScreenOverlay } from './ScreenOverlay';
-import type { ScreenRect } from './screenRect';
+import type { ScreenRect } from './stage';
 import { useDeviceMode } from './useDeviceMode';
 import { useIntro } from './useIntro';
 import './scene.css';

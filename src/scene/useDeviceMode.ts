@@ -6,13 +6,25 @@ export type DeviceMode = 'scene' | 'mobile';
 
 export const MOBILE_MAX_WIDTH = 767;
 
+let webglProbe: boolean | null = null;
+
+/** Para testes: força uma nova checagem. */
+export function resetWebGLProbe(): void {
+  webglProbe = null;
+}
+
+/** Checa WebGL uma única vez e libera o contexto de teste (o navegador limita contextos ativos). */
 function hasWebGL(): boolean {
+  if (webglProbe !== null) return webglProbe;
   try {
     const canvas = document.createElement('canvas');
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'));
+    const gl = (canvas.getContext('webgl2') ?? canvas.getContext('webgl')) as WebGLRenderingContext | null;
+    webglProbe = Boolean(gl);
+    gl?.getExtension?.('WEBGL_lose_context')?.loseContext();
   } catch {
-    return false;
+    webglProbe = false;
   }
+  return webglProbe;
 }
 
 export function detectDeviceMode(width: number): DeviceMode {

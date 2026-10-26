@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 
-export type ScreenRect = { left: number; top: number; width: number; height: number };
+import type { ScreenRect } from './stage';
 
-/** Palco lógico da área de trabalho dentro do monitor (escalado para caber no retângulo projetado). */
-export const DESKTOP_LOGICAL = { w: 800, h: 600 } as const;
+export type { ScreenRect } from './stage';
 
 const corner = new THREE.Vector3();
 
