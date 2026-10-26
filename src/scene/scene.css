@@ -1,0 +1,177 @@
+.p3d-experience {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0b0d;
+}
+
+.p3d-canvas {
+  position: absolute !important;
+  inset: 0;
+}
+
+/* ===== Loading (estilo BIOS) ===== */
+.p3d-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  padding: 32px;
+  background: #0b0b0d url('/images/loading.webp') center / cover no-repeat;
+  color: #c8c8c8;
+  font: 15px/1.6 'Courier New', monospace;
+}
+
+@media (orientation: portrait) {
+  .p3d-loading {
+    background-image: url('/images/loading-mobile.webp');
+  }
+}
+
+.p3d-loading-text {
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.p3d-loading-text p {
+  margin: 0;
+}
+
+.p3d-loading-hint {
+  margin-top: 8px !important;
+  color: #8a8a8a;
+  font-size: 12px;
+}
+
+/* ===== Overlay dentro do CRT ===== */
+.p3d-overlay {
+  position: absolute;
+  z-index: 10;
+  overflow: hidden;
+  border-radius: 3% / 4%;
+}
+
+.p3d-overlay.is-maximized {
+  position: fixed;
+  inset: 0;
+  border-radius: 0;
+}
+
+.p3d-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+}
+
+.p3d-crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.45) 100%);
+  box-shadow: inset 0 0 40px rgba(120, 180, 255, 0.12);
+}
+
+/* ===== Ligando o CRT ===== */
+.p3d-poweron {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+.p3d-poweron::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #fff;
+  box-shadow: 0 0 24px 6px rgba(200, 230, 255, 0.9);
+  transform: translateY(-50%) scaleX(0);
+  animation: p3d-crt-on 700ms ease-out forwards;
+}
+
+@keyframes p3d-crt-on {
+  0% {
+    transform: translateY(-50%) scale(0, 1);
+    opacity: 1;
+  }
+  45% {
+    transform: translateY(-50%) scale(1, 1);
+  }
+  100% {
+    transform: translateY(-50%) scale(1, 300);
+    opacity: 0;
+  }
+}
+
+/* ===== Boot ===== */
+.p3d-boot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.p3d-boot p {
+  margin: 0;
+}
+
+.p3d-boot-logo {
+  font-size: 48px;
+  font-style: italic;
+  font-weight: bold;
+  color: #c0c0c0;
+}
+
+.p3d-boot-logo b {
+  color: #fff;
+}
+
+.p3d-boot-bar {
+  width: 240px;
+  height: 14px;
+  overflow: hidden;
+  border: 1px solid #808080;
+}
+
+.p3d-boot-bar i {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, #000080, #1084d0, #000080);
+  animation: p3d-boot 1.2s linear infinite;
+}
+
+@keyframes p3d-boot {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+/* ===== Botão tela cheia ===== */
+.p3d-maximize {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 30;
+  padding: 6px 12px;
+}
+
+.p3d-experience.is-mobile .p3d-maximize {
+  display: none;
+}
