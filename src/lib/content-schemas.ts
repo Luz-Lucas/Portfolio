@@ -1,0 +1,44 @@
+import { z } from 'zod';
+import type { ContentKey } from './content';
+
+const url = z.string().trim().url('Informe uma URL válida (com https://).');
+const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'Use o formato AAAA-MM.');
+
+export const contentSchemas = {
+  readme: z.object({ body: z.string().trim().min(1, 'O Leia-me não pode ficar vazio.').max(4000) }),
+  about: z.object({
+    name: z.string().trim().min(1, 'Informe o nome.').max(80),
+    role: z.string().trim().min(1, 'Informe o cargo.').max(120),
+    bio: z.string().trim().max(4000),
+    location: z.string().trim().max(120),
+    availability: z.string().trim().max(120),
+    photoUrl: url.nullable(),
+  }),
+  contact: z.object({
+    email: z.string().trim().email('E-mail inválido.'),
+    linkedin: url,
+    github: url,
+  }),
+  skills: z.array(
+    z.object({
+      group: z.string().trim().min(1, 'Informe o nome do grupo.').max(60),
+      items: z.array(
+        z.object({
+          name: z.string().trim().min(1, 'Informe o nome da skill.').max(60),
+          level: z.number().int().min(1, 'Nível de 1 a 5.').max(5, 'Nível de 1 a 5.'),
+          years: z.number().min(0).max(60).optional(),
+        }),
+      ),
+    }),
+  ),
+  experience: z.array(
+    z.object({
+      kind: z.enum(['job', 'education']),
+      title: z.string().trim().min(1, 'Informe o título.').max(120),
+      org: z.string().trim().min(1, 'Informe a organização.').max(120),
+      start: yearMonth,
+      end: yearMonth.nullable(),
+      description: z.string().trim().max(2000),
+    }),
+  ),
+} satisfies Record<ContentKey, z.ZodTypeAny>;
