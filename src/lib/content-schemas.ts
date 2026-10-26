@@ -15,7 +15,8 @@ export const contentSchemas = {
     bio: z.string().trim().max(4000),
     location: z.string().trim().max(120),
     availability: z.string().trim().max(120),
-    photoUrl: url.nullable(),
+    // https:// ou um arquivo do próprio site (ex.: /images/avatar.webp); "//host" não conta como local.
+    photoUrl: z.union([url, z.string().regex(/^\/(?!\/)[\w./-]+$/, 'Informe uma URL válida.')]).nullable(),
   }),
   contact: z.object({
     email: z.string().trim().email('E-mail inválido.'),

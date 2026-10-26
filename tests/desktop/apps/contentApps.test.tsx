@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { renderApp } from '@/desktop/apps';
-import { SEED_CONTENT, SEED_PROJECTS } from '@/content/seed';
+import { TEST_CONTENT as SEED_CONTENT, TEST_PROJECTS as SEED_PROJECTS } from '../../fixtures/content';
 import type { SiteContent } from '@/content/types';
 
 const show = (id: Parameters<typeof renderApp>[0], content: SiteContent = SEED_CONTENT) =>

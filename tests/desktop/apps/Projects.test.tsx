@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Projects } from '@/desktop/apps/Projects';
-import { SEED_PROJECTS } from '@/content/seed';
+import { TEST_PROJECTS as SEED_PROJECTS } from '../../fixtures/content';
 
 const github = 'https://github.com/eu';
 

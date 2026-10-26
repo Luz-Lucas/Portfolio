@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Terminal } from '@/desktop/apps/Terminal';
 import { useWindowStore } from '@/desktop/windowStore';
-import { SEED_CONTENT, SEED_PROJECTS } from '@/content/seed';
+import { TEST_CONTENT as SEED_CONTENT, TEST_PROJECTS as SEED_PROJECTS } from '../../fixtures/content';
 
 const type = (value: string) => {
   const input = screen.getByRole('textbox', { name: 'Comando' });

@@ -68,3 +68,12 @@ describe('saveContent hardening', () => {
     expect(await saveContent('hack' as never, {})).toEqual({ ok: false, error: expect.any(String) });
   });
 });
+
+describe('saveContent photo path', () => {
+  it('accepts the bundled avatar path so the About section saves unchanged', async () => {
+    requireAdmin.mockReset().mockResolvedValue({ id: 'u' });
+    upsert.mockReset().mockResolvedValue({ error: null });
+    expect(await saveContent('about', { ...SEED_CONTENT.about, photoUrl: '/images/avatar.webp' })).toEqual({ ok: true });
+    expect((await saveContent('about', { ...SEED_CONTENT.about, photoUrl: '//evil.com/x.png' })).ok).toBe(false);
+  });
+});

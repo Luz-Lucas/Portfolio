@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { runCommand } from '@/lib/terminal';
-import { SEED_CONTENT, SEED_PROJECTS } from '@/content/seed';
+import { TEST_CONTENT as SEED_CONTENT, TEST_PROJECTS as SEED_PROJECTS } from '../fixtures/content';
 
 const ctx = { content: SEED_CONTENT, projects: SEED_PROJECTS };
 const run = (input: string) => runCommand(input, ctx);
