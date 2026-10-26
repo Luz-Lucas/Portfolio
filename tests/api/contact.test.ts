@@ -51,3 +51,38 @@ describe('POST /api/contact', () => {
     expect(res.status).toBe(429);
   });
 });
+
+describe('POST /api/contact via FormSubmit (no Resend key)', () => {
+  beforeEach(() => {
+    send.mockClear();
+    delete process.env.RESEND_API_KEY;
+    process.env.CONTACT_TO_EMAIL = 'lucaspmluz@hotmail.com';
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://meu-portfolio.vercel.app';
+  });
+
+  it('forwards to formsubmit.co like the previous portfolio, with subject', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: 'true' }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const res = await POST(req({ ...valid, subject: 'Vaga front-end' }, '2.0.0.1'));
+    expect(res.status).toBe(200);
+    expect(send).not.toHaveBeenCalled();
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://formsubmit.co/ajax/lucaspmluz@hotmail.com');
+    expect(init.headers.Referer).toBe('https://meu-portfolio.vercel.app/');
+    expect(JSON.parse(init.body)).toEqual({
+      name: 'Ana',
+      email: 'ana@exemplo.com',
+      subject: 'Vaga front-end',
+      message: 'Olá, vi seu portfólio!',
+      _captcha: 'false',
+      _template: 'table',
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it('reports a FormSubmit failure as 502', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: 'false' }), { status: 200 })));
+    expect((await POST(req(valid, '2.0.0.2'))).status).toBe(502);
+    vi.unstubAllGlobals();
+  });
+});

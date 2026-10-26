@@ -6,6 +6,7 @@ import { SEED_CONTENT } from '@/content/seed';
 function fill() {
   fireEvent.change(screen.getByLabelText('Nome'), { target: { value: 'Ana' } });
   fireEvent.change(screen.getByLabelText('Seu e-mail'), { target: { value: 'ana@exemplo.com' } });
+  fireEvent.change(screen.getByLabelText('Assunto'), { target: { value: 'Vaga' } });
   fireEvent.change(screen.getByLabelText('Mensagem'), { target: { value: 'Olá, vi seu portfólio!' } });
   fireEvent.click(screen.getByRole('button', { name: 'Enviar' }));
 }

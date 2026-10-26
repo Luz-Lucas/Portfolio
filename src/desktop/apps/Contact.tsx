@@ -63,6 +63,10 @@ export function Contact({ content }: { content: SiteContent }) {
             <input id="c-email" name="email" type="email" required />
           </div>
           <div className="field-row-stacked">
+            <label htmlFor="c-subject">Assunto</label>
+            <input id="c-subject" name="subject" maxLength={120} placeholder="Ex.: vaga de front-end" />
+          </div>
+          <div className="field-row-stacked">
             <label htmlFor="c-message">Mensagem</label>
             <textarea id="c-message" name="message" rows={5} required minLength={10} maxLength={2000} />
           </div>
