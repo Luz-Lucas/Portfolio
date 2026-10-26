@@ -1,8 +1,9 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { PerspectiveCamera, useGLTF, useProgress } from '@react-three/drei';
+import { PerformanceMonitor, PerspectiveCamera, useGLTF, useProgress } from '@react-three/drei';
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import type { IntroPhase } from './intro';
 import { fitFov } from './fov';
@@ -25,7 +26,8 @@ const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 
 const SCREEN_OFF = new THREE.Color('#0b0f0e');
 const SCREEN_ON = new THREE.Color('#2a6f8a');
 const LED_OFF = new THREE.Color('#14301a');
-const LED_ON = new THREE.Color('#39ff5a');
+// acima de 1 para o Bloom pegar o LED aceso
+const LED_ON = new THREE.Color('#39ff5a').multiplyScalar(2.5);
 
 function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgress'>) {
   const { scene } = useGLTF(MODEL, DRACO);
@@ -116,13 +118,22 @@ function Progress({ onProgress }: { onProgress: (pct: number) => void }) {
 
 export default function Scene(props: Props) {
   const { onProgress, ...rest } = props;
+  // Qualidade alta = Bloom + dpr até 2. Se o FPS cair, o PerformanceMonitor desliga os dois.
+  const [high, setHigh] = useState(true);
   return (
-    <Canvas className="p3d-canvas" dpr={[1, 2]} gl={{ antialias: true }} flat>
+    <Canvas className="p3d-canvas" dpr={high ? [1, 2] : 1} gl={{ antialias: true }} flat>
+      <PerformanceMonitor onDecline={() => setHigh(false)} flipflops={2} />
       <color attach="background" args={['#0b0b0d']} />
       <Progress onProgress={onProgress} />
       <Suspense fallback={null}>
         <Model {...rest} />
       </Suspense>
+      {high && (
+        // As texturas já têm AgX: o Bloom só realça o que passa do limiar (lâmpada, LED, tela ligada).
+        <EffectComposer multisampling={4}>
+          <Bloom mipmapBlur luminanceThreshold={0.97} luminanceSmoothing={0.05} intensity={0.45} />
+        </EffectComposer>
+      )}
     </Canvas>
   );
 }

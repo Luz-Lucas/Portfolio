@@ -34,8 +34,6 @@ function readmeSeen(): boolean {
   return false;
 }
 
-
-
 export function Desktop({ content, projects, mode, scale = 1, renderBody }: Props) {
   const body = renderBody ?? ((id: AppId) => renderApp(id, { content, projects }));
   const areaRef = useRef<HTMLDivElement>(null);
@@ -51,8 +49,7 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
   }, [mode]);
 
   useEffect(() => {
-    if (!readmeSeen()) openApp('readme');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!readmeSeen()) useWindowStore.getState().open('readme');
   }, []);
 
   useEffect(() => {

@@ -14,10 +14,12 @@
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
+    "@react-three/postprocessing": "^3.2.2",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "98.css": "^0.1.21",
     "next": "15.5.28",
+    "postprocessing": "^6.39.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "resend": "^6.34.1",
