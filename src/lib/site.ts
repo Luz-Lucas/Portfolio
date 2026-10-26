@@ -1,0 +1,14 @@
+/**
+ * URL pública do site. A Vercel expõe VERCEL_PROJECT_PRODUCTION_URL e VERCEL_URL em todo build;
+ * NEXT_PUBLIC_SITE_URL sobrescreve quando houver domínio próprio (mesma regra do portfólio anterior).
+ */
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000');
+
+export const SITE_DESCRIPTION =
+  'Portfólio de Lucas Pereira, estudante de Engenharia de Software e desenvolvedor front-end em Minas Gerais, Brasil — React, TypeScript e interfaces responsivas.';

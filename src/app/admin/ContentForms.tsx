@@ -161,6 +161,12 @@ export function SkillsForm({ initial }: { initial: SkillGroup[] }) {
               onRemove={(i) => setGroups(without(groups, i))}
             />
           </legend>
+          <input
+            aria-label="Descrição do grupo"
+            placeholder="Descrição curta (opcional)"
+            value={g.description ?? ''}
+            onChange={(e) => setGroup(gi, { ...g, description: e.target.value || undefined })}
+          />
           {g.items.map((item, ii) => {
             const setItem = (patch: Partial<typeof item>) =>
               setGroup(gi, { ...g, items: g.items.map((x, j) => (j === ii ? { ...x, ...patch } : x)) });
@@ -169,9 +175,12 @@ export function SkillsForm({ initial }: { initial: SkillGroup[] }) {
                 <input aria-label="Skill" value={item.name} onChange={(e) => setItem({ name: e.target.value })} />
                 <select
                   aria-label="Nível"
-                  value={item.level}
-                  onChange={(e) => setItem({ level: Number(e.target.value) as typeof item.level })}
+                  value={item.level ?? ''}
+                  onChange={(e) =>
+                    setItem({ level: e.target.value === '' ? undefined : (Number(e.target.value) as 1 | 2 | 3 | 4 | 5) })
+                  }
                 >
+                  <option value="">Sem nível (etiqueta)</option>
                   {[1, 2, 3, 4, 5].map((n) => (
                     <option key={n} value={n}>
                       Nível {n}
@@ -216,7 +225,13 @@ export function ExperienceForm({ initial }: { initial: ExperienceItem[] }) {
     setItems(items.map((x, j) => (j === i ? { ...x, ...patch } : x)));
 
   return (
-    <Card title="Experiência e formação" onSave={() => s.save(items)} {...s}>
+    <Card
+      title="Experiência e formação"
+      onSave={() =>
+        s.save(items.map((it) => ({ ...it, highlights: it.highlights?.map((h) => h.trim()).filter(Boolean) })))
+      }
+      {...s}
+    >
       {items.map((e, i) => (
         <fieldset key={i} className="admin-group">
           <legend>
@@ -238,8 +253,8 @@ export function ExperienceForm({ initial }: { initial: ExperienceItem[] }) {
             <Field label="Organização">
               <input value={e.org} onChange={(ev) => setItem(i, { org: ev.target.value })} />
             </Field>
-            <Field label="Início (AAAA-MM)">
-              <input value={e.start} onChange={(ev) => setItem(i, { start: ev.target.value })} placeholder="2023-01" />
+            <Field label="Início (AAAA ou AAAA-MM)">
+              <input value={e.start} onChange={(ev) => setItem(i, { start: ev.target.value })} placeholder="2023" />
             </Field>
             <Field label="Fim (vazio = atual)">
               <input
@@ -251,6 +266,13 @@ export function ExperienceForm({ initial }: { initial: ExperienceItem[] }) {
           </div>
           <Field label="Descrição">
             <textarea rows={3} value={e.description} onChange={(ev) => setItem(i, { description: ev.target.value })} />
+          </Field>
+          <Field label="Destaques (um por linha)">
+            <textarea
+              rows={3}
+              value={(e.highlights ?? []).join('\n')}
+              onChange={(ev) => setItem(i, { highlights: ev.target.value.split('\n') })}
+            />
           </Field>
         </fieldset>
       ))}

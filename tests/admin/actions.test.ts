@@ -77,3 +77,14 @@ describe('saveContent photo path', () => {
     expect((await saveContent('about', { ...SEED_CONTENT.about, photoUrl: '//evil.com/x.png' })).ok).toBe(false);
   });
 });
+
+describe('saveContent with the previous portfolio data shape', () => {
+  it('accepts skills without level, group descriptions, year-only periods and highlights', async () => {
+    requireAdmin.mockReset().mockResolvedValue({ id: 'u' });
+    upsert.mockReset().mockResolvedValue({ error: null });
+    expect(await saveContent('skills', [{ group: 'X', description: 'd', items: [{ name: 'React' }] }])).toEqual({ ok: true });
+    expect(
+      await saveContent('experience', [{ kind: 'job', title: 'T', org: 'O', start: '2024', end: null, description: 'd', highlights: ['a'] }]),
+    ).toEqual({ ok: true });
+  });
+});

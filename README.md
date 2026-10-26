@@ -52,10 +52,12 @@ Copie `.env.example` para `.env.local` e preencha conforme os passos abaixo.
 - `GITHUB_USERNAME` = o seu usuário.
 - `GITHUB_TOKEN` = um token *fine-grained* com acesso somente leitura a repositórios públicos (**Settings → Developer settings → Personal access tokens**). Ele aumenta o limite da API.
 
-### 4. Formulário de contato (Resend)
+### 4. Formulário de contato
 
-- Crie uma conta em https://resend.com e gere uma API key → `RESEND_API_KEY`.
-- `CONTACT_TO_EMAIL` = o e-mail **da sua conta Resend**. Sem domínio verificado, o Resend só entrega para esse endereço, e o remetente é `onboarding@resend.dev`.
+Por padrão o formulário usa o **FormSubmit** (`formsubmit.co/ajax/<e-mail>`), o mesmo do portfólio anterior: não precisa de chave e já está ativado para `lucaspmluz@hotmail.com`. Se o FormSubmit pedir confirmação para o domínio novo, ela chega nesse e-mail na primeira mensagem.
+
+- `CONTACT_TO_EMAIL` = e-mail que recebe as mensagens (padrão: o e-mail do Contato).
+- Opcional: `RESEND_API_KEY` troca o envio para o Resend (remetente `onboarding@resend.dev`; sem domínio verificado, o Resend só entrega para o e-mail da própria conta).
 
 ### 5. Cron e URL do site
 

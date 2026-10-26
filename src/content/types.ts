@@ -1,15 +1,19 @@
 export type SkillGroup = {
   group: string;
-  items: { name: string; level: 1 | 2 | 3 | 4 | 5; years?: number }[];
+  description?: string;
+  /** Sem nível, a skill aparece como etiqueta (sem barra). */
+  items: { name: string; level?: 1 | 2 | 3 | 4 | 5; years?: number }[];
 };
 
 export type ExperienceItem = {
   kind: 'job' | 'education';
   title: string;
   org: string;
+  /** AAAA ou AAAA-MM */
   start: string;
   end: string | null;
   description: string;
+  highlights?: string[];
 };
 
 export type SiteContent = {

@@ -16,6 +16,13 @@ export function Experience({ content }: { content: SiteContent }) {
             {e.org} · {e.start} – {e.end ?? 'Atual'}
           </p>
           <p>{e.description}</p>
+          {e.highlights && e.highlights.length > 0 && (
+            <ul className="p3d-highlights">
+              {e.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          )}
         </li>
       ))}
     </ul>

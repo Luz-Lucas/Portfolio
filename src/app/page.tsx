@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import { Experience } from '@/scene/Experience';
 import { getProjects } from '@/lib/projects';
 import { getSiteContent } from '@/lib/content';
+import { SITE_DESCRIPTION } from '@/lib/site';
 
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { about } = await getSiteContent();
-  const title = `${about.name} — Portfólio`;
-  const description = `${about.role}. ${about.location}.`;
+  const title = `${about.name} — ${about.role}`;
+  const description = SITE_DESCRIPTION;
   return {
     title,
     description,

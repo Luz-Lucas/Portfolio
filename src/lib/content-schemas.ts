@@ -5,7 +5,7 @@ import type { ContentKey } from './content';
 export const httpUrl = (message = 'Informe uma URL válida (com https://).') =>
   z.string().trim().url(message).regex(/^https?:\/\//i, message);
 const url = httpUrl();
-const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'Use o formato AAAA-MM.');
+const yearMonth = z.string().regex(/^\d{4}(-\d{2})?$/, 'Use o formato AAAA ou AAAA-MM.');
 
 export const contentSchemas = {
   readme: z.object({ body: z.string().trim().min(1, 'O Leia-me não pode ficar vazio.').max(4000) }),
@@ -26,10 +26,11 @@ export const contentSchemas = {
   skills: z.array(
     z.object({
       group: z.string().trim().min(1, 'Informe o nome do grupo.').max(60),
+      description: z.string().trim().max(200).optional(),
       items: z.array(
         z.object({
           name: z.string().trim().min(1, 'Informe o nome da skill.').max(60),
-          level: z.number().int().min(1, 'Nível de 1 a 5.').max(5, 'Nível de 1 a 5.'),
+          level: z.number().int().min(1, 'Nível de 1 a 5.').max(5, 'Nível de 1 a 5.').optional(),
           years: z.number().min(0).max(60).optional(),
         }),
       ),
@@ -43,6 +44,7 @@ export const contentSchemas = {
       start: yearMonth,
       end: yearMonth.nullable(),
       description: z.string().trim().max(2000),
+      highlights: z.array(z.string().trim().min(1).max(200)).max(10).optional(),
     }),
   ),
 } satisfies Record<ContentKey, z.ZodTypeAny>;

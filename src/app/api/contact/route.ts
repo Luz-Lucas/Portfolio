@@ -1,12 +1,9 @@
 import { Resend } from 'resend';
 import { SEED_CONTENT } from '@/content/seed';
 import { contactSchema, rateLimit, type ContactInput } from '@/lib/contact';
+import { SITE_URL } from '@/lib/site';
 
 const json = (body: unknown, status = 200) => Response.json(body, { status });
-
-const siteUrl = () =>
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000');
 
 async function sendWithResend(to: string, { name, email, subject, message }: ContactInput): Promise<boolean> {
   const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({
@@ -21,7 +18,8 @@ async function sendWithResend(to: string, { name, email, subject, message }: Con
 
 /** Mesmo serviço do portfólio anterior: sem chave, já ativado para o e-mail do dono. */
 async function sendWithFormSubmit(to: string, { name, email, subject, message }: ContactInput): Promise<boolean> {
-  const site = new URL(siteUrl()).href;
+  // lido a cada envio para respeitar NEXT_PUBLIC_SITE_URL/VERCEL_* do ambiente
+  const site = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? SITE_URL).href;
   const res = await fetch(`https://formsubmit.co/ajax/${to}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json', Referer: site, Origin: new URL(site).origin },

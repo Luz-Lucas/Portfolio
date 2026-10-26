@@ -582,3 +582,25 @@
   min-height: 28px;
   background-position: center;
 }
+
+.p3d-skill-desc {
+  margin: 0 0 6px;
+  color: #404040;
+}
+
+.p3d-skills .p3d-tags {
+  margin-bottom: 2px;
+}
+
+.p3d-highlights {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.p3d-timeline .p3d-highlights li::before {
+  content: none;
+}
+
+.p3d-highlights li {
+  margin: 0 0 2px;
+}

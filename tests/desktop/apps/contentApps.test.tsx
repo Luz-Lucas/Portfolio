@@ -70,3 +70,28 @@ describe('content apps', () => {
     expect(screen.getAllByRole('listitem').length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe('content apps with the previous portfolio data shape', () => {
+  it('Skills shows the group description and items without a level as tags (no invented meter)', () => {
+    show('skills', {
+      ...SEED_CONTENT,
+      skills: [{ group: 'Front-end', description: 'Interfaces com React.', items: [{ name: 'React' }, { name: 'TypeScript', level: 4 }] }],
+    });
+    expect(screen.getByText('Interfaces com React.')).toBeInTheDocument();
+    expect(screen.queryByLabelText(/React: nível/)).not.toBeInTheDocument();
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByLabelText('TypeScript: nível 4 de 5')).toBeInTheDocument();
+  });
+
+  it('Experience shows highlights and year-only periods', () => {
+    show('experience', {
+      ...SEED_CONTENT,
+      experience: [
+        { kind: 'job', title: 'Dev Júnior', org: 'CP2', start: '2024', end: null, description: 'Apps web.', highlights: ['5+ projetos', 'Code review'] },
+      ],
+    });
+    expect(screen.getByText(/2024 – Atual/)).toBeInTheDocument();
+    expect(screen.getByText('5+ projetos')).toBeInTheDocument();
+    expect(screen.getByText('Code review')).toBeInTheDocument();
+  });
+});
