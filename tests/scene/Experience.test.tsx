@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
-import { SEED_CONTENT, SEED_PROJECTS } from '@/content/seed';
+import { SEED_CONTENT } from '@/content/seed';
+import { TEST_PROJECTS as SEED_PROJECTS } from '../fixtures/content';
 import { useWindowStore } from '@/desktop/windowStore';
 
 let sceneBehaviour: 'throw' | 'hang' = 'hang';

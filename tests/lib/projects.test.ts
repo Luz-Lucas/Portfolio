@@ -102,3 +102,14 @@ describe('getProjects without curation', () => {
     expect(Array.isArray(out) && out.map((p) => p.repoId)).toEqual([2, 1]);
   });
 });
+
+describe('getProjects default GitHub user', () => {
+  it('uses Luz-Lucas when no username env is set (like the previous portfolio)', async () => {
+    delete process.env.GITHUB_USERNAME;
+    delete process.env.NEXT_PUBLIC_GITHUB_USERNAME;
+    fetchPublicRepos.mockReset().mockResolvedValue([repo(1)]);
+    select.mockResolvedValue({ data: [], error: null });
+    await getProjects();
+    expect(fetchPublicRepos).toHaveBeenCalledWith('Luz-Lucas');
+  });
+});

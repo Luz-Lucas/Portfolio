@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { Desktop } from '@/desktop/Desktop';
 import { useWindowStore } from '@/desktop/windowStore';
-import { SEED_CONTENT, SEED_PROJECTS } from '@/content/seed';
+import { SEED_CONTENT } from '@/content/seed';
+import { TEST_PROJECTS as SEED_PROJECTS } from '../fixtures/content';
 
 const TITLES = [
   'Leia-me.txt',

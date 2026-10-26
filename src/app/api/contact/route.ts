@@ -25,8 +25,11 @@ async function sendWithFormSubmit(to: string, { name, email, subject, message }:
     headers: { 'Content-Type': 'application/json', Accept: 'application/json', Referer: site, Origin: new URL(site).origin },
     body: JSON.stringify({ name, email, subject: subject ?? '', message, _captcha: 'false', _template: 'table' }),
   });
-  const body = (await res.json().catch(() => ({}))) as { success?: string | boolean };
-  return res.ok && (body.success === true || body.success === 'true');
+  const body = (await res.json().catch(() => ({}))) as { success?: string | boolean; message?: string };
+  const ok = res.ok && (body.success === true || body.success === 'true');
+  // Ex.: "This form needs Activation" — aparece nos logs da Vercel até o dono confirmar o e-mail.
+  if (!ok) console.error('[contato] FormSubmit recusou o envio:', res.status, body.message ?? '');
+  return ok;
 }
 
 export async function POST(req: Request) {

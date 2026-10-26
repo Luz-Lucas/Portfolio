@@ -12,3 +12,7 @@ export const SITE_URL =
 
 export const SITE_DESCRIPTION =
   'Portfólio de Lucas Pereira, estudante de Engenharia de Software e desenvolvedor front-end em Minas Gerais, Brasil — React, TypeScript e interfaces responsivas.';
+
+/** Dono dos repositórios exibidos. NEXT_PUBLIC_GITHUB_USERNAME é o nome usado no portfólio anterior. */
+export const githubUsername = () =>
+  process.env.GITHUB_USERNAME || process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'Luz-Lucas';
