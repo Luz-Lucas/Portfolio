@@ -51,3 +51,20 @@ describe('saveContent', () => {
     expect(await saveContent('readme', { body: 'Olá' })).toEqual({ ok: false, error: expect.any(String) });
   });
 });
+
+describe('saveContent hardening', () => {
+  beforeEach(() => {
+    requireAdmin.mockReset().mockResolvedValue({ id: 'u' });
+    upsert.mockReset().mockResolvedValue({ error: null });
+  });
+
+  it('rejects javascript: and data: URLs in links and photo', async () => {
+    expect((await saveContent('contact', { ...SEED_CONTENT.contact, linkedin: 'javascript:alert(1)' })).ok).toBe(false);
+    expect((await saveContent('about', { ...SEED_CONTENT.about, photoUrl: 'data:text/html,x' })).ok).toBe(false);
+    expect(upsert).not.toHaveBeenCalled();
+  });
+
+  it('rejects an unknown content key instead of throwing', async () => {
+    expect(await saveContent('hack' as never, {})).toEqual({ ok: false, error: expect.any(String) });
+  });
+});

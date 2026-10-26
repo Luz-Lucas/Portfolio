@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import type { ContentKey } from './content';
 
-const url = z.string().trim().url('Informe uma URL válida (com https://).');
+/** Só http(s): bloqueia javascript:, data: e afins em links renderizados no site. */
+export const httpUrl = (message = 'Informe uma URL válida (com https://).') =>
+  z.string().trim().url(message).regex(/^https?:\/\//i, message);
+const url = httpUrl();
 const yearMonth = z.string().regex(/^\d{4}-\d{2}$/, 'Use o formato AAAA-MM.');
 
 export const contentSchemas = {

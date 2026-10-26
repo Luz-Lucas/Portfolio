@@ -4,7 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/auth';
 import type { ContentKey } from '@/lib/content';
-import { contentSchemas } from '@/lib/content-schemas';
+import { contentSchemas, httpUrl } from '@/lib/content-schemas';
 import { fetchPublicRepos } from '@/lib/github';
 import { checkFile, EXTENSIONS } from '@/lib/uploads';
 import { combineAdminProjects, type AdminProject, type ProjectRow } from '@/lib/projects';
@@ -14,6 +14,7 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 
 export async function saveContent(key: ContentKey, value: unknown): Promise<ActionResult> {
   await requireAdmin();
+  if (!Object.hasOwn(contentSchemas, key)) return { ok: false, error: 'Seção desconhecida.' };
   const parsed = contentSchemas[key].safeParse(value);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Dados inválidos.' };
 
@@ -31,8 +32,8 @@ const projectRowSchema = z.object({
   visible: z.boolean(),
   sort: z.number().int(),
   description: z.string().trim().max(500).nullable(),
-  demo_url: z.string().trim().url('Link de demo inválido (use https://).').nullable(),
-  cover_url: z.string().trim().url('URL da capa inválida.').nullable(),
+  demo_url: httpUrl('Link de demo inválido (use https://).').nullable(),
+  cover_url: httpUrl('URL da capa inválida.').nullable(),
 });
 
 export async function saveProjects(rows: ProjectRow[]): Promise<ActionResult> {
@@ -117,6 +118,7 @@ export async function uploadImage(
   purpose: 'photo' | 'cover',
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
   await requireAdmin();
+  if (purpose !== 'photo' && purpose !== 'cover') return { ok: false, error: 'Destino de upload inválido.' };
   const checked = await checkFile(form.get('file') as File | null, 'image');
   if (!checked.ok) return checked;
 
