@@ -16,6 +16,11 @@ export type WinState = {
 type WindowStore = {
   windows: WinState[];
   focusedId: AppId | null;
+  /** No mobile toda janela abre maximizada, uma por vez (vale também para o Prompt de comando). */
+  mode: 'scene' | 'mobile';
+  /** Contador de janelas criadas, para a cascata não empilhar janelas no mesmo ponto. */
+  spawned: number;
+  setMode(mode: 'scene' | 'mobile'): void;
   open(id: AppId, opts?: { exclusive?: boolean; maximized?: boolean }): void;
   close(id: AppId): void;
   focus(id: AppId): void;
@@ -27,6 +32,7 @@ type WindowStore = {
 
 const ORIGIN = { x: 110, y: 24 };
 const CASCADE = 24;
+const CASCADE_STEPS = 8;
 
 function topVisible(windows: WinState[]): AppId | null {
   const visible = windows.filter((w) => !w.minimized);
@@ -39,20 +45,28 @@ const maxZ = (windows: WinState[]) => windows.reduce((m, w) => Math.max(m, w.z),
 export const useWindowStore = create<WindowStore>((set, get) => ({
   windows: [],
   focusedId: null,
+  mode: 'scene',
+  spawned: 0,
+
+  setMode(mode) {
+    set({ mode });
+  },
 
   open(id, opts) {
-    const { windows } = get();
+    const { windows, mode, spawned } = get();
+    if (mode === 'mobile') opts = { exclusive: true, maximized: true, ...opts };
     const z = maxZ(windows) + 1;
+    const isNew = !windows.some((w) => w.id === id);
     let next = windows.some((w) => w.id === id)
       ? windows.map((w) => (w.id === id ? { ...w, minimized: false, z } : w))
       : (() => {
           const { w, h } = getApp(id).defaultSize;
-          const offset = windows.length * CASCADE;
+          const offset = (spawned % CASCADE_STEPS) * CASCADE;
           return [...windows, { id, x: ORIGIN.x + offset, y: ORIGIN.y + offset, w, h, z, minimized: false, maximized: false }];
         })();
     if (opts?.maximized) next = next.map((w) => (w.id === id ? { ...w, maximized: true } : w));
     if (opts?.exclusive) next = next.map((w) => (w.id === id ? w : { ...w, minimized: true }));
-    set({ windows: next, focusedId: id });
+    set({ windows: next, focusedId: id, spawned: isNew ? spawned + 1 : spawned });
   },
 
   close(id) {
@@ -81,6 +95,6 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
   },
 
   reset() {
-    set({ windows: [], focusedId: null });
+    set({ windows: [], focusedId: null, spawned: 0 });
   },
 }));

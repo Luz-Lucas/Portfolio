@@ -70,3 +70,35 @@ describe('windowStore', () => {
     expect([w.x, w.y]).toEqual([50, 60]);
   });
 });
+
+describe('windowStore mobile mode and cascade', () => {
+  beforeEach(() => s().reset());
+
+  it('in mobile mode every open is exclusive and maximized (also from the Terminal)', () => {
+    s().setMode('mobile');
+    s().open('readme');
+    s().open('projects');
+    const byId = Object.fromEntries(s().windows.map((w) => [w.id, w]));
+    expect(byId.readme.minimized).toBe(true);
+    expect(byId.projects.maximized).toBe(true);
+    s().setMode('scene');
+  });
+
+  it('cascade does not stack new windows exactly on top of an existing one after closing', () => {
+    s().open('readme');
+    s().open('about');
+    s().open('skills');
+    s().close('readme');
+    s().open('trash');
+    const pos = s().windows.map((w) => `${w.x},${w.y}`);
+    expect(new Set(pos).size).toBe(pos.length);
+  });
+
+  it('cascade wraps around instead of leaving the 800x600 stage', () => {
+    for (const id of ['readme', 'about', 'projects', 'skills', 'experience', 'cv', 'contact', 'terminal', 'trash'] as const) s().open(id);
+    for (const w of s().windows) {
+      expect(w.x + 120).toBeLessThan(800);
+      expect(w.y + 60).toBeLessThan(600);
+    }
+  });
+});

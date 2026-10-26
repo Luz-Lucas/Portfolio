@@ -109,3 +109,13 @@ describe('Desktop with GitHub unavailable', () => {
     expect(screen.getByText('Não foi possível carregar os projetos agora.')).toBeInTheDocument();
   });
 });
+
+describe('Desktop mobile first visit', () => {
+  it('opens the readme maximized on mobile', () => {
+    useWindowStore.getState().reset();
+    localStorage.removeItem('p3d:readme-seen');
+    render(<Desktop content={SEED_CONTENT} projects={SEED_PROJECTS} mode="mobile" />);
+    expect(useWindowStore.getState().windows.find((w) => w.id === 'readme')?.maximized).toBe(true);
+    useWindowStore.getState().setMode('scene');
+  });
+});

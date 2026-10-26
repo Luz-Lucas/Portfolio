@@ -43,8 +43,12 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
   const windows = useWindowStore((s) => s.windows);
   const mobile = mode === 'mobile';
 
-  const openApp = (id: AppId) =>
-    useWindowStore.getState().open(id, mobile ? { exclusive: true, maximized: true } : undefined);
+  const openApp = (id: AppId) => useWindowStore.getState().open(id);
+
+  // Antes do Leia-me automático, para o modo já valer na primeira janela.
+  useEffect(() => {
+    useWindowStore.getState().setMode(mode);
+  }, [mode]);
 
   useEffect(() => {
     if (!readmeSeen()) openApp('readme');
