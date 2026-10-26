@@ -12,12 +12,19 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    // Ícones SVG pequenos e imagens do Supabase: next/image não traz ganho aqui.
+    rules: { "@next/next/no-img-element": "off" },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",
       "out/**",
       "build/**",
       "next-env.d.ts",
+      ".superpowers/**",
+      "playwright-report/**",
+      "test-results/**",
     ],
   },
 ];

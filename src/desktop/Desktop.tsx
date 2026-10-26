@@ -6,6 +6,7 @@ import { APPS } from '@/content/apps';
 import type { AppId, ProjectsResult, SiteContent } from '@/content/types';
 import { BoundsContext, type Bounds } from './bounds';
 import { clampPosition } from './clamp';
+import { renderApp } from './apps';
 import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
 import { Window } from './Window';
@@ -33,9 +34,10 @@ function readmeSeen(): boolean {
   return false;
 }
 
-const placeholder = () => <p>Em breve.</p>;
 
-export function Desktop({ mode, scale = 1, renderBody = placeholder }: Props) {
+
+export function Desktop({ content, projects, mode, scale = 1, renderBody }: Props) {
+  const body = renderBody ?? ((id: AppId) => renderApp(id, { content, projects }));
   const areaRef = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState<Bounds>({ w: 800, h: 600 });
   const windows = useWindowStore((s) => s.windows);
@@ -78,7 +80,7 @@ export function Desktop({ mode, scale = 1, renderBody = placeholder }: Props) {
             const app = APPS.find((a) => a.id === w.id)!;
             return (
               <Window key={w.id} id={w.id} title={app.title} icon={app.icon} draggable={!mobile} scale={scale}>
-                {renderBody(w.id)}
+                {body(w.id)}
               </Window>
             );
           })}
