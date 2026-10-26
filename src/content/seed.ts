@@ -1,4 +1,4 @@
-import type { Project, SiteContent } from './types';
+import type { SiteContent } from './types';
 
 /**
  * Conteúdo padrão do site (vem do portfólio anterior, Luz-Lucas/Portfolio).
@@ -117,18 +117,3 @@ export const SEED_CONTENT: SiteContent = {
   ],
   cvUrl: null,
 };
-
-/** Usado só quando GITHUB_USERNAME não está configurado (desenvolvimento local). */
-export const SEED_PROJECTS: Project[] = [
-  {
-    repoId: 1,
-    name: 'Portfolio',
-    description: 'Portfólio anterior em Next.js e Tailwind.',
-    url: 'https://github.com/Luz-Lucas/Portfolio',
-    demoUrl: 'https://portifolio-one-kohl-87.vercel.app/',
-    coverUrl: null,
-    languages: ['TypeScript'],
-    stars: 0,
-    updatedAt: '2026-09-17T15:13:36Z',
-  },
-];

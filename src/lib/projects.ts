@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache';
-import { SEED_PROJECTS } from '@/content/seed';
 import type { Project, ProjectsResult } from '@/content/types';
 import { fetchPublicRepos, type GithubRepo } from './github';
+import { githubUsername } from './site';
 import { isSupabaseConfigured } from './supabase/env';
 import { createPublicClient } from './supabase/public';
 
@@ -60,9 +60,7 @@ const loadRows = unstable_cache(
 );
 
 export async function getProjects(): Promise<ProjectsResult> {
-  // NEXT_PUBLIC_GITHUB_USERNAME é o nome usado no portfólio anterior (mesmo projeto na Vercel).
-  const username = process.env.GITHUB_USERNAME || process.env.NEXT_PUBLIC_GITHUB_USERNAME;
-  if (!username) return SEED_PROJECTS;
+  const username = githubUsername();
 
   const rows = isSupabaseConfigured() ? await loadRows() : [];
   try {

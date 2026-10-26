@@ -6,6 +6,7 @@ import { requireAdmin } from '@/lib/auth';
 import type { ContentKey } from '@/lib/content';
 import { contentSchemas, httpUrl } from '@/lib/content-schemas';
 import { fetchPublicRepos } from '@/lib/github';
+import { githubUsername } from '@/lib/site';
 import { checkFile, EXTENSIONS } from '@/lib/uploads';
 import { combineAdminProjects, type AdminProject, type ProjectRow } from '@/lib/projects';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -66,8 +67,7 @@ export async function refreshGithub(): Promise<void> {
 
 export async function listAdminProjects(): Promise<{ projects: AdminProject[]; githubError: boolean }> {
   await requireAdmin();
-  // NEXT_PUBLIC_GITHUB_USERNAME é o nome usado no portfólio anterior (mesmo projeto na Vercel).
-  const username = process.env.GITHUB_USERNAME || process.env.NEXT_PUBLIC_GITHUB_USERNAME;
+  const username = githubUsername();
   let githubError = false;
   // GitHub fora do ar não pode travar o resto do painel (textos, currículo, skills).
   const reposPromise = (username ? fetchPublicRepos(username) : Promise.resolve([])).catch((err) => {

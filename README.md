@@ -49,7 +49,7 @@ Copie `.env.example` para `.env.local` e preencha conforme os passos abaixo.
 
 ### 3. Projetos do GitHub
 
-- `GITHUB_USERNAME` = o seu usuário.
+- `GITHUB_USERNAME` = o seu usuário (padrão: `Luz-Lucas`; o nome antigo `NEXT_PUBLIC_GITHUB_USERNAME` também vale).
 - `GITHUB_TOKEN` = um token *fine-grained* com acesso somente leitura a repositórios públicos (**Settings → Developer settings → Personal access tokens**). Ele aumenta o limite da API.
 
 ### 4. Formulário de contato

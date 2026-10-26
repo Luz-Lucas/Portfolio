@@ -98,3 +98,16 @@ describe('POST /api/contact default recipient', () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe('POST /api/contact FormSubmit diagnostics', () => {
+  it('logs FormSubmit refusal message (e.g. activation needed)', async () => {
+    delete process.env.RESEND_API_KEY;
+    const msg = "This form needs Activation. We've sent you an email";
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: 'false', message: msg }), { status: 200 })));
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect((await POST(req(valid, '4.0.0.1'))).status).toBe(502);
+    expect(spy.mock.calls.flat().join(' ')).toContain('needs Activation');
+    spy.mockRestore();
+    vi.unstubAllGlobals();
+  });
+});
