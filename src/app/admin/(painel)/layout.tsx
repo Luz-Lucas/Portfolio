@@ -11,7 +11,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <header className="admin-header">
         <h1>Admin do portfólio</h1>
         <span>
-          {user.user_metadata.user_name} · <Link href="/">ver site</Link>
+          Conectado como <b>{user.user_metadata.user_name}</b> ·{' '}
+          <Link href="/" target="_blank">
+            Ver site ↗
+          </Link>
         </span>
       </header>
       {children}
