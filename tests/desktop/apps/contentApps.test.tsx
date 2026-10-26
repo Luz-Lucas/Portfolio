@@ -23,11 +23,11 @@ describe('content apps', () => {
     expect(screen.getByText('<img src=x onerror=alert(1)>')).toBeInTheDocument();
   });
 
-  it('About shows name, role, location, availability and a placeholder avatar', () => {
+  it('About shows name, role, location, availability and no picture when there is no photo', () => {
     show('about');
     const { name, role, location, availability } = SEED_CONTENT.about;
     for (const text of [name, role, location, availability]) expect(screen.getByText(text)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Avatar' })).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('About shows the photo when there is one', () => {

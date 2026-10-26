@@ -6,13 +6,7 @@ export function About({ content }: { content: SiteContent }) {
   return (
     <div className="p3d-about">
       <div className="p3d-about-head">
-        {a.photoUrl ? (
-          <img className="p3d-avatar" src={a.photoUrl} alt={`Foto de ${a.name}`} width={96} height={96} />
-        ) : (
-          <div className="p3d-avatar is-placeholder" role="img" aria-label="Avatar">
-            {a.name.charAt(0)}
-          </div>
-        )}
+        {a.photoUrl && <img className="p3d-avatar" src={a.photoUrl} alt={`Foto de ${a.name}`} width={96} height={96} />}
         <div>
           <h2>{a.name}</h2>
           <p>{a.role}</p>

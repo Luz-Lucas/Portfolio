@@ -22,7 +22,7 @@ export const SEED_CONTENT: SiteContent = {
       'Português nativo · inglês fluente.',
     location: 'Minas Gerais, Brasil',
     availability: 'Disponível para trabalho',
-    photoUrl: '/images/avatar.webp',
+    photoUrl: null,
   },
   contact: {
     email: 'contato.lucaspmluz@hotmail.com',
