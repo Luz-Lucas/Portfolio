@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { AppId, ProjectsResult, SiteContent } from '@/content/types';
 import { About } from './About';
+import { Contact } from './Contact';
 import { Projects } from './Projects';
 import { Terminal } from './Terminal';
 import { CvViewer } from './CvViewer';
@@ -27,6 +28,8 @@ export function renderApp(id: AppId, { content, projects }: AppData): ReactNode 
       return <CvViewer content={content} />;
     case 'terminal':
       return <Terminal content={content} projects={Array.isArray(projects) ? projects : []} />;
+    case 'contact':
+      return <Contact content={content} />;
     case 'trash':
       return <Trash />;
     default:

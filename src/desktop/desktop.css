@@ -536,3 +536,36 @@
   font: inherit;
   caret-color: #c0c0c0;
 }
+
+.p3d-contact-links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.p3d-contact textarea {
+  resize: vertical;
+}
+
+.p3d-contact input,
+.p3d-contact textarea {
+  width: 100%;
+}
+
+.p3d-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.p3d-contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
