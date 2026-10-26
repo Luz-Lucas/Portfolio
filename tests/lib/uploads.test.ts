@@ -5,13 +5,13 @@ const MB = 1024 * 1024;
 
 describe('validateUpload', () => {
   it('accepts a 4 MB pdf as cv', () => {
-    expect(validateUpload({ type: 'application/pdf', size: 4 * MB }, 'cv')).toEqual({ ok: true });
+    expect(validateUpload({ type: 'application/pdf', size: 3.9 * MB }, 'cv')).toEqual({ ok: true });
   });
   it('rejects a png as cv', () => {
     expect(validateUpload({ type: 'image/png', size: MB }, 'cv')).toEqual({ ok: false, error: 'O currículo precisa ser um PDF.' });
   });
-  it('rejects a 6 MB pdf', () => {
-    expect(validateUpload({ type: 'application/pdf', size: 6 * MB }, 'cv')).toEqual({ ok: false, error: 'Arquivo maior que 5 MB.' });
+  it('rejects a pdf over 4 MB (Vercel caps request bodies at 4.5 MB)', () => {
+    expect(validateUpload({ type: 'application/pdf', size: 4.2 * MB }, 'cv')).toEqual({ ok: false, error: 'Arquivo maior que 4 MB.' });
   });
   it('accepts a 1 MB webp image', () => {
     expect(validateUpload({ type: 'image/webp', size: MB }, 'image')).toEqual({ ok: true });

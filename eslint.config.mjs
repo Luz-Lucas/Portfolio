@@ -23,6 +23,7 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       ".superpowers/**",
+      "public/draco/**",
       "playwright-report/**",
       "test-results/**",
     ],

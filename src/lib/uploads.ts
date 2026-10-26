@@ -7,7 +7,8 @@ const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 export function validateUpload(file: { type: string; size: number }, kind: UploadKind): Result {
   if (kind === 'cv') {
     if (file.type !== 'application/pdf') return { ok: false, error: 'O currículo precisa ser um PDF.' };
-    if (file.size > 5 * MB) return { ok: false, error: 'Arquivo maior que 5 MB.' };
+    // 4 MB: a Vercel recusa corpos de requisição acima de 4,5 MB antes da server action rodar.
+    if (file.size > 4 * MB) return { ok: false, error: 'Arquivo maior que 4 MB.' };
     return { ok: true };
   }
   if (!IMAGE_TYPES.includes(file.type)) return { ok: false, error: 'Envie uma imagem PNG, JPEG ou WebP.' };

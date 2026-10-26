@@ -76,7 +76,7 @@ Acesse `/admin` e entre com o GitHub.
 
 - **Textos:** Leia-me, Sobre mim (com foto) e Contato.
 - **Projetos:** marque quais repositórios aparecem, ordene e personalize descrição, demo e capa. "Atualizar do GitHub" busca repositórios novos.
-- **Currículo:** envie um PDF (até 5 MB). Ele substitui o anterior.
+- **Currículo:** envie um PDF (até 4 MB). Ele substitui o anterior.
 - **Skills / Experiência:** listas editáveis.
 
 Ao salvar, o site é atualizado em segundos.

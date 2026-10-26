@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
+import { validateUpload } from '@/lib/uploads';
 import { uploadImage } from './actions';
 
 /** "Enviar imagem" que preenche o campo de URL ao lado. */
@@ -12,14 +13,24 @@ export function ImageUpload({ purpose, onUploaded }: { purpose: 'photo' | 'cover
   function onChange() {
     const file = input.current?.files?.[0];
     if (!file) return;
+    const check = validateUpload(file, 'image');
+    if (!check.ok) {
+      setError(check.error);
+      if (input.current) input.current.value = '';
+      return;
+    }
     const data = new FormData();
     data.set('file', file);
     start(async () => {
-      const r = await uploadImage(data, purpose);
-      if (r.ok) {
-        setError(null);
-        onUploaded(r.url);
-      } else setError(r.error);
+      try {
+        const r = await uploadImage(data, purpose);
+        if (r.ok) {
+          setError(null);
+          onUploaded(r.url);
+        } else setError(r.error);
+      } catch {
+        setError('Não foi possível enviar. Tente de novo.');
+      }
       if (input.current) input.current.value = '';
     });
   }

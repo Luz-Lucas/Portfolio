@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { validateUpload } from '@/lib/uploads';
 import { uploadCv, type ActionResult } from './actions';
 
 export function CvForm({ currentUrl }: { currentUrl: string | null }) {
@@ -13,14 +14,24 @@ export function CvForm({ currentUrl }: { currentUrl: string | null }) {
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
+        const file = (e.currentTarget.elements.namedItem('file') as HTMLInputElement | null)?.files?.[0];
+        // Checa no navegador: arquivos grandes nem chegam ao servidor (a Vercel recusa corpos > 4,5 MB).
+        if (file) {
+          const check = validateUpload(file, 'cv');
+          if (!check.ok) return setResult(check);
+        }
         start(async () => {
-          const r = await uploadCv(data);
-          setResult(r);
-          if (r.ok) location.reload();
+          try {
+            const r = await uploadCv(data);
+            setResult(r);
+            if (r.ok) location.reload();
+          } catch {
+            setResult({ ok: false, error: 'Não foi possível enviar. Tente de novo.' });
+          }
         });
       }}
     >
-      <h2>Currículo (PDF até 5 MB)</h2>
+      <h2>Currículo (PDF até 4 MB)</h2>
       <p>
         Atual:{' '}
         {currentUrl ? (
