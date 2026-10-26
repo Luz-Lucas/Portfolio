@@ -1,7 +1,7 @@
 import 'server-only';
 import type { User } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
-import { isAdminLogin } from './admin-login';
+import { isAdminUser } from './admin-login';
 import { isSupabaseConfigured } from './supabase/env';
 import { createServerClient } from './supabase/server';
 
@@ -13,7 +13,7 @@ export async function requireAdmin(): Promise<User> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect('/admin/login');
-  if (!isAdminLogin(user)) {
+  if (!isAdminUser(user)) {
     await supabase.auth.signOut();
     redirect('/admin/login?erro=restrito');
   }

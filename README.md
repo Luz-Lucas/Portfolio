@@ -44,7 +44,8 @@ Copie `.env.example` para `.env.local` e preencha conforme os passos abaixo.
 3. No Supabase: **Authentication → URL Configuration**:
    - Site URL: a URL do site
    - Redirect URLs: `http://localhost:3000/admin/auth/callback` e `https://<seu-site>/admin/auth/callback`
-4. `ADMIN_GITHUB_LOGIN` = o seu usuário do GitHub. Qualquer outra conta é recusada.
+4. `ADMIN_GITHUB_ID` = o **id numérico** da sua conta GitHub (`gh api users/Luz-Lucas --jq .id` → `185098481`). Só essa identidade entra; o nome de usuário não é usado porque pode ser alterado.
+5. Depois do seu primeiro login, desative **Authentication → Sign In / Providers → Allow new users to sign up** no Supabase, para ninguém mais criar conta.
 
 ### 3. Projetos do GitHub
 
