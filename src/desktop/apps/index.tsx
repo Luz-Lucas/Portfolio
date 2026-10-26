@@ -27,7 +27,7 @@ export function renderApp(id: AppId, { content, projects }: AppData): ReactNode 
     case 'cv':
       return <CvViewer content={content} />;
     case 'terminal':
-      return <Terminal content={content} projects={Array.isArray(projects) ? projects : []} />;
+      return <Terminal content={content} projects={projects} />;
     case 'contact':
       return <Contact content={content} />;
     case 'trash':

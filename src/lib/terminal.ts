@@ -1,7 +1,7 @@
-import type { AppId, Project, SiteContent } from '@/content/types';
+import type { AppId, ProjectsResult, SiteContent } from '@/content/types';
 
 export type CommandResult = { output: string[]; action?: { open: AppId } | 'clear' };
-type Ctx = { content: SiteContent; projects: Project[] };
+type Ctx = { content: SiteContent; projects: ProjectsResult };
 
 const OPEN_NAMES: Record<string, AppId> = {
   'leia-me': 'readme',
@@ -47,6 +47,8 @@ export function runCommand(input: string, { content, projects }: Ctx): CommandRe
     case 'skills':
       return { output: content.skills.map((g) => `${g.group}: ${g.items.map((i) => i.name).join(', ')}`) };
     case 'projetos':
+      if (!Array.isArray(projects))
+        return { output: ['Projetos indisponíveis agora (GitHub fora do ar).', `Veja direto: ${contact.github}`] };
       return {
         output: projects.length ? projects.map((p) => `${p.name.padEnd(24)} ${p.url}`) : ['Nenhum projeto publicado.'],
       };

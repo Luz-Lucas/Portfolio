@@ -48,3 +48,11 @@ describe('runCommand', () => {
     expect(run('   ').output).toEqual([]);
   });
 });
+
+describe('runCommand projetos when GitHub failed', () => {
+  it('says the list is unavailable instead of "Nenhum projeto publicado."', () => {
+    const out = runCommand('projetos', { content: SEED_CONTENT, projects: { error: 'github_unavailable' } }).output;
+    expect(out[0]).toContain('indisponíveis');
+    expect(out.join(' ')).toContain(SEED_CONTENT.contact.github);
+  });
+});

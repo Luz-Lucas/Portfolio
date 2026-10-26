@@ -62,6 +62,9 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
     glow.scale.set(sz.x * 2.2, sz.y * 2.4, 1);
     glow.position.copy(box.getCenter(new THREE.Vector3())).add(new THREE.Vector3(0, 0, 0.03));
     glow.renderOrder = 3;
+    glow.name = 'ScreenGlow';
+    // a cena do GLTF fica em cache: remove o brilho de uma montagem anterior antes de adicionar
+    scene.getObjectByName('ScreenGlow')?.removeFromParent();
     scene.add(glow);
     const pose = (c: THREE.Object3D) => ({
       position: c.getWorldPosition(new THREE.Vector3()),

@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
-import type { Project, SiteContent } from '@/content/types';
+import type { ProjectsResult, SiteContent } from '@/content/types';
 import { runCommand } from '@/lib/terminal';
 import { useWindowStore } from '../windowStore';
 
 const BANNER = ['Portfólio 95 [Versão 4.00.950]', '(C) Copyright 1981-1995. Digite help para ver os comandos.', ''];
 
-export function Terminal({ content, projects }: { content: SiteContent; projects: Project[] }) {
+export function Terminal({ content, projects }: { content: SiteContent; projects: ProjectsResult }) {
   const [lines, setLines] = useState<string[]>(BANNER);
   const [value, setValue] = useState('');
   const [history, setHistory] = useState<string[]>([]);
