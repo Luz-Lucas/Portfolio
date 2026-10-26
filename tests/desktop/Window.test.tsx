@@ -58,3 +58,18 @@ describe('Window', () => {
     expect([win().x, win().y]).toEqual([x, y]);
   });
 });
+
+describe('Window title bar icons', () => {
+  it('uses the 98.css icon classes (pt-BR labels do not match its aria-label selectors)', () => {
+    setup();
+    expect(screen.getByRole('button', { name: 'Minimizar' })).toHaveClass('minimize');
+    expect(screen.getByRole('button', { name: 'Maximizar' })).toHaveClass('maximize');
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveClass('close');
+  });
+
+  it('shows the restore icon and label when maximized', () => {
+    setup();
+    fireEvent.click(screen.getByRole('button', { name: 'Maximizar' }));
+    expect(screen.getByRole('button', { name: 'Restaurar' })).toHaveClass('restore');
+  });
+});

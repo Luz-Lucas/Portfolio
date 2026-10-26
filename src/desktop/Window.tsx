@@ -46,9 +46,14 @@ export function Window({ id, title, icon, draggable = true, scale = 1, children 
           {title}
         </div>
         <div className="title-bar-controls">
-          <button aria-label="Minimizar" onClick={() => minimize(id)} />
-          <button aria-label="Maximizar" onClick={() => toggleMaximize(id)} />
-          <button aria-label="Fechar" onClick={() => close(id)} />
+          {/* Classes do 98.css desenham os ícones (os seletores por aria-label dele são em inglês). */}
+          <button className="minimize" aria-label="Minimizar" onClick={() => minimize(id)} />
+          <button
+            className={win.maximized ? 'restore' : 'maximize'}
+            aria-label={win.maximized ? 'Restaurar' : 'Maximizar'}
+            onClick={() => toggleMaximize(id)}
+          />
+          <button className="close" aria-label="Fechar" onClick={() => close(id)} />
         </div>
       </div>
       <div className="window-body p3d-window-body">{children}</div>

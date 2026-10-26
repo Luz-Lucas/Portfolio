@@ -23,6 +23,10 @@ test('apps open inside the monitor and "Tela cheia" fills the viewport', async (
   await expect(page.getByRole('dialog', { name: 'Projetos' })).toBeVisible();
   const userSelect = await page.locator('.p3d-window-body').first().evaluate((el) => getComputedStyle(el).userSelect);
   expect(userSelect).toBe('text');
+  for (const name of ['Minimizar', 'Maximizar', 'Fechar']) {
+    const bg = await page.getByRole('dialog', { name: 'Projetos' }).getByRole('button', { name }).evaluate((el) => getComputedStyle(el).backgroundImage);
+    expect(bg).toContain('data:image/svg+xml');
+  }
   await page.getByRole('button', { name: 'Tela cheia' }).click();
   const box = await page.getByTestId('screen-overlay').boundingBox();
   expect(box).toMatchObject({ x: 0, y: 0, width: 1440, height: 900 });
