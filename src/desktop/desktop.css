@@ -1,0 +1,32 @@
+/* Overrides do 98.css para o visual Win95 do portfólio */
+.p3d-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.p3d-window .title-bar {
+  touch-action: none;
+  user-select: none;
+  cursor: default;
+}
+
+.p3d-window .title-bar.inactive {
+  background: linear-gradient(90deg, #808080, #b5b5b5);
+}
+
+.p3d-window .title-bar-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.p3d-window-body {
+  flex: 1;
+  overflow: auto;
+  margin: 0;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
