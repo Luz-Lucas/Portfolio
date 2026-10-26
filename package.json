@@ -39,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.186.0",
+    "draco3dgltf": "^1.5.9",
     "eslint": "^9",
     "eslint-config-next": "15.5.28",
     "jsdom": "^29.1.1",
