@@ -25,7 +25,7 @@ export const SEED_CONTENT: SiteContent = {
     photoUrl: '/images/avatar.webp',
   },
   contact: {
-    email: 'lucaspmluz@hotmail.com',
+    email: 'contato.lucaspmluz@hotmail.com',
     linkedin: 'https://www.linkedin.com/in/lucas-luz-0b0368432/',
     github: 'https://github.com/Luz-Lucas',
   },
