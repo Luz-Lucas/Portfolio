@@ -29,7 +29,9 @@ describe('buildSiteContent', () => {
 
 describe('getSiteContent', () => {
   const env = { ...process.env };
-  beforeEach(() => select.mockReset());
+  beforeEach(() => {
+    select.mockReset();
+  });
   afterEach(() => {
     process.env = { ...env };
   });

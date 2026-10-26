@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { validateUpload } from '@/lib/uploads';
 import { uploadCv, type ActionResult } from './actions';
 
 export function CvForm({ currentUrl }: { currentUrl: string | null }) {
-  const [pending, start] = useTransition();
+  const [pending, setPending] = useState(false);
   const [result, setResult] = useState<ActionResult | null>(null);
 
   return (
     <form
       className="admin-card"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         const file = (e.currentTarget.elements.namedItem('file') as HTMLInputElement | null)?.files?.[0];
@@ -20,15 +20,16 @@ export function CvForm({ currentUrl }: { currentUrl: string | null }) {
           const check = validateUpload(file, 'cv');
           if (!check.ok) return setResult(check);
         }
-        start(async () => {
-          try {
-            const r = await uploadCv(data);
-            setResult(r);
-            if (r.ok) location.reload();
-          } catch {
-            setResult({ ok: false, error: 'Não foi possível enviar. Tente de novo.' });
-          }
-        });
+        setPending(true);
+        try {
+          const r = await uploadCv(data);
+          setResult(r);
+          if (r.ok) location.reload();
+        } catch {
+          setResult({ ok: false, error: 'Não foi possível enviar. Tente de novo.' });
+        } finally {
+          setPending(false);
+        }
       }}
     >
       <h2>Currículo (PDF até 4 MB)</h2>

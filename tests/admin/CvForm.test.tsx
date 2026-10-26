@@ -15,7 +15,9 @@ function submit(file: File) {
 }
 
 describe('CvForm', () => {
-  beforeEach(() => uploadCv.mockReset());
+  beforeEach(() => {
+    uploadCv.mockClear();
+  });
 
   it('rejects a too-large file in the browser without calling the server', async () => {
     submit(pdf(4.5));
@@ -24,8 +26,10 @@ describe('CvForm', () => {
   });
 
   it('shows a message instead of crashing when the request fails', async () => {
-    uploadCv.mockRejectedValue(new Error('413'));
-    submit(pdf(1));
-    expect(await screen.findByText('Não foi possível enviar. Tente de novo.')).toBeInTheDocument();
+    uploadCv.mockImplementation(async () => {
+      throw new Error('413');
+    });
+    submit(pdf(0.001));
+    await vi.waitFor(() => expect(screen.getByText('Não foi possível enviar. Tente de novo.')).toBeInTheDocument());
   });
 });
