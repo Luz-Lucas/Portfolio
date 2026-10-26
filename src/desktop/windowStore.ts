@@ -16,7 +16,7 @@ export type WinState = {
 type WindowStore = {
   windows: WinState[];
   focusedId: AppId | null;
-  open(id: AppId, opts?: { exclusive?: boolean }): void;
+  open(id: AppId, opts?: { exclusive?: boolean; maximized?: boolean }): void;
   close(id: AppId): void;
   focus(id: AppId): void;
   minimize(id: AppId): void;
@@ -25,7 +25,7 @@ type WindowStore = {
   reset(): void;
 };
 
-const ORIGIN = 40;
+const ORIGIN = { x: 110, y: 24 };
 const CASCADE = 24;
 
 function topVisible(windows: WinState[]): AppId | null {
@@ -48,8 +48,9 @@ export const useWindowStore = create<WindowStore>((set, get) => ({
       : (() => {
           const { w, h } = getApp(id).defaultSize;
           const offset = windows.length * CASCADE;
-          return [...windows, { id, x: ORIGIN + offset, y: ORIGIN + offset, w, h, z, minimized: false, maximized: false }];
+          return [...windows, { id, x: ORIGIN.x + offset, y: ORIGIN.y + offset, w, h, z, minimized: false, maximized: false }];
         })();
+    if (opts?.maximized) next = next.map((w) => (w.id === id ? { ...w, maximized: true } : w));
     if (opts?.exclusive) next = next.map((w) => (w.id === id ? w : { ...w, minimized: true }));
     set({ windows: next, focusedId: id });
   },
