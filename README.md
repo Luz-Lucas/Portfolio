@@ -54,7 +54,7 @@ Copie `.env.example` para `.env.local` e preencha conforme os passos abaixo.
 
 ### 4. Formulário de contato
 
-Por padrão o formulário usa o **FormSubmit** (`formsubmit.co/ajax/<e-mail>`), o mesmo do portfólio anterior: não precisa de chave e já está ativado para `lucaspmluz@hotmail.com`. Se o FormSubmit pedir confirmação para o domínio novo, ela chega nesse e-mail na primeira mensagem.
+Por padrão o formulário usa o **FormSubmit** (`formsubmit.co/ajax/<e-mail>`), o mesmo do portfólio anterior: não precisa de chave. As mensagens vão para `contato.lucaspmluz@hotmail.com`; na primeira mensagem o FormSubmit manda um e-mail de ativação para esse endereço, e é só confirmar.
 
 - `CONTACT_TO_EMAIL` = e-mail que recebe as mensagens (padrão: o e-mail do Contato).
 - Opcional: `RESEND_API_KEY` troca o envio para o Resend (remetente `onboarding@resend.dev`; sem domínio verificado, o Resend só entrega para o e-mail da própria conta).
