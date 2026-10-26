@@ -274,14 +274,6 @@
   border: 2px solid #c0c0c0;
 }
 
-.p3d-avatar.is-placeholder {
-  display: grid;
-  place-items: center;
-  background: #008080;
-  color: #fff;
-  font-size: 44px;
-  font-weight: bold;
-}
 
 .p3d-facts {
   list-style: none;
