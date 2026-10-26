@@ -571,3 +571,14 @@
   gap: 10px;
   margin-top: 8px;
 }
+
+/* Toque: botões da barra de título com área mínima confortável (Lighthouse target-size) */
+.p3d-desktop.is-mobile .title-bar {
+  min-height: 34px;
+}
+
+.p3d-desktop.is-mobile .title-bar-controls button {
+  min-width: 32px;
+  min-height: 28px;
+  background-position: center;
+}

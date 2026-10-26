@@ -7,6 +7,7 @@ import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import type { IntroPhase } from './intro';
 import { fitFov } from './fov';
+import { frameMode, IDLE_FPS } from './frames';
 import { bakedToBasic, glowTexture, ribbonUVs, vaporMaterial } from './materials';
 import { projectScreenRect, type ScreenRect } from './screenRect';
 
@@ -20,6 +21,8 @@ type Props = {
   onReady: () => void;
   onProgress: (pct: number) => void;
   onScreenRect: (rect: ScreenRect) => void;
+  /** Área de trabalho em tela cheia cobrindo a cena: para de renderizar. */
+  covered?: boolean;
 };
 
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
@@ -29,7 +32,7 @@ const LED_OFF = new THREE.Color('#14301a');
 // acima de 1 para o Bloom pegar o LED aceso
 const LED_ON = new THREE.Color('#39ff5a').multiplyScalar(2.5);
 
-function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgress'>) {
+function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgress' | 'covered'>) {
   const { scene } = useGLTF(MODEL, DRACO);
   const camera = useRef<THREE.PerspectiveCamera>(null);
   const size = useThree((s) => s.size);
@@ -116,12 +119,35 @@ function Progress({ onProgress }: { onProgress: (pct: number) => void }) {
   return null;
 }
 
+/** Renderiza sob demanda: contínuo na intro, IDLE_FPS na área de trabalho, nada em tela cheia. */
+function FrameDriver({ phase, covered }: { phase: IntroPhase; covered: boolean }) {
+  const invalidate = useThree((s) => s.invalidate);
+  const mode = frameMode(phase, covered);
+  useEffect(() => {
+    if (mode === 'off') return;
+    if (mode === 'idle') {
+      invalidate();
+      const t = setInterval(() => invalidate(), 1000 / IDLE_FPS);
+      return () => clearInterval(t);
+    }
+    let raf = 0;
+    const loop = () => {
+      invalidate();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [mode, invalidate]);
+  return null;
+}
+
 export default function Scene(props: Props) {
-  const { onProgress, ...rest } = props;
+  const { onProgress, covered = false, ...rest } = props;
   // Qualidade alta = Bloom + dpr até 2. Se o FPS cair, o PerformanceMonitor desliga os dois.
   const [high, setHigh] = useState(true);
   return (
-    <Canvas className="p3d-canvas" dpr={high ? [1, 2] : 1} gl={{ antialias: true }} flat>
+    <Canvas className="p3d-canvas" frameloop="demand" dpr={high ? [1, 2] : 1} gl={{ antialias: true }} flat>
+      <FrameDriver phase={rest.phase} covered={covered} />
       <PerformanceMonitor onDecline={() => setHigh(false)} flipflops={2} />
       <color attach="background" args={['#0b0b0d']} />
       <Progress onProgress={onProgress} />

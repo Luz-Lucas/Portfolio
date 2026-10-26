@@ -65,7 +65,14 @@ export function Experience({ content, projects }: Props) {
     <div className="p3d-experience" data-intro-phase={phase}>
       {mode === 'scene' && (
         <SceneBoundary onError={fail}>
-          <Scene phase={phase} progress={progress} onReady={markLoaded} onProgress={setLoadPct} onScreenRect={onRect} />
+          <Scene
+            phase={phase}
+            progress={progress}
+            onReady={markLoaded}
+            onProgress={setLoadPct}
+            onScreenRect={onRect}
+            covered={maximized && phase === 'desktop'}
+          />
         </SceneBoundary>
       )}
       {phase === 'loading' && <LoadingScreen progress={mode === 'scene' ? loadPct : undefined} />}
