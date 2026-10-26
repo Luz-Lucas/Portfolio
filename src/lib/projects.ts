@@ -35,6 +35,20 @@ export function mergeProjects(repos: GithubRepo[], rows: ProjectRow[]): Project[
     });
 }
 
+const DEFAULT_COUNT = 6;
+
+/** Sem curadoria salva: os repositórios próprios (sem forks/arquivados) com mais estrelas. */
+export function pickDefaultProjects(repos: GithubRepo[]): Project[] {
+  const top = repos
+    .filter((r) => !r.fork && !r.archived)
+    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .slice(0, DEFAULT_COUNT);
+  return mergeProjects(
+    top,
+    top.map((r, i) => ({ repo_id: r.id, visible: true, sort: i, description: null, demo_url: null, cover_url: null })),
+  );
+}
+
 const loadRows = unstable_cache(
   async (): Promise<ProjectRow[]> => {
     const { data, error } = await createPublicClient().from('projects').select('*');
@@ -46,12 +60,14 @@ const loadRows = unstable_cache(
 );
 
 export async function getProjects(): Promise<ProjectsResult> {
-  const username = process.env.GITHUB_USERNAME;
+  // NEXT_PUBLIC_GITHUB_USERNAME é o nome usado no portfólio anterior (mesmo projeto na Vercel).
+  const username = process.env.GITHUB_USERNAME || process.env.NEXT_PUBLIC_GITHUB_USERNAME;
   if (!username) return SEED_PROJECTS;
 
   const rows = isSupabaseConfigured() ? await loadRows() : [];
   try {
-    return mergeProjects(await fetchPublicRepos(username), rows);
+    const repos = await fetchPublicRepos(username);
+    return rows.length ? mergeProjects(repos, rows) : pickDefaultProjects(repos);
   } catch (err) {
     console.error('[projects] GitHub indisponível:', err);
     return { error: 'github_unavailable' };

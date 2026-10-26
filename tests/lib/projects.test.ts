@@ -82,3 +82,23 @@ describe('getProjects', () => {
     expect(Array.isArray(out) && out.map((p) => p.repoId)).toEqual([2]);
   });
 });
+
+describe('getProjects without curation', () => {
+  it('shows the top 6 own repos by stars when nothing was curated yet', async () => {
+    const { pickDefaultProjects } = await import('@/lib/projects');
+    const repos = [
+      repo(1, { stargazers_count: 1 }),
+      repo(2, { stargazers_count: 9, fork: true }),
+      repo(3, { stargazers_count: 8, archived: true }),
+      ...[4, 5, 6, 7, 8, 9, 10].map((id) => repo(id, { stargazers_count: id })),
+    ];
+    expect(pickDefaultProjects(repos).map((p) => p.repoId)).toEqual([10, 9, 8, 7, 6, 5]);
+  });
+
+  it('getProjects falls back to the defaults when the curation table is empty', async () => {
+    fetchPublicRepos.mockResolvedValue([repo(1, { stargazers_count: 3 }), repo(2, { stargazers_count: 5 })]);
+    select.mockResolvedValue({ data: [], error: null });
+    const out = await getProjects();
+    expect(Array.isArray(out) && out.map((p) => p.repoId)).toEqual([2, 1]);
+  });
+});
