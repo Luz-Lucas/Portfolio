@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { PerspectiveCamera, useGLTF, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import type { IntroPhase } from './intro';
+import { fitFov } from './fov';
 import { bakedToBasic, glowTexture, ribbonUVs, vaporMaterial } from './materials';
 import { projectScreenRect, type ScreenRect } from './screenRect';
 
@@ -71,14 +72,16 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
 
   useEffect(onReady, [onReady]);
 
+  const fov = fitFov(parts.fov, size.width / size.height);
+
   // Retângulo da tela visto da pose final, com o aspecto atual da janela.
   useEffect(() => {
-    const cam = new THREE.PerspectiveCamera(parts.fov, size.width / size.height, 0.01, 50);
+    const cam = new THREE.PerspectiveCamera(fov, size.width / size.height, 0.01, 50);
     cam.position.copy(parts.end.position);
     cam.quaternion.copy(parts.end.quaternion);
     cam.updateMatrixWorld();
     onScreenRect(projectScreenRect(parts.screen, cam, { w: size.width, h: size.height }));
-  }, [parts, size, onScreenRect]);
+  }, [parts, size, fov, onScreenRect]);
 
   useFrame(({ clock }) => {
     const cam = camera.current;
@@ -96,7 +99,7 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
 
   return (
     <>
-      <PerspectiveCamera ref={camera} makeDefault fov={parts.fov} near={0.01} far={50} />
+      <PerspectiveCamera ref={camera} makeDefault fov={fov} near={0.01} far={50} />
       <primitive object={scene} />
     </>
   );

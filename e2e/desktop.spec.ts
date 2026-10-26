@@ -47,3 +47,19 @@ test('mobile-size fallback: no glb and no three.js below 768px', async ({ browse
   expect(threeChunks).toEqual([]);
   await ctx.close();
 });
+
+test('portrait tablet: the monitor overlay fits inside the viewport', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 } });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    localStorage.setItem('p3d:intro-seen', '1');
+    localStorage.setItem('p3d:readme-seen', '1');
+  });
+  await page.goto('/');
+  await expect(page.locator('[data-intro-phase]')).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 30_000 });
+  await expect(page.locator('[data-fallback]')).toHaveCount(0);
+  const box = (await page.getByTestId('screen-overlay').boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(820);
+  await ctx.close();
+});

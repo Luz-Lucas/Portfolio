@@ -19,7 +19,7 @@ const Scene = dynamic(() => import('./Scene'), { ssr: false });
 type Props = { content: SiteContent; projects: ProjectsResult };
 
 /** Se a cena não carregar nesse tempo, a área de trabalho abre em 2D. */
-export const LOAD_TIMEOUT_MS = 12_000;
+export const LOAD_TIMEOUT_MS = 20_000;
 
 export function Experience({ content, projects }: Props) {
   const mode = useDeviceMode();
