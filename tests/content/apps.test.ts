@@ -23,8 +23,8 @@ describe('APPS', () => {
 });
 
 describe('SEED_CONTENT', () => {
-  it('has no profile photo', async () => {
+  it('uses the bundled profile photo', async () => {
     const { SEED_CONTENT } = await import('@/content/seed');
-    expect(SEED_CONTENT.about.photoUrl).toBeNull();
+    expect(SEED_CONTENT.about.photoUrl).toBe('/images/foto.webp');
   });
 });
