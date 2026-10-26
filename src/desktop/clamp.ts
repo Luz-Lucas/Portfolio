@@ -1,5 +1,6 @@
 export const TITLE_BAR_H = 28;
-export const MIN_VISIBLE_X = 64;
+// 120 px: os três botões da barra ocupam ~52 px; sobra área para agarrar a janela de volta.
+export const MIN_VISIBLE_X = 120;
 
 type Pos = { x: number; y: number };
 type Size = { w: number; h: number };
