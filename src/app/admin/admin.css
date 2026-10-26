@@ -1,0 +1,53 @@
+html:has(.admin),
+body:has(.admin) {
+  overflow: auto;
+  background: #f4f4f5;
+}
+
+.admin {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #18181b;
+}
+
+.admin h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+
+.admin-login {
+  max-width: 360px;
+  margin-top: 15vh;
+  text-align: center;
+  display: grid;
+  gap: 16px;
+}
+
+.admin-error {
+  color: #b91c1c;
+}
+
+.admin button,
+.admin input,
+.admin textarea,
+.admin select {
+  font: inherit;
+}
+
+.admin-primary {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 6px;
+  background: #18181b;
+  color: #fff;
+  cursor: pointer;
+}
