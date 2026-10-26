@@ -1,11 +1,11 @@
 import { Desktop } from '@/desktop/Desktop';
-import { SEED_PROJECTS } from '@/content/seed';
+import { getProjects } from '@/lib/projects';
 import { getSiteContent } from '@/lib/content';
 
 export const revalidate = 3600;
 
 export default async function Home() {
-  const [content, projects] = await Promise.all([getSiteContent(), Promise.resolve(SEED_PROJECTS)]);
+  const [content, projects] = await Promise.all([getSiteContent(), getProjects()]);
   return (
     <main style={{ height: '100dvh' }}>
       <Desktop content={content} projects={projects} mode="scene" />

@@ -99,3 +99,13 @@ describe('Desktop', () => {
     expect({ x: after.x, y: after.y }).toEqual(before);
   });
 });
+
+describe('Desktop with GitHub unavailable', () => {
+  it('still renders and the Projects window shows the friendly message', () => {
+    useWindowStore.getState().reset();
+    localStorage.setItem('p3d:readme-seen', '1');
+    render(<Desktop content={SEED_CONTENT} projects={{ error: 'github_unavailable' }} mode="scene" />);
+    fireEvent.click(icons().getByRole('button', { name: 'Projetos' }));
+    expect(screen.getByText('Não foi possível carregar os projetos agora.')).toBeInTheDocument();
+  });
+});
