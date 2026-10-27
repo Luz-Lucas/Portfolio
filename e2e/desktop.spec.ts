@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-test.use({ launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } });
+// movimento reduzido: abre direto na área de trabalho, sem a intro
+test.use({ reducedMotion: 'reduce', launchOptions: { args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } });
 test.skip(({ isMobile }) => isMobile, 'overlay no monitor só no desktop');
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.setItem('p3d:intro-seen', '1');
     localStorage.setItem('p3d:readme-seen', '1');
   });
   await page.goto('/');
@@ -54,10 +54,9 @@ test('mobile-size fallback: no glb and no three.js below 768px', async ({ browse
 });
 
 test('portrait tablet: the monitor overlay fits inside the viewport', async ({ browser }) => {
-  const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 } });
+  const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   await page.addInitScript(() => {
-    localStorage.setItem('p3d:intro-seen', '1');
     localStorage.setItem('p3d:readme-seen', '1');
   });
   await page.goto('/');
@@ -67,4 +66,12 @@ test('portrait tablet: the monitor overlay fits inside the viewport', async ({ b
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x + box.width).toBeLessThanOrEqual(820);
   await ctx.close();
+});
+
+test('start menu: "Luz95" sits at the bottom of the side banner', async ({ page }) => {
+  await page.getByRole('button', { name: 'Iniciar' }).click();
+  const banner = await page.locator('.p3d-start-banner').boundingBox();
+  const text = await page.locator('.p3d-start-banner span').boundingBox();
+  expect(banner!.y + banner!.height - (text!.y + text!.height)).toBeLessThan(14);
+  expect(text!.y - banner!.y).toBeGreaterThan(banner!.height / 2);
 });

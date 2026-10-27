@@ -88,13 +88,13 @@ describe('POST /api/contact via FormSubmit (no Resend key)', () => {
 });
 
 describe('POST /api/contact default recipient', () => {
-  it('sends to contato.lucaspmluz@hotmail.com when CONTACT_TO_EMAIL is not set', async () => {
+  it('sends to contato.lucaspmluz@gmail.com when CONTACT_TO_EMAIL is not set', async () => {
     delete process.env.RESEND_API_KEY;
     delete process.env.CONTACT_TO_EMAIL;
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: 'true' }), { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
     expect((await POST(req(valid, '3.0.0.1'))).status).toBe(200);
-    expect(fetchMock.mock.calls[0][0]).toBe('https://formsubmit.co/ajax/contato.lucaspmluz@hotmail.com');
+    expect(fetchMock.mock.calls[0][0]).toBe('https://formsubmit.co/ajax/contato.lucaspmluz@gmail.com');
     vi.unstubAllGlobals();
   });
 });

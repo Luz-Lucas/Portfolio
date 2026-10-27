@@ -3,12 +3,8 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { dollyProgress, initialIntro, introReducer, phaseProgress, type IntroPhase } from './intro';
 
-export const INTRO_SEEN_KEY = 'p3d:intro-seen';
-
+/** A intro (aproximação + BIOS) roda em toda visita; só movimento reduzido abre direto na área de trabalho. */
 function startsInstant(): boolean {
-  try {
-    if (localStorage.getItem(INTRO_SEEN_KEY)) return true;
-  } catch {}
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -47,13 +43,6 @@ export function useIntro() {
       window.removeEventListener('pointerdown', skip);
       window.removeEventListener('keydown', skip);
     };
-  }, [state.phase]);
-
-  useEffect(() => {
-    if (state.phase !== 'desktop') return;
-    try {
-      localStorage.setItem(INTRO_SEEN_KEY, '1');
-    } catch {}
   }, [state.phase]);
 
   const markLoaded = useCallback(() => dispatch({ type: 'loaded', now: performance.now() }), []);
