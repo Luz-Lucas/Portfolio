@@ -41,7 +41,7 @@
   flex-direction: column;
   /* Wallpaper: lâmpada "Ilumine suas ideias" à direita, sobre um mosaico discreto de código e ícones geek. */
   background:
-    url('/images/wallpaper-bulb.svg') right 6% bottom 6% / min(40%, 280px) auto no-repeat,
+    url('/images/wallpaper-bulb.svg') right 4% bottom 4% / min(32%, 230px) auto no-repeat,
     url('/images/wallpaper-pattern.svg') 0 0 / 240px repeat,
     #008080;
   font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
@@ -59,7 +59,7 @@
 .p3d-icons {
   list-style: none;
   margin: 0;
-  padding: 8px 4px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -75,11 +75,12 @@
   all: unset;
   box-sizing: border-box;
   width: 76px;
-  padding: 3px 2px;
+  /* compacto: os 9 ícones cabem numa coluna no palco do monitor (680x510) */
+  padding: 1px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 1px;
   color: #fff;
   text-align: center;
   cursor: pointer;
@@ -230,6 +231,8 @@
 .p3d-start-banner {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+  /* girado 180°: o início da linha fica embaixo, como no Windows 95 */
+  text-align: start;
   background: linear-gradient(#000080, #1084d0);
   color: #c0c0c0;
   font-size: 18px;

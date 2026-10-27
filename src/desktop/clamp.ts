@@ -11,3 +11,11 @@ export function clampPosition(pos: Pos, win: Size, bounds: Size): Pos {
   const y = Math.min(Math.max(pos.y, 0), bounds.h - TITLE_BAR_H);
   return { x, y };
 }
+
+/** Ao abrir: puxa a janela para caber inteira na área de trabalho (ou encosta no canto se for maior). */
+export function fitInside(pos: Pos, win: Size, bounds: Size): Pos {
+  return {
+    x: Math.max(0, Math.min(pos.x, bounds.w - win.w)),
+    y: Math.max(0, Math.min(pos.y, bounds.h - win.h)),
+  };
+}

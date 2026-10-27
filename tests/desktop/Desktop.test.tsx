@@ -66,6 +66,16 @@ describe('Desktop', () => {
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
+  it('a newly opened window fits entirely inside the desktop, even late in the cascade', () => {
+    renderDesktop();
+    for (const name of ['Leia-me.txt', 'Sobre mim', 'Skills', 'Experiência', 'Contato', 'Lixeira', 'Prompt de comando', 'Projetos'])
+      fireEvent.click(icons().getByRole('button', { name }));
+    const projects = useWindowStore.getState().windows.find((w) => w.id === 'projects')!;
+    // jsdom não tem ResizeObserver: a área de trabalho usa o tamanho padrão 800x600
+    expect(projects.x + projects.w).toBeLessThanOrEqual(800);
+    expect(projects.y + projects.h).toBeLessThanOrEqual(600);
+  });
+
   it('Tetris lives only in the start menu, not on the desktop', () => {
     renderDesktop();
     expect(icons().queryByRole('button', { name: 'Tetris' })).not.toBeInTheDocument();
