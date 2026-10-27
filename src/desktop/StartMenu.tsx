@@ -14,7 +14,9 @@ export function StartMenu({ onPick, onClose }: { onPick: (id: AppId) => void; on
   return (
     <div className="p3d-start-menu window">
       <div className="p3d-start-banner" aria-hidden="true">
-        Luz<b>95</b>
+        <span>
+          Luz<b>95</b>
+        </span>
       </div>
       <ul role="menu" aria-label="Menu Iniciar">
         {APPS.map((app) => (

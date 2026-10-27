@@ -44,10 +44,20 @@
     url('/images/wallpaper-bulb.svg') right 4% bottom 4% / min(32%, 230px) auto no-repeat,
     url('/images/wallpaper-pattern.svg') 0 0 / 240px repeat,
     #008080;
-  font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
-  font-size: 11px;
+  font-family: Tahoma, 'Segoe UI', Verdana, sans-serif;
+  font-size: 12px;
   overflow: hidden;
   user-select: none;
+}
+
+/*
+ * O 98.css usa uma fonte bitmap sem suavização; ampliada no palco do monitor ela borra e deforma letras.
+ * Na área de trabalho, Tahoma (a fonte do Windows dos anos 90/2000) com suavização, mais legível.
+ */
+.p3d-desktop :where(.title-bar, .window, button, input, label, legend, li, option, select, table, textarea) {
+  font-family: Tahoma, 'Segoe UI', Verdana, sans-serif;
+  font-size: 12px;
+  -webkit-font-smoothing: auto;
 }
 
 .p3d-area {
@@ -87,8 +97,9 @@
 }
 
 .p3d-icon span {
-  padding: 1px 2px;
-  line-height: 1.2;
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1.15;
 }
 
 .p3d-icon:focus-visible span,
@@ -228,16 +239,21 @@
   min-width: 200px;
 }
 
+/* Faixa lateral: o texto fica encostado embaixo, como no Windows 95 (não depende de text-align em texto vertical). */
 .p3d-start-banner {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  /* girado 180°: o início da linha fica embaixo, como no Windows 95 */
-  text-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   background: linear-gradient(#000080, #1084d0);
   color: #c0c0c0;
   font-size: 18px;
   font-weight: bold;
   padding: 6px 3px;
+}
+
+.p3d-start-banner span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .p3d-start-banner b {
@@ -703,6 +719,7 @@
   gap: 12px;
   align-items: center;
   margin: 8px 4px 14px;
+  font-size: 13px;
 }
 
 .p3d-msgbox-actions {

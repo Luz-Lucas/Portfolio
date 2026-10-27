@@ -21,20 +21,11 @@ test('clicking during the BIOS skips to the desktop', async ({ page }) => {
   await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 500 });
 });
 
-test('second visit skips the intro', async ({ page }) => {
+test('a return visit plays the intro again (still skippable)', async ({ page }) => {
   await page.goto('/');
   await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
-  const seen: string[] = [];
-  await page.exposeFunction('reportPhase', (p: string) => seen.push(p));
-  await page.addInitScript(() => {
-    new MutationObserver(() => {
-      const p = document.querySelector<HTMLElement>('[data-intro-phase]')?.dataset.introPhase;
-      if (p) (window as unknown as { reportPhase: (p: string) => void }).reportPhase(p);
-    }).observe(document, { subtree: true, attributes: true, childList: true });
-  });
   await page.reload();
-  await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
-  expect(seen).not.toContain('bios');
+  await expect(phase(page)).toHaveAttribute('data-intro-phase', 'bios', { timeout: 15_000 });
 });
 
 test.describe('reduced motion', () => {
