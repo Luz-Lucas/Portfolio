@@ -6,7 +6,10 @@ vi.mock('@/lib/supabase/public', () => ({
 }));
 
 const { GET } = await import('@/app/api/keepalive/route');
-const req = (auth?: string) => new Request('http://localhost/api/keepalive', { headers: auth ? { authorization: auth } : {} });
+const req = (auth?: string, ua?: string) =>
+  new Request('http://localhost/api/keepalive', {
+    headers: { ...(auth ? { authorization: auth } : {}), ...(ua ? { 'user-agent': ua } : {}) },
+  });
 
 describe('GET /api/keepalive', () => {
   beforeEach(() => {
@@ -30,5 +33,26 @@ describe('GET /api/keepalive', () => {
   it('reports a Supabase failure', async () => {
     limit.mockResolvedValue({ data: null, error: { message: 'paused' } });
     expect((await GET(req('Bearer segredo'))).status).toBe(502);
+  });
+
+  describe('without CRON_SECRET configured', () => {
+    beforeEach(() => {
+      delete process.env.CRON_SECRET;
+    });
+
+    it('accepts the Vercel cron scheduler', async () => {
+      const res = await GET(req(undefined, 'vercel-cron/1.0'));
+      expect(res.status).toBe(200);
+      expect(limit).toHaveBeenCalledWith(1);
+    });
+
+    it('still rejects anyone else', async () => {
+      expect((await GET(req(undefined, 'curl/8.0'))).status).toBe(401);
+      expect(limit).not.toHaveBeenCalled();
+    });
+  });
+
+  it('with CRON_SECRET set, the cron user-agent alone is not enough', async () => {
+    expect((await GET(req(undefined, 'vercel-cron/1.0'))).status).toBe(401);
   });
 });
