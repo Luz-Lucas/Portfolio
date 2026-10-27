@@ -3,7 +3,7 @@ import { frameMode, IDLE_FPS } from '@/scene/frames';
 
 describe('frameMode', () => {
   it('renders every frame while the intro animates', () => {
-    for (const p of ['loading', 'dolly', 'poweron', 'boot'] as const) expect(frameMode(p, false)).toBe('continuous');
+    for (const p of ['loading', 'poweron', 'bios', 'boot'] as const) expect(frameMode(p, false)).toBe('continuous');
   });
 
   it('drops to a low idle rate on the desktop (only the steam moves)', () => {

@@ -57,6 +57,7 @@ export function vaporMaterial(seed: number): THREE.ShaderMaterial {
       void main() {
         vUv = uv;
         vec3 p = position;
+        p.y *= 1.45; // fumaça mais alta que a malha do Blender
         // duas ondas lentas somadas: a fumaça serpenteia mais no alto, sem tremer
         float sway = pow(uv.y, 1.4);
         p.x += (sin(uv.y * 4.5 - uTime * 0.9 + uSeed) * 0.65 + sin(uv.y * 8.0 - uTime * 1.3 + uSeed * 1.7) * 0.35) * 0.008 * sway;
@@ -69,11 +70,12 @@ export function vaporMaterial(seed: number): THREE.ShaderMaterial {
       uniform float uSeed;
       varying vec2 vUv;
       void main() {
-        float along = smoothstep(0.0, 0.18, vUv.y) * (1.0 - smoothstep(0.45, 1.0, vUv.y));
-        float across = pow(sin(3.14159 * vUv.x), 1.5);
+        // nasce aos poucos na boca da caneca e se desfaz num degradê longo até o topo
+        float along = smoothstep(0.0, 0.3, vUv.y) * pow(1.0 - smoothstep(0.2, 1.0, vUv.y), 1.6);
+        float across = pow(sin(3.14159 * vUv.x), 2.2);
         // tufos subindo devagar, sem as faixas rápidas de antes
         float puff = 0.72 + 0.28 * sin(vUv.y * 5.0 - uTime * 1.0 + uSeed * 3.0) * sin(vUv.y * 2.3 - uTime * 0.6 + uSeed);
-        float a = along * across * puff * 0.34;
+        float a = along * across * puff * 0.36;
         gl_FragColor = vec4(vec3(0.95, 0.93, 0.9), a);
       }
     `,

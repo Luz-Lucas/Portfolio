@@ -55,11 +55,14 @@ export type AppId =
   | 'cv'
   | 'contact'
   | 'terminal'
-  | 'trash';
+  | 'trash'
+  | 'tetris';
 
 export type AppDef = {
   id: AppId;
   title: string;
   icon: string;
   defaultSize: { w: number; h: number };
+  /** Aparece só no menu Iniciar (sem ícone na área de trabalho). */
+  startMenuOnly?: boolean;
 };

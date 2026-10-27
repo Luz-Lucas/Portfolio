@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { APPS } from '@/content/apps';
 import type { AppId, ProjectsResult, SiteContent } from '@/content/types';
-import { MORE_LIGHT_EVENT } from '@/lib/lamp';
+import { SCENE_MESSAGE_EVENT, type SceneMessage } from '@/lib/easterEggs';
 import { BoundsContext, type Bounds } from './bounds';
 import { clampPosition } from './clamp';
 import { renderApp } from './apps';
@@ -53,20 +53,22 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
     if (!readmeSeen()) useWindowStore.getState().open('readme');
   }, []);
 
-  // Easter egg da luminária (liga/desliga 3 vezes na cena 3D): a tela pisca e sugere mais Luz.
+  // Easter eggs da cena 3D (luminária, café, Clean Code): mensagem "Luz 95", às vezes com a tela piscando.
   const [flicker, setFlicker] = useState(false);
-  const [moreLight, setMoreLight] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
-    const onEgg = () => {
+    const onMessage = (e: Event) => {
+      const { text, flicker } = (e as CustomEvent<SceneMessage>).detail;
+      setMessage(text);
+      if (!flicker) return;
       setFlicker(true);
-      setMoreLight(true);
       clearTimeout(t);
       t = setTimeout(() => setFlicker(false), 900);
     };
-    window.addEventListener(MORE_LIGHT_EVENT, onEgg);
+    window.addEventListener(SCENE_MESSAGE_EVENT, onMessage);
     return () => {
-      window.removeEventListener(MORE_LIGHT_EVENT, onEgg);
+      window.removeEventListener(SCENE_MESSAGE_EVENT, onMessage);
       clearTimeout(t);
     };
   }, []);
@@ -91,7 +93,7 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
     <div className={`p3d-desktop${mobile ? ' is-mobile' : ''}${flicker ? ' is-flicker' : ''}`}>
       <div className="p3d-area" ref={areaRef}>
         <ul className="p3d-icons" aria-label="Área de trabalho" role="list">
-          {APPS.map((app) => (
+          {APPS.filter((app) => !app.startMenuOnly).map((app) => (
             <DesktopIcon key={app.id} app={app} onOpen={() => openApp(app.id)} />
           ))}
         </ul>
@@ -105,18 +107,18 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
             );
           })}
         </BoundsContext.Provider>
-        {moreLight && (
-          <div className="p3d-msgbox window" role="alertdialog" aria-label="Luz 95" aria-describedby="p3d-more-light">
+        {message && (
+          <div className="p3d-msgbox window" role="alertdialog" aria-label="Luz 95" aria-describedby="p3d-scene-message">
             <div className="title-bar">
               <div className="title-bar-text">Luz 95</div>
             </div>
             <div className="window-body">
-              <p id="p3d-more-light">
+              <p id="p3d-scene-message">
                 <img src="/icons/start.svg" alt="" width={32} height={32} />
-                Talvez você precise de um pouco mais de Luz.
+                {message}
               </p>
               <div className="p3d-msgbox-actions">
-                <button type="button" autoFocus onClick={() => setMoreLight(false)}>
+                <button type="button" autoFocus onClick={() => setMessage(null)}>
                   OK
                 </button>
               </div>

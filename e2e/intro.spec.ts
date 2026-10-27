@@ -14,9 +14,9 @@ test('first visit reaches the desktop without third-party decoders', async ({ pa
   await expect(page.locator('[data-fallback]')).toHaveCount(0);
 });
 
-test('clicking during the dolly skips to the desktop', async ({ page }) => {
+test('clicking during the BIOS skips to the desktop', async ({ page }) => {
   await page.goto('/');
-  await expect(phase(page)).toHaveAttribute('data-intro-phase', 'dolly', { timeout: 15_000 });
+  await expect(phase(page)).toHaveAttribute('data-intro-phase', 'bios', { timeout: 15_000 });
   await page.mouse.click(10, 10);
   await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 500 });
 });
@@ -34,12 +34,12 @@ test('second visit skips the intro', async ({ page }) => {
   });
   await page.reload();
   await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
-  expect(seen).not.toContain('dolly');
+  expect(seen).not.toContain('bios');
 });
 
 test.describe('reduced motion', () => {
   test.use({ reducedMotion: 'reduce' });
-  test('never goes through the dolly', async ({ page }) => {
+  test('never goes through the BIOS', async ({ page }) => {
     const seen: string[] = [];
     await page.exposeFunction('reportPhase', (p: string) => seen.push(p));
     await page.addInitScript(() => {
@@ -50,6 +50,6 @@ test.describe('reduced motion', () => {
     });
     await page.goto('/');
     await expect(phase(page)).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
-    expect(seen).not.toContain('dolly');
+    expect(seen).not.toContain('bios');
   });
 });

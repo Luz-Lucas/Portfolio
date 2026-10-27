@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { APPS } from '@/content/apps';
 
 describe('APPS', () => {
-  it('lists the nine fixed apps in order', () => {
+  it('lists the fixed apps in order (Tetris last, start menu only)', () => {
     expect(APPS.map((a) => a.title)).toEqual([
       'Leia-me.txt',
       'Sobre mim',
@@ -13,7 +13,9 @@ describe('APPS', () => {
       'Contato',
       'Prompt de comando',
       'Lixeira',
+      'Tetris',
     ]);
+    expect(APPS.filter((a) => a.startMenuOnly).map((a) => a.id)).toEqual(['tetris']);
   });
 
   it('has unique ids', () => {

@@ -10,6 +10,7 @@ export const APPS: readonly AppDef[] = [
   { id: 'contact', title: 'Contato', icon: '/icons/contact.svg', defaultSize: { w: 420, h: 420 } },
   { id: 'terminal', title: 'Prompt de comando', icon: '/icons/terminal.svg', defaultSize: { w: 520, h: 320 } },
   { id: 'trash', title: 'Lixeira', icon: '/icons/trash.svg', defaultSize: { w: 380, h: 260 } },
+  { id: 'tetris', title: 'Tetris', icon: '/icons/tetris.svg', defaultSize: { w: 380, h: 470 }, startMenuOnly: true },
 ];
 
 export function getApp(id: AppDef['id']): AppDef {

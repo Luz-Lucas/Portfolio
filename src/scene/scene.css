@@ -93,7 +93,7 @@
   background: #fff;
   box-shadow: 0 0 24px 6px rgba(200, 230, 255, 0.9);
   transform: translateY(-50%) scaleX(0);
-  animation: p3d-crt-on 700ms ease-out forwards;
+  animation: p3d-crt-on 400ms ease-out forwards;
 }
 
 @keyframes p3d-crt-on {
@@ -174,4 +174,40 @@
 
 .p3d-experience.is-mobile .p3d-maximize {
   display: none;
+}
+
+/* ===== POST da BIOS na tela do CRT (durante a aproximação) ===== */
+.p3d-bios {
+  position: absolute;
+  inset: 0;
+  padding: 28px 32px;
+  background: #000;
+  color: #c0c0c0;
+  font: 18px/1.45 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.p3d-bios p {
+  margin: 0;
+  white-space: pre;
+}
+
+.p3d-bios-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  color: #fff;
+}
+
+.p3d-bios-head img {
+  image-rendering: pixelated;
+  width: 48px;
+  height: 48px;
+}
+
+.p3d-bios-foot {
+  position: absolute;
+  left: 32px;
+  bottom: 24px;
+  color: #808080;
 }

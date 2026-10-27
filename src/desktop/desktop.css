@@ -39,7 +39,11 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #008080;
+  /* Wallpaper: lâmpada "Ilumine suas ideias" à direita, sobre um mosaico discreto de código e ícones geek. */
+  background:
+    url('/images/wallpaper-bulb.svg') right 6% bottom 6% / min(40%, 280px) auto no-repeat,
+    url('/images/wallpaper-pattern.svg') 0 0 / 240px repeat,
+    #008080;
   font-family: 'Pixelated MS Sans Serif', Arial, sans-serif;
   font-size: 11px;
   overflow: hidden;
@@ -698,4 +702,140 @@
   .p3d-desktop.is-flicker {
     animation: none;
   }
+}
+
+/* ===== Tetris (só no menu Iniciar) ===== */
+.p3d-window-body:has(.p3d-tetris) {
+  padding: 0;
+}
+
+.p3d-tetris {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+  padding: 8px;
+  outline: none;
+  user-select: none;
+}
+
+.p3d-tetris-well {
+  position: relative;
+  flex: 0 1 auto;
+  height: 100%;
+  aspect-ratio: 1 / 2;
+  max-width: 62%;
+  background: #000;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  padding: 2px;
+}
+
+.p3d-tetris-board {
+  display: grid;
+  grid-template-rows: repeat(20, 1fr);
+  width: 100%;
+  height: 100%;
+}
+
+.p3d-tetris i {
+  display: block;
+}
+
+.p3d-tetris [data-cell='I'] { --c: #00c8f0; }
+.p3d-tetris [data-cell='O'] { --c: #f0c800; }
+.p3d-tetris [data-cell='T'] { --c: #a000f0; }
+.p3d-tetris [data-cell='S'] { --c: #00c800; }
+.p3d-tetris [data-cell='Z'] { --c: #f02020; }
+.p3d-tetris [data-cell='J'] { --c: #2040f0; }
+.p3d-tetris [data-cell='L'] { --c: #f08000; }
+
+.p3d-tetris i:not([data-cell='']) {
+  background: var(--c);
+  box-shadow: inset -2px -2px rgba(0, 0, 0, 0.45), inset 2px 2px rgba(255, 255, 255, 0.55);
+}
+
+.p3d-tetris-board i[data-ghost] {
+  box-shadow: inset 0 0 0 1px #808080;
+}
+
+.p3d-tetris-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-weight: bold;
+}
+
+.p3d-tetris-overlay p {
+  margin: 0;
+}
+
+.p3d-tetris-side {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.p3d-tetris-next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 34px;
+  padding: 4px 0;
+}
+
+.p3d-tetris-next > div {
+  display: flex;
+}
+
+.p3d-tetris-next i {
+  width: 14px;
+  height: 14px;
+}
+
+.p3d-tetris-stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  margin: 0;
+}
+
+.p3d-tetris-stats dd {
+  margin: 0;
+  text-align: right;
+  font-weight: bold;
+}
+
+.p3d-tetris-help {
+  margin: 0;
+  color: #404040;
+  line-height: 1.5;
+}
+
+.p3d-tetris-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: auto;
+}
+
+.p3d-tetris-pad button {
+  min-width: 0;
+  padding: 4px 0;
+}
+
+/* No celular o teclado some: os botões ficam maiores e as dicas de tecla saem. */
+.p3d-desktop.is-mobile .p3d-tetris-help {
+  display: none;
+}
+
+.p3d-desktop.is-mobile .p3d-tetris-pad button {
+  min-height: 44px;
+  font-size: 18px;
 }
