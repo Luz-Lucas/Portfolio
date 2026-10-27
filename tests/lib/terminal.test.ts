@@ -40,6 +40,11 @@ describe('runCommand', () => {
     expect(run('cls').action).toBe('clear');
   });
 
+  it('clear (Unix) also clears and is listed in help', () => {
+    expect(run('clear').action).toBe('clear');
+    expect(run('help').output.join('\n')).toMatch(/cls, clear/);
+  });
+
   it('unknown command shows the Windows-style error', () => {
     expect(run('xyz').output).toEqual(["'xyz' não é reconhecido como um comando interno. Digite help."]);
   });

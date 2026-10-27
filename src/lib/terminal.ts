@@ -24,7 +24,7 @@ const HELP = [
   '  contato       como falar comigo',
   '  curriculo     link do currículo',
   '  abrir <app>   abre um app (' + Object.keys(OPEN_NAMES).join(', ') + ')',
-  '  cls           limpa a tela',
+  '  cls, clear    limpa a tela',
 ];
 
 const normalize = (s: string) =>
@@ -67,6 +67,7 @@ export function runCommand(input: string, { content, projects }: Ctx): CommandRe
         : { output: [`App não encontrado. Use: ${Object.keys(OPEN_NAMES).join(', ')}`] };
     }
     case 'cls':
+    case 'clear':
       return { output: [], action: 'clear' };
     default:
       return { output: [`'${input.trim().split(/\s+/)[0]}' não é reconhecido como um comando interno. Digite help.`] };
