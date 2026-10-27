@@ -12,7 +12,8 @@ export function CvViewer({ content }: { content: SiteContent }) {
           Abrir em nova aba
         </a>
       </div>
-      <iframe title="Currículo" src={content.cvUrl} />
+      {/* Esconde a barra e o painel do leitor de PDF (Chrome/Edge): fica só a página, na largura da janela. */}
+      <iframe title="Currículo" src={`${content.cvUrl}#toolbar=0&navpanes=0&view=FitH`} />
     </div>
   );
 }

@@ -56,7 +56,8 @@ describe('content apps', () => {
 
   it('CvViewer embeds the pdf with a download link', () => {
     show('cv', { ...SEED_CONTENT, cvUrl: '/cv.pdf' });
-    expect(screen.getByTitle('Currículo')).toHaveAttribute('src', '/cv.pdf');
+    // sem a barra do leitor de PDF do navegador: só a página, na largura da janela
+    expect(screen.getByTitle('Currículo')).toHaveAttribute('src', '/cv.pdf#toolbar=0&navpanes=0&view=FitH');
     expect(screen.getByRole('link', { name: 'Baixar' })).toHaveAttribute('download');
   });
 
