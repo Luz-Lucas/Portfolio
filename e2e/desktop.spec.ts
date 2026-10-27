@@ -12,9 +12,10 @@ test.beforeEach(async ({ page }) => {
   await expect(page.locator('[data-intro-phase]')).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
 });
 
-test('desktop sits inside the monitor and covers ≥ 60% of the viewport height', async ({ page }) => {
+// A câmera final recua um pouco para a luminária e a caneca de café caberem no quadro (easter eggs).
+test('desktop sits inside the monitor and covers ≥ 50% of the viewport height', async ({ page }) => {
   const box = await page.getByTestId('screen-overlay').boundingBox();
-  expect(box!.height / 900).toBeGreaterThanOrEqual(0.6);
+  expect(box!.height / 900).toBeGreaterThanOrEqual(0.5);
   await page.screenshot({ path: 'e2e/__screenshots__/desktop-in-monitor.png' });
 });
 
