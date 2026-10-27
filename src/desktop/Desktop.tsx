@@ -6,7 +6,7 @@ import { APPS } from '@/content/apps';
 import type { AppId, ProjectsResult, SiteContent } from '@/content/types';
 import { SCENE_MESSAGE_EVENT, type SceneMessage } from '@/lib/easterEggs';
 import { BoundsContext, type Bounds } from './bounds';
-import { clampPosition } from './clamp';
+import { clampPosition, fitInside } from './clamp';
 import { renderApp } from './apps';
 import { DesktopIcon } from './DesktopIcon';
 import { Taskbar } from './Taskbar';
@@ -88,6 +88,19 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
       if (c.x !== w.x || c.y !== w.y) move(w.id, c.x, c.y);
     }
   }, [bounds]);
+
+  // Janela recém-aberta cabe inteira na área de trabalho; depois o usuário pode arrastá-la para onde quiser.
+  const fitted = useRef(new Set<AppId>());
+  useEffect(() => {
+    const open = new Set(windows.map((w) => w.id));
+    for (const id of fitted.current) if (!open.has(id)) fitted.current.delete(id);
+    for (const w of windows) {
+      if (fitted.current.has(w.id)) continue;
+      fitted.current.add(w.id);
+      const c = fitInside(w, w, bounds);
+      if (c.x !== w.x || c.y !== w.y) useWindowStore.getState().move(w.id, c.x, c.y);
+    }
+  }, [windows, bounds]);
 
   return (
     <div className={`p3d-desktop${mobile ? ' is-mobile' : ''}${flicker ? ' is-flicker' : ''}`}>

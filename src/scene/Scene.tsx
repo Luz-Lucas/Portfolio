@@ -33,14 +33,14 @@ const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 
 // Objetos assados em Bake_Objetos não são clicáveis: os cliques caem em volumes invisíveis.
 // Posições lidas do desk.blend e convertidas de Z-up (Blender) para Y-up (glTF): (x, z, -y).
 const LAMP_HIT = new THREE.Vector3(-0.35, 1.25, 0.04); // cúpula da luminária
-const MUG_HIT = new THREE.Vector3(0.45, 0.8, -0.04); // caneca de café
+const MUG_HIT = new THREE.Vector3(0.36, 0.8, -0.04); // caneca de café
 const CLEAN_CODE_HIT = new THREE.Vector3(0.3881, 1.2385, -0.294); // lombada do Clean Code
 const LAMP_OFF_DIM = 0.28;
 /**
- * Ajuste da pose final: o mais perto possível com a caneca de café ainda no quadro (duplo clique).
- * Deslocamento em metros nos eixos da câmera; giro em graus (yaw para a direita, pitch para baixo).
+ * Pose final: de frente para o vidro do CRT, sem giro, para a área de trabalho (um retângulo) ficar reta sobre a tela.
+ * Distância e deslocamento (m) escolhidos para a luminária e a caneca de café caberem no quadro (easter eggs).
  */
-const END_NUDGE = { back: 0.1, right: 0, up: -0.04, yaw: 5, pitch: 1 };
+const END_VIEW = { distance: 0.64, right: -0.01, up: -0.03 };
 const SCREEN_OFF = new THREE.Color('#0b0f0e');
 const SCREEN_ON = new THREE.Color('#2a6f8a');
 const LED_OFF = new THREE.Color('#14301a');
@@ -95,14 +95,11 @@ function Model({ phase, progress, dolly, onReady, onScreenRect }: Omit<Props, 'o
       position: c.getWorldPosition(new THREE.Vector3()),
       quaternion: c.getWorldQuaternion(new THREE.Quaternion()),
     });
-    const end = pose(camEnd);
-    end.position
-      .addScaledVector(new THREE.Vector3(0, 0, 1).applyQuaternion(end.quaternion), END_NUDGE.back)
-      .addScaledVector(new THREE.Vector3(1, 0, 0).applyQuaternion(end.quaternion), END_NUDGE.right)
-      .addScaledVector(new THREE.Vector3(0, 1, 0).applyQuaternion(end.quaternion), END_NUDGE.up);
-    end.quaternion
-      .premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-END_NUDGE.yaw)))
-      .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), THREE.MathUtils.degToRad(-END_NUDGE.pitch)));
+    const glass = new THREE.Box3().setFromObject(screen).getCenter(new THREE.Vector3());
+    const end = {
+      position: glass.clone().add(new THREE.Vector3(END_VIEW.right, END_VIEW.up, END_VIEW.distance)),
+      quaternion: new THREE.Quaternion(),
+    };
     return { start: pose(camStart), end, fov: camEnd.fov, screen, led, vapors, glow, baked };
   }, [scene]);
 

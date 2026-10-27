@@ -1,7 +1,7 @@
 import type { AppDef } from './types';
 
 export const APPS: readonly AppDef[] = [
-  { id: 'readme', title: 'Leia-me.txt', icon: '/icons/readme.svg', defaultSize: { w: 420, h: 300 } },
+  { id: 'readme', title: 'Leia-me.txt', icon: '/icons/readme.svg', defaultSize: { w: 400, h: 260 } },
   { id: 'about', title: 'Sobre mim', icon: '/icons/about.svg', defaultSize: { w: 460, h: 380 } },
   { id: 'projects', title: 'Projetos', icon: '/icons/projects.svg', defaultSize: { w: 560, h: 400 } },
   { id: 'skills', title: 'Skills', icon: '/icons/skills.svg', defaultSize: { w: 440, h: 380 } },
@@ -10,7 +10,7 @@ export const APPS: readonly AppDef[] = [
   { id: 'contact', title: 'Contato', icon: '/icons/contact.svg', defaultSize: { w: 420, h: 420 } },
   { id: 'terminal', title: 'Prompt de comando', icon: '/icons/terminal.svg', defaultSize: { w: 520, h: 320 } },
   { id: 'trash', title: 'Lixeira', icon: '/icons/trash.svg', defaultSize: { w: 380, h: 260 } },
-  { id: 'tetris', title: 'Tetris', icon: '/icons/tetris.svg', defaultSize: { w: 380, h: 470 }, startMenuOnly: true },
+  { id: 'tetris', title: 'Tetris', icon: '/icons/tetris.svg', defaultSize: { w: 360, h: 440 }, startMenuOnly: true },
 ];
 
 export function getApp(id: AppDef['id']): AppDef {
