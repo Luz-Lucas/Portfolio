@@ -28,7 +28,6 @@ const taskbar = () => within(screen.getByRole('toolbar', { name: 'Barra de taref
 describe('Desktop', () => {
   beforeEach(() => {
     useWindowStore.getState().reset();
-    localStorage.setItem('p3d:readme-seen', '1');
   });
 
   it('renders the nine icons in order as buttons', () => {
@@ -84,16 +83,10 @@ describe('Desktop', () => {
     expect(screen.getByRole('dialog', { name: 'Tetris' })).toBeInTheDocument();
   });
 
-  it('opens the readme on first visit and remembers it', () => {
-    localStorage.removeItem('p3d:readme-seen');
+  it('opens the readme every time the PC boots, even on a return visit', () => {
+    localStorage.setItem('p3d:readme-seen', '1'); // marca da versão antiga: não impede mais
     renderDesktop();
     expect(screen.getByRole('dialog', { name: 'Leia-me.txt' })).toBeInTheDocument();
-    expect(localStorage.getItem('p3d:readme-seen')).toBe('1');
-  });
-
-  it('does not open the readme when already seen', () => {
-    renderDesktop();
-    expect(screen.queryByRole('dialog', { name: 'Leia-me.txt' })).not.toBeInTheDocument();
   });
 
   it('shows the clock as HH:MM', () => {
@@ -123,7 +116,6 @@ describe('Desktop', () => {
 describe('Desktop with GitHub unavailable', () => {
   it('still renders and the Projects window shows the friendly message', () => {
     useWindowStore.getState().reset();
-    localStorage.setItem('p3d:readme-seen', '1');
     render(<Desktop content={SEED_CONTENT} projects={{ error: 'github_unavailable' }} mode="scene" />);
     fireEvent.click(icons().getByRole('button', { name: 'Projetos' }));
     expect(screen.getByText('Não foi possível carregar os projetos agora.')).toBeInTheDocument();
@@ -133,7 +125,6 @@ describe('Desktop with GitHub unavailable', () => {
 describe('Desktop mobile first visit', () => {
   it('opens the readme maximized on mobile', () => {
     useWindowStore.getState().reset();
-    localStorage.removeItem('p3d:readme-seen');
     render(<Desktop content={SEED_CONTENT} projects={SEED_PROJECTS} mode="mobile" />);
     expect(useWindowStore.getState().windows.find((w) => w.id === 'readme')?.maximized).toBe(true);
     useWindowStore.getState().setMode('scene');

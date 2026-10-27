@@ -25,16 +25,6 @@ type Props = {
   renderBody?: (id: AppId) => ReactNode;
 };
 
-const README_KEY = 'p3d:readme-seen';
-
-function readmeSeen(): boolean {
-  try {
-    if (localStorage.getItem(README_KEY)) return true;
-    localStorage.setItem(README_KEY, '1');
-  } catch {}
-  return false;
-}
-
 export function Desktop({ content, projects, mode, scale = 1, renderBody }: Props) {
   const body = renderBody ?? ((id: AppId) => renderApp(id, { content, projects }));
   const areaRef = useRef<HTMLDivElement>(null);
@@ -49,8 +39,9 @@ export function Desktop({ content, projects, mode, scale = 1, renderBody }: Prop
     useWindowStore.getState().setMode(mode);
   }, [mode]);
 
+  // O Leia-me abre toda vez que o PC liga (a intro também roda em toda visita).
   useEffect(() => {
-    if (!readmeSeen()) useWindowStore.getState().open('readme');
+    useWindowStore.getState().open('readme');
   }, []);
 
   // Easter eggs da cena 3D (luminária, café, Clean Code): mensagem "Luz 95", às vezes com a tela piscando.
