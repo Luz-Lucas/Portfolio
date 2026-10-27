@@ -15,6 +15,15 @@ describe('bakedToBasic', () => {
     expect(m.toneMapped).toBe(false);
     expect(other.material).toBeInstanceOf(THREE.MeshStandardMaterial);
   });
+
+  it('is idempotent: running again keeps the same materials (cached GLTF, StrictMode)', () => {
+    const baked = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial({ name: 'Baked_Fundo' }));
+    const root = new THREE.Group().add(baked);
+    bakedToBasic(root);
+    const first = baked.material;
+    expect(bakedToBasic(root)).toBe(0);
+    expect(baked.material).toBe(first);
+  });
 });
 
 describe('ribbonUVs', () => {

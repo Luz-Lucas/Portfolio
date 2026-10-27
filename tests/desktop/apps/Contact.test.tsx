@@ -41,6 +41,19 @@ describe('Contact', () => {
     expect(await screen.findByText('Muitas mensagens, tente mais tarde.')).toBeInTheDocument();
   });
 
+  it('offers a pre-filled e-mail when sending fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: 'Não foi possível enviar agora.' }), { status: 502 })),
+    );
+    render(<Contact content={SEED_CONTENT} />);
+    fill();
+    const link = await screen.findByRole('link', { name: 'enviar pelo seu e-mail' });
+    const href = link.getAttribute('href')!;
+    expect(href.startsWith(`mailto:${SEED_CONTENT.contact.email}?`)).toBe(true);
+    expect(decodeURIComponent(href)).toContain('Olá, vi seu portfólio!');
+  });
+
   it('keeps the honeypot out of the tab order', () => {
     render(<Contact content={SEED_CONTENT} />);
     const hp = document.querySelector('input[name="website"]')!;

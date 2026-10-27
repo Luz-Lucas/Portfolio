@@ -7,10 +7,10 @@ const json = (body: unknown, status = 200) => Response.json(body, { status });
 
 async function sendWithResend(to: string, { name, email, subject, message }: ContactInput): Promise<boolean> {
   const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({
-    from: 'Portfólio <onboarding@resend.dev>',
+    from: 'Luz 95 <onboarding@resend.dev>',
     to,
     replyTo: email,
-    subject: `Portfólio: ${subject || `mensagem de ${name}`}`,
+    subject: `Luz 95: ${subject || `mensagem de ${name}`}`,
     text: `${name} <${email}>\n\n${message}`,
   });
   return !error;

@@ -33,7 +33,7 @@ describe('POST /api/contact', () => {
     expect(res.status).toBe(200);
     expect(send).toHaveBeenCalledWith(
       expect.objectContaining({
-        from: 'Portfólio <onboarding@resend.dev>',
+        from: 'Luz 95 <onboarding@resend.dev>',
         to: 'dono@exemplo.com',
         replyTo: 'ana@exemplo.com',
       }),

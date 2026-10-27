@@ -1,10 +1,11 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { PerformanceMonitor, PerspectiveCamera, useGLTF, useProgress } from '@react-three/drei';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import { createLamp, MORE_LIGHT_EVENT } from '@/lib/lamp';
 import type { IntroPhase } from './intro';
 import { fitFov } from './fov';
 import { frameMode, IDLE_FPS } from './frames';
@@ -26,6 +27,10 @@ type Props = {
 };
 
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+// A luminária está assada em Bake_Objetos: o clique cai numa esfera invisível sobre a cúpula
+// (posição do build_scene.py convertida de Z-up do Blender para Y-up do glTF).
+const LAMP_HIT = new THREE.Vector3(-0.35, 1.25, 0.04);
+const LAMP_OFF_DIM = 0.28;
 const SCREEN_OFF = new THREE.Color('#0b0f0e');
 const SCREEN_ON = new THREE.Color('#2a6f8a');
 const LED_OFF = new THREE.Color('#14301a');
@@ -44,6 +49,11 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
     const screen = scene.getObjectByName('Screen') as THREE.Mesh;
     const led = scene.getObjectByName('PowerLED') as THREE.Mesh;
     bakedToBasic(scene);
+    const baked: THREE.MeshBasicMaterial[] = [];
+    scene.traverse((o) => {
+      const mat = (o as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined;
+      if (mat?.name?.startsWith('Baked_')) baked.push(mat);
+    });
     screen.material = new THREE.MeshBasicMaterial({ color: SCREEN_OFF.clone(), toneMapped: false });
     led.material = new THREE.MeshBasicMaterial({ color: LED_OFF.clone(), toneMapped: false });
     const vapors: THREE.ShaderMaterial[] = [];
@@ -75,8 +85,30 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
       position: c.getWorldPosition(new THREE.Vector3()),
       quaternion: c.getWorldQuaternion(new THREE.Quaternion()),
     });
-    return { start: pose(camStart), end: pose(camEnd), fov: camEnd.fov, screen, led, vapors, glow };
+    return { start: pose(camStart), end: pose(camEnd), fov: camEnd.fov, screen, led, vapors, glow, baked };
   }, [scene]);
+
+  // Luminária: desligada, a iluminação assada escurece e só a tela do CRT continua acesa.
+  const lamp = useMemo(() => createLamp(), []);
+  const [lampOn, setLampOn] = useState(true);
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    for (const m of parts.baked) m.color.setScalar(lampOn ? 1 : LAMP_OFF_DIM);
+    invalidate();
+  }, [lampOn, parts, invalidate]);
+  useEffect(
+    () => () => {
+      for (const m of parts.baked) m.color.setScalar(1);
+    },
+    [parts],
+  );
+  const toggleLamp = (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
+    if (phase !== 'desktop') return;
+    const { on, egg } = lamp.toggle();
+    setLampOn(on);
+    if (egg) window.dispatchEvent(new Event(MORE_LIGHT_EVENT));
+  };
 
   useEffect(onReady, [onReady]);
 
@@ -109,13 +141,24 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
     <>
       <PerspectiveCamera ref={camera} makeDefault fov={fov} near={0.01} far={50} />
       <primitive object={scene} />
+      <mesh
+        position={LAMP_HIT}
+        onClick={toggleLamp}
+        onPointerOver={() => phase === 'desktop' && (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = '')}
+      >
+        <sphereGeometry args={[0.1, 12, 8]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+      </mesh>
     </>
   );
 }
 
 function Progress({ onProgress }: { onProgress: (pct: number) => void }) {
   const { progress } = useProgress();
-  useEffect(() => onProgress(progress), [progress, onProgress]);
+  useEffect(() => {
+    onProgress(progress);
+  }, [progress, onProgress]);
   return null;
 }
 
@@ -125,14 +168,15 @@ function FrameDriver({ phase, covered }: { phase: IntroPhase; covered: boolean }
   const mode = frameMode(phase, covered);
   useEffect(() => {
     if (mode === 'off') return;
-    if (mode === 'idle') {
-      invalidate();
-      const t = setInterval(() => invalidate(), 1000 / IDLE_FPS);
-      return () => clearInterval(t);
-    }
+    // Ocioso: ainda pelo requestAnimationFrame (alinhado ao vsync, sem trancos na fumaça), pulando quadros.
+    const minGap = mode === 'idle' ? 1000 / IDLE_FPS - 4 : 0;
     let raf = 0;
-    const loop = () => {
-      invalidate();
+    let last = -Infinity;
+    const loop = (now: number) => {
+      if (now - last >= minGap) {
+        last = now;
+        invalidate();
+      }
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);

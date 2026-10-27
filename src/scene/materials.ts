@@ -10,7 +10,8 @@ export function bakedToBasic(root: THREE.Object3D): number {
     const mesh = o as THREE.Mesh;
     if (!mesh.isMesh) return;
     const mat = mesh.material as THREE.MeshStandardMaterial;
-    if (!mat?.name?.startsWith('Baked_')) return;
+    // idempotente: a cena do GLTF fica em cache e o useMemo pode rodar de novo (StrictMode, remontagem)
+    if (!mat?.name?.startsWith('Baked_') || (mat as unknown as THREE.MeshBasicMaterial).isMeshBasicMaterial) return;
     mesh.material = new THREE.MeshBasicMaterial({ name: mat.name, map: mat.map, toneMapped: false });
     mat.dispose();
     count++;
@@ -56,8 +57,10 @@ export function vaporMaterial(seed: number): THREE.ShaderMaterial {
       void main() {
         vUv = uv;
         vec3 p = position;
-        p.x += sin(uv.y * 9.0 - uTime * 1.6 + uSeed) * 0.006 * uv.y;
-        p.z += cos(uv.y * 7.0 - uTime * 1.2 + uSeed) * 0.004 * uv.y;
+        // duas ondas lentas somadas: a fumaça serpenteia mais no alto, sem tremer
+        float sway = pow(uv.y, 1.4);
+        p.x += (sin(uv.y * 4.5 - uTime * 0.9 + uSeed) * 0.65 + sin(uv.y * 8.0 - uTime * 1.3 + uSeed * 1.7) * 0.35) * 0.008 * sway;
+        p.z += (cos(uv.y * 3.5 - uTime * 0.7 + uSeed) * 0.6 + cos(uv.y * 6.5 - uTime * 1.1 + uSeed * 2.3) * 0.4) * 0.005 * sway;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
       }
     `,
@@ -66,10 +69,11 @@ export function vaporMaterial(seed: number): THREE.ShaderMaterial {
       uniform float uSeed;
       varying vec2 vUv;
       void main() {
-        float along = sin(3.14159 * vUv.y);
-        float across = sin(3.14159 * vUv.x);
-        float flicker = 0.6 + 0.4 * sin(vUv.y * 14.0 - uTime * 2.4 + uSeed * 3.0);
-        float a = along * across * flicker * 0.32;
+        float along = smoothstep(0.0, 0.18, vUv.y) * (1.0 - smoothstep(0.45, 1.0, vUv.y));
+        float across = pow(sin(3.14159 * vUv.x), 1.5);
+        // tufos subindo devagar, sem as faixas rápidas de antes
+        float puff = 0.72 + 0.28 * sin(vUv.y * 5.0 - uTime * 1.0 + uSeed * 3.0) * sin(vUv.y * 2.3 - uTime * 0.6 + uSeed);
+        float a = along * across * puff * 0.34;
         gl_FragColor = vec4(vec3(0.95, 0.93, 0.9), a);
       }
     `,

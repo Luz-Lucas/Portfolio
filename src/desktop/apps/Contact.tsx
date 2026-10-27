@@ -4,7 +4,15 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { SiteContent } from '@/content/types';
 
-type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent' } | { kind: 'error'; message: string };
+type Status =
+  | { kind: 'idle' }
+  | { kind: 'sending' }
+  | { kind: 'sent' }
+  | { kind: 'error'; message: string; mailto?: string };
+
+/** Plano B quando o envio falha: abre o e-mail do visitante com a mensagem já escrita. */
+const mailtoFor = (to: string, data: Record<string, FormDataEntryValue>) =>
+  `mailto:${to}?subject=${encodeURIComponent(String(data.subject || `Contato pelo portfólio — ${data.name}`))}&body=${encodeURIComponent(String(data.message ?? ''))}`;
 
 export function Contact({ content }: { content: SiteContent }) {
   const { email, linkedin, github } = content.contact;
@@ -13,12 +21,13 @@ export function Contact({ content }: { content: SiteContent }) {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
     setStatus({ kind: 'sending' });
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        body: JSON.stringify(data),
       });
       if (res.ok) {
         form.reset();
@@ -27,10 +36,10 @@ export function Contact({ content }: { content: SiteContent }) {
         setStatus({ kind: 'error', message: 'Muitas mensagens, tente mais tarde.' });
       } else {
         const body = await res.json().catch(() => ({}));
-        setStatus({ kind: 'error', message: body.error ?? 'Não foi possível enviar agora.' });
+        setStatus({ kind: 'error', message: body.error ?? 'Não foi possível enviar agora.', mailto: mailtoFor(email, data) });
       }
     } catch {
-      setStatus({ kind: 'error', message: 'Sem conexão. Tente de novo.' });
+      setStatus({ kind: 'error', message: 'Sem conexão. Tente de novo.', mailto: mailtoFor(email, data) });
     }
   }
 
@@ -81,6 +90,12 @@ export function Contact({ content }: { content: SiteContent }) {
               {status.kind === 'sending' && 'Enviando...'}
               {status.kind === 'sent' && 'Mensagem enviada!'}
               {status.kind === 'error' && status.message}
+              {status.kind === 'error' && status.mailto && (
+                <>
+                  {' '}
+                  Você pode <a href={status.mailto}>enviar pelo seu e-mail</a>.
+                </>
+              )}
             </span>
           </div>
         </fieldset>

@@ -149,10 +149,69 @@
   white-space: nowrap;
 }
 
-.p3d-clock {
-  flex-shrink: 0;
-  padding: 3px 10px;
-  margin: 0;
+/* Bandeja à direita: botão afundado como a área de notificação do Win95. */
+.p3d-taskbar > button.p3d-clock {
+  flex: 0 0 auto;
+  margin-left: auto;
+  min-width: 0;
+  padding: 0 10px;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080;
+  background: #c0c0c0;
+}
+
+.p3d-calendar {
+  position: absolute;
+  right: 2px;
+  bottom: 30px;
+  width: 210px;
+}
+
+.p3d-calendar-month {
+  margin: 0 0 6px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.p3d-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 4px;
+  background: #fff;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  text-align: center;
+}
+
+.p3d-calendar-weekday {
+  font-weight: bold;
+  color: #808080;
+}
+
+.p3d-calendar-grid > button.p3d-calendar-today {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  box-shadow: none;
+  background: #000080;
+  color: #fff;
+  cursor: pointer;
+}
+
+.p3d-notice {
+  position: absolute;
+  right: 6px;
+  bottom: 250px;
+  width: 230px;
+}
+
+.p3d-notice p {
+  margin: 4px 0 8px;
+}
+
+.p3d-notice-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
 }
 
 /* Menu Iniciar */
@@ -226,7 +285,8 @@
   height: 40px;
 }
 
-.p3d-desktop.is-mobile .p3d-start-menu {
+.p3d-desktop.is-mobile .p3d-start-menu,
+.p3d-desktop.is-mobile .p3d-calendar {
   bottom: 40px;
 }
 
@@ -506,11 +566,17 @@
   user-select: text;
 }
 
+/* O 98.css desenha <pre> como caixa branca afundada; no terminal é só texto. */
 .p3d-terminal pre {
   margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: none;
+  color: inherit;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: inherit;
+  font: inherit;
 }
 
 .p3d-prompt {
@@ -595,4 +661,41 @@
 
 .p3d-highlights li {
   margin: 0 0 2px;
+}
+
+/* ===== Easter egg da luminária ===== */
+.p3d-desktop.is-flicker {
+  animation: p3d-flicker 0.9s steps(1, end);
+}
+
+@keyframes p3d-flicker {
+  0%, 22%, 48%, 70% { filter: brightness(0.15); }
+  11%, 35%, 60%, 100% { filter: none; }
+}
+
+.p3d-msgbox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9000;
+  width: min(320px, calc(100% - 24px));
+  transform: translate(-50%, -50%);
+}
+
+.p3d-msgbox p {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 4px 14px;
+}
+
+.p3d-msgbox-actions {
+  display: flex;
+  justify-content: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p3d-desktop.is-flicker {
+    animation: none;
+  }
 }
