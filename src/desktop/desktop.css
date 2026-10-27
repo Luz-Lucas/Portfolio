@@ -434,12 +434,21 @@
   align-items: center;
 }
 
-.p3d-cv iframe {
+/* só as páginas do PDF, em branco, com rolagem */
+.p3d-cv-pages {
   flex: 1;
-  width: 100%;
-  border: 0;
+  min-height: 0;
+  overflow-y: auto;
   background: #fff;
   box-shadow: inset -1px -1px #fff, inset 1px 1px #808080;
+}
+
+.p3d-cv-pages canvas {
+  display: block;
+}
+
+.p3d-cv-pages canvas + canvas {
+  border-top: 1px solid #c0c0c0;
 }
 
 .p3d-button-link {

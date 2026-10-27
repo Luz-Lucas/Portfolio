@@ -258,7 +258,8 @@ export default function Scene(props: Props) {
       </Suspense>
       {high && (
         // As texturas já têm AgX: o Bloom só realça o que passa do limiar (lâmpada, LED, tela ligada).
-        <EffectComposer multisampling={4}>
+        // multisampling > 0 deixava a cena preta (só uma faixa à esquerda desenhada) em GPUs reais (D3D11/ANGLE).
+        <EffectComposer multisampling={0}>
           <Bloom mipmapBlur luminanceThreshold={0.97} luminanceSmoothing={0.05} intensity={0.45} />
         </EffectComposer>
       )}
