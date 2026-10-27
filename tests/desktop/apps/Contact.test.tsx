@@ -12,7 +12,10 @@ function fill() {
 }
 
 describe('Contact', () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
 
   it('shows the contact links', () => {
     render(<Contact content={SEED_CONTENT} />);
@@ -59,5 +62,45 @@ describe('Contact', () => {
     const hp = document.querySelector('input[name="website"]')!;
     expect(hp).toHaveAttribute('tabindex', '-1');
     expect(hp.closest('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  describe('with a Web3Forms key', () => {
+    it('sends straight from the browser to Web3Forms', async () => {
+      vi.stubEnv('NEXT_PUBLIC_WEB3FORMS_KEY', 'chave-publica-teste');
+      const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: true }), { status: 200 }));
+      vi.stubGlobal('fetch', fetchMock);
+      render(<Contact content={SEED_CONTENT} />);
+      fill();
+      expect(await screen.findByText('Mensagem enviada!')).toBeInTheDocument();
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toBe('https://api.web3forms.com/submit');
+      expect(JSON.parse(init.body)).toMatchObject({
+        access_key: 'chave-publica-teste',
+        name: 'Ana',
+        email: 'ana@exemplo.com',
+        subject: 'Vaga',
+        message: 'Olá, vi seu portfólio!',
+        botcheck: '',
+      });
+    });
+
+    it('shows the service error with the e-mail fallback', async () => {
+      vi.stubEnv('NEXT_PUBLIC_WEB3FORMS_KEY', 'chave-publica-teste');
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: false, message: 'Invalid access key' }), { status: 400 })));
+      render(<Contact content={SEED_CONTENT} />);
+      fill();
+      expect(await screen.findByRole('link', { name: 'enviar pelo seu e-mail' })).toBeInTheDocument();
+    });
+
+    it('drops bot submissions (honeypot filled) without sending', async () => {
+      vi.stubEnv('NEXT_PUBLIC_WEB3FORMS_KEY', 'chave-publica-teste');
+      const fetchMock = vi.fn();
+      vi.stubGlobal('fetch', fetchMock);
+      render(<Contact content={SEED_CONTENT} />);
+      fireEvent.change(document.querySelector('input[name="website"]')!, { target: { value: 'spam' } });
+      fill();
+      expect(await screen.findByText('Mensagem enviada!')).toBeInTheDocument();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
   });
 });

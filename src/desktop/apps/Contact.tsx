@@ -14,6 +14,42 @@ type Status =
 const mailtoFor = (to: string, data: Record<string, FormDataEntryValue>) =>
   `mailto:${to}?subject=${encodeURIComponent(String(data.subject || `Contato pelo portfólio — ${data.name}`))}&body=${encodeURIComponent(String(data.message ?? ''))}`;
 
+type SendResult = { ok: boolean; status: number; error?: string };
+
+/**
+ * Com NEXT_PUBLIC_WEB3FORMS_KEY, envia direto do navegador ao Web3Forms (o plano gratuito não aceita envio
+ * pelo servidor; a chave é pública por design). Sem a chave, usa a rota /api/contact (FormSubmit/Resend).
+ */
+async function send(data: Record<string, FormDataEntryValue>): Promise<SendResult> {
+  const key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+  if (!key) {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const body = res.ok ? {} : await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, error: body.error };
+  }
+  const res = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      access_key: key,
+      from_name: 'Luz 95 — portfólio',
+      name: data.name,
+      email: data.email,
+      subject: String(data.subject || `Contato pelo portfólio — ${data.name}`),
+      message: data.message,
+      botcheck: '',
+    }),
+  });
+  const body = await res.json().catch(() => ({}));
+  const ok = res.ok && body.success === true;
+  if (!ok) console.error('[contato] Web3Forms recusou o envio:', res.status, body.message ?? '');
+  return { ok, status: res.status };
+}
+
 export function Contact({ content }: { content: SiteContent }) {
   const { email, linkedin, github } = content.contact;
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
@@ -22,21 +58,22 @@ export function Contact({ content }: { content: SiteContent }) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form));
+    // Honeypot: só robôs preenchem o campo escondido; finge que enviou e descarta.
+    if (data.website) {
+      form.reset();
+      setStatus({ kind: 'sent' });
+      return;
+    }
     setStatus({ kind: 'sending' });
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      const res = await send(data);
       if (res.ok) {
         form.reset();
         setStatus({ kind: 'sent' });
       } else if (res.status === 429) {
         setStatus({ kind: 'error', message: 'Muitas mensagens, tente mais tarde.' });
       } else {
-        const body = await res.json().catch(() => ({}));
-        setStatus({ kind: 'error', message: body.error ?? 'Não foi possível enviar agora.', mailto: mailtoFor(email, data) });
+        setStatus({ kind: 'error', message: res.error ?? 'Não foi possível enviar agora.', mailto: mailtoFor(email, data) });
       }
     } catch {
       setStatus({ kind: 'error', message: 'Sem conexão. Tente de novo.', mailto: mailtoFor(email, data) });
