@@ -33,6 +33,18 @@ describe('Terminal', () => {
     expect(screen.queryByText(`${SEED_CONTENT.about.name} — ${SEED_CONTENT.about.role}`)).not.toBeInTheDocument();
   });
 
+  it('survives scrollIntoView returning a Promise (current Chrome)', () => {
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = () => Promise.resolve() as unknown as void;
+    try {
+      type('help');
+      type('whoami');
+      expect(screen.getByText(`${SEED_CONTENT.about.name} — ${SEED_CONTENT.about.role}`)).toBeInTheDocument();
+    } finally {
+      Element.prototype.scrollIntoView = original;
+    }
+  });
+
   it('arrow up recalls the previous command', () => {
     type('help');
     const input = screen.getByRole('textbox', { name: 'Comando' });

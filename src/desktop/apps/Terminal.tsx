@@ -6,7 +6,7 @@ import type { ProjectsResult, SiteContent } from '@/content/types';
 import { runCommand } from '@/lib/terminal';
 import { useWindowStore } from '../windowStore';
 
-const BANNER = ['Portfólio 95 [Versão 4.00.950]', '(C) Copyright 1981-1995. Digite help para ver os comandos.', ''];
+const BANNER = ['Luz 95 [Versão 4.00.950]', '(C) Copyright 1981-1995. Digite help para ver os comandos.', ''];
 
 export function Terminal({ content, projects }: { content: SiteContent; projects: ProjectsResult }) {
   const [lines, setLines] = useState<string[]>(BANNER);
@@ -16,8 +16,13 @@ export function Terminal({ content, projects }: { content: SiteContent; projects
   const inputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => inputRef.current?.focus(), []);
-  useEffect(() => endRef.current?.scrollIntoView?.({ block: 'end' }), [lines]);
+  // Corpo em bloco: no Chrome atual scrollIntoView devolve uma Promise, que o React trataria como cleanup.
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  useEffect(() => {
+    endRef.current?.scrollIntoView?.({ block: 'end' });
+  }, [lines]);
 
   function submit() {
     const result = runCommand(value, { content, projects });

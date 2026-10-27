@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { Desktop } from '@/desktop/Desktop';
 import { useWindowStore } from '@/desktop/windowStore';
 import { SEED_CONTENT } from '@/content/seed';
+import { MORE_LIGHT_EVENT } from '@/lib/lamp';
 import { TEST_PROJECTS as SEED_PROJECTS } from '../fixtures/content';
 
 const TITLES = [
@@ -81,7 +82,7 @@ describe('Desktop', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     vi.setSystemTime(new Date(2026, 9, 26, 9, 5));
     renderDesktop();
-    expect(screen.getByLabelText('Relógio')).toHaveTextContent('09:05');
+    expect(screen.getByRole('button', { name: /Relógio/ })).toHaveTextContent('09:05');
     vi.useRealTimers();
   });
 
@@ -118,5 +119,17 @@ describe('Desktop mobile first visit', () => {
     render(<Desktop content={SEED_CONTENT} projects={SEED_PROJECTS} mode="mobile" />);
     expect(useWindowStore.getState().windows.find((w) => w.id === 'readme')?.maximized).toBe(true);
     useWindowStore.getState().setMode('scene');
+  });
+
+  it('lamp easter egg: flickers the screen and suggests a bit more Luz', () => {
+    renderDesktop();
+    act(() => {
+      window.dispatchEvent(new Event(MORE_LIGHT_EVENT));
+    });
+    expect(document.querySelector('.p3d-desktop')).toHaveClass('is-flicker');
+    const box = screen.getByRole('alertdialog', { name: 'Luz 95' });
+    expect(box).toHaveTextContent('Talvez você precise de um pouco mais de Luz');
+    fireEvent.click(within(box).getByRole('button', { name: 'OK' }));
+    expect(screen.queryByRole('alertdialog', { name: 'Luz 95' })).not.toBeInTheDocument();
   });
 });

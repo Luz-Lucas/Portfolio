@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { about } = await getSiteContent();
-  const title = `${about.name} — ${about.role}`;
+  const title = `Luz 95 · ${about.name} — ${about.role}`;
   const description = SITE_DESCRIPTION;
   return {
     title,

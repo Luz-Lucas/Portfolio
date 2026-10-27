@@ -29,6 +29,12 @@ body:has(.admin) {
 }
 
 /* O 98.css (tema Win95 do site) estiliza button/input/textarea/select/fieldset globalmente: zera aqui. */
+.admin :where(label, legend, button, input, textarea, select, option) {
+  font-family: inherit;
+  font-size: inherit;
+  -webkit-font-smoothing: auto;
+}
+
 .admin button,
 .admin button:not(:disabled):active,
 .admin input,

@@ -29,36 +29,27 @@ export const SEED_CONTENT: SiteContent = {
     linkedin: 'https://www.linkedin.com/in/lucas-luz-0b0368432/',
     github: 'https://github.com/Luz-Lucas',
   },
+  // Visão geral, sem listar cada biblioteca: os detalhes técnicos ficam para a entrevista.
   skills: [
     {
-      group: 'Desenvolvimento Front-end',
-      description: 'Construindo interfaces responsivas com React e TypeScript moderno.',
-      items: [{ name: 'React' }, { name: 'TypeScript' }, { name: 'JavaScript (ES6+)' }, { name: 'HTML5' }, { name: 'CSS3' }, { name: 'JSX' }],
+      group: 'Front-end',
+      description: 'Interfaces responsivas e acessíveis com React e TypeScript.',
+      items: [{ name: 'React' }, { name: 'TypeScript' }, { name: 'JavaScript' }, { name: 'HTML e CSS' }],
     },
     {
-      group: 'Estilização & UI',
-      description: 'Criando layouts com CSS utilitário e frameworks de interface.',
-      items: [{ name: 'TailwindCSS' }, { name: 'Bootstrap' }, { name: 'Styled Components' }, { name: 'CSS Grid' }, { name: 'Flexbox' }, { name: 'Design responsivo' }],
+      group: 'Interface e design',
+      description: 'Do layout no Figma ao componente pronto, em qualquer tela.',
+      items: [{ name: 'Tailwind CSS' }, { name: 'Design responsivo' }, { name: 'Figma' }],
     },
     {
-      group: 'Estado & Hooks',
-      description: 'Gerenciando estado complexo com paradigmas modernos do React.',
-      items: [{ name: 'Redux' }, { name: 'Context API' }, { name: 'React Hooks' }, { name: 'Hooks customizados' }, { name: 'useEffect' }, { name: 'useReducer' }],
+      group: 'Back-end',
+      description: 'Base para integrar o front-end com APIs e bancos de dados.',
+      items: [{ name: 'Node.js' }, { name: 'APIs REST' }, { name: 'Bancos de dados' }],
     },
     {
-      group: 'Fundamentos Full-stack',
-      description: 'Expandindo além do front-end via Node.js e bancos de dados.',
-      items: [{ name: 'Node.js' }, { name: 'Express' }, { name: 'REST APIs' }, { name: 'MongoDB' }, { name: 'PostgreSQL' }, { name: 'Socket.io' }],
-    },
-    {
-      group: 'Ferramentas & Fluxo',
-      description: 'Usando ferramentas modernas para desenvolvimento e deploy eficientes.',
-      items: [{ name: 'Git' }, { name: 'VS Code' }, { name: 'Figma' }, { name: 'npm/yarn' }, { name: 'Vite' }, { name: 'Webpack' }],
-    },
-    {
-      group: 'Performance & Qualidade',
-      description: 'Garantindo apps rápidos e confiáveis com otimização e testes.',
-      items: [{ name: 'React Testing Library' }, { name: 'Jest' }, { name: 'Lighthouse' }, { name: 'Web Vitals' }, { name: 'Acessibilidade' }, { name: 'Otimização de performance' }],
+      group: 'Qualidade e ferramentas',
+      description: 'Código testado, rápido e versionado.',
+      items: [{ name: 'Testes automatizados' }, { name: 'Performance e acessibilidade' }, { name: 'Git' }],
     },
   ],
   experience: [

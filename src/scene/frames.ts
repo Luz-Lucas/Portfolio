@@ -1,7 +1,7 @@
 import type { IntroPhase } from './intro';
 
-/** Na área de trabalho só a fumaça do café se mexe: 24 quadros/s bastam. */
-export const IDLE_FPS = 24;
+/** Na área de trabalho só a fumaça do café se mexe: 30 quadros/s (metade de 60 Hz) bastam. */
+export const IDLE_FPS = 30;
 
 export type FrameMode = 'continuous' | 'idle' | 'off';
 
