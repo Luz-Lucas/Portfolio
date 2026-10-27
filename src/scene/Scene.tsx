@@ -43,6 +43,8 @@ const LAMP_OFF_DIM = 0.28;
 const END_VIEW = { distance: 0.64, right: -0.01, up: -0.03 };
 const SCREEN_OFF = new THREE.Color('#0b0f0e');
 const SCREEN_ON = new THREE.Color('#2a6f8a');
+// BIOS e boot são telas pretas: o vidro fica quase preto, senão o azul aparece nas bordas do overlay em movimento.
+const SCREEN_TEXT_MODE = new THREE.Color('#050607');
 const LED_OFF = new THREE.Color('#14301a');
 // acima de 1 para o Bloom pegar o LED aceso
 const LED_ON = new THREE.Color('#39ff5a').multiplyScalar(2.5);
@@ -151,9 +153,10 @@ function Model({ phase, progress, dolly, onReady, onScreenRect }: Omit<Props, 'o
     }
 
     const on = phase === 'poweron' ? progress() : phase === 'loading' ? 0 : 1;
-    (parts.screen.material as THREE.MeshBasicMaterial).color.lerpColors(SCREEN_OFF, SCREEN_ON, on);
+    const lit = phase === 'desktop' ? SCREEN_ON : SCREEN_TEXT_MODE;
+    (parts.screen.material as THREE.MeshBasicMaterial).color.lerpColors(SCREEN_OFF, lit, on);
     (parts.led.material as THREE.MeshBasicMaterial).color.copy(on > 0 ? LED_ON : LED_OFF);
-    (parts.glow.material as THREE.MeshBasicMaterial).opacity = on * 0.5;
+    (parts.glow.material as THREE.MeshBasicMaterial).opacity = on * (phase === 'desktop' ? 0.5 : 0.12);
     for (const v of parts.vapors) v.uniforms.uTime.value = clock.elapsedTime;
   });
 
