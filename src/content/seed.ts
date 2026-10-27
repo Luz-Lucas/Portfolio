@@ -7,12 +7,12 @@ import type { SiteContent } from './types';
 export const SEED_CONTENT: SiteContent = {
   readme: {
     body:
-      'Olá! Eu sou o **Lucas Pereira**, estudante de Engenharia de Software e desenvolvedor front-end em Minas Gerais.\n\n' +
+      'Olá! Eu sou o **Lucas Luz**, estudante de Engenharia de Software e desenvolvedor front-end em Minas Gerais.\n\n' +
       'Clique nos ícones à esquerda para ver meus projetos, skills e experiência. ' +
       'Prefere ir direto ao ponto? Abra o **Currículo.pdf** ou o **Contato**.',
   },
   about: {
-    name: 'Lucas Pereira',
+    name: 'Lucas Luz',
     role: 'Desenvolvedor Front-end',
     bio:
       'Estudante de Engenharia de Software natural de Minas Gerais, atuando como desenvolvedor júnior na CP2. ' +

@@ -6,7 +6,7 @@ import { SITE_URL } from '@/lib/site';
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Luz 95',
-  description: 'Luz 95 — portfólio de Lucas Pereira',
+  description: 'Luz 95 — portfólio de Lucas Luz',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

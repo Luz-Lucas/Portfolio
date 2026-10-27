@@ -19,6 +19,7 @@
     "@supabase/supabase-js": "^2.118.0",
     "98.css": "^0.1.21",
     "next": "15.5.28",
+    "pdfjs-dist": "6.4.299",
     "postprocessing": "^6.39.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
