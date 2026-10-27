@@ -69,7 +69,7 @@ def prepare():
         bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, area_weight=0.0, scale_to_bounds=False)
         bpy.ops.uv.pack_islands(margin=0.003, rotate=True)
         bpy.ops.object.mode_set(mode="OBJECT")
-    for mname in ("Atlas_Livros", "Caneca_Rotulo"):
+    for mname in ("Atlas_Livros", "Caneca_Rotulo", "Calendario_Folha", "Trofeu_Placa"):
         nt = bpy.data.materials[mname].node_tree
         uvn = nt.nodes.get("UV_Original") or nt.nodes.new("ShaderNodeUVMap")
         uvn.name = "UV_Original"
