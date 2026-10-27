@@ -9,6 +9,7 @@ Os arquivos `.blend` e renders ficam fora do repositório, em
 | `helpers.py` | Funções comuns (caixas, cilindros, materiais, coleções, cabos). |
 | `build_scene.py` | Monta a cena do zero: sala, mesa, computador, luminária, props e câmeras `CamStart`/`CamEnd`. |
 | `adjust_v2.py` | Ajustes aprovados: mesa maior, livros reais (atlas de lombadas), caneca café.exe com fumaça, teclado AT de 101 teclas, mouse. |
+| `add_props_v3.py` | Calendário de papel (outubro de 1995) na parede, à direita do monitor, e troféu "Projeto do Ano" na mesa, à esquerda. Usa `calendario.png` e `placa_trofeu.png` da pasta `ROOT`. |
 | `bake_pipeline.py` | Une os objetos estáticos em 3 grupos, assa a luz (Cycles), remove ruído (OIDN) e exporta o `.glb`. |
 | `bake_run.py` | Executa uma etapa do bake em segundo plano. |
 | `start_mcp.py` | Abre o Blender com o servidor MCP ligado (para editar com o Claude acompanhando). |
@@ -17,7 +18,7 @@ Os arquivos `.blend` e renders ficam fora do repositório, em
 
 ```bash
 B="C:/Program Files/Blender Foundation/Blender 5.2/blender.exe"
-# 1. cena editável (desk.blend) — rode build_scene.py e adjust_v2.py dentro do Blender
+# 1. cena editável (desk.blend) — rode build_scene.py, adjust_v2.py e add_props_v3.py dentro do Blender
 # 2. cópia para o bake
 "$B" -b desk.blend --python-expr "import bpy; bpy.ops.wm.save_as_mainfile(filepath='desk_bake.blend'); exec(open('bake_pipeline.py').read()); prepare(); bpy.ops.wm.save_mainfile()"
 # 3. bake + denoise de cada grupo e export

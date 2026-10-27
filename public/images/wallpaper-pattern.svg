@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" shape-rendering="crispEdges">
+  <!-- Mosaico discreto: símbolos de código e ícones geek em pixel art, um tom acima do teal. -->
+  <g fill="#0a9494" font-family="'Courier New', monospace" font-weight="bold">
+    <text x="12" y="30" font-size="18">&lt;/&gt;</text>
+    <text x="150" y="40" font-size="16">{ }</text>
+    <text x="96" y="118" font-size="14">=&gt;</text>
+    <text x="10" y="168" font-size="12">0101</text>
+    <text x="170" y="150" font-size="14">;</text>
+    <text x="130" y="222" font-size="13">git push</text>
+    <text x="60" y="66" font-size="12">if()</text>
+  </g>
+  <g fill="#0a9494">
+    <!-- controle de videogame -->
+    <path d="M196 84h28v4h4v12h-4v4h-8v-4h-12v4h-8v-4h-4V88h4z"/>
+    <path fill="#008080" d="M200 92h2v2h-2zM198 94h6v2h-6zM200 96h2v2h-2zM216 92h2v2h-2zM220 96h2v2h-2z"/>
+    <!-- alien em pixel art -->
+    <path d="M28 96h4v4h-4zM48 96h4v4h-4zM32 100h16v4H32zM28 104h24v4H28zM24 108h8v4h-8zM36 108h8v4h-8zM48 108h8v4h-8zM24 112h32v4H24zM28 116h4v4h-4zM48 116h4v4h-4zM24 120h4v4h-4zM52 120h4v4h-4z"/>
+    <!-- coração de vida -->
+    <path d="M70 196h6v3h3v-3h6v3h3v6h-3v3h-3v3h-3v3h-3v-3h-3v-3h-3v-3h-3v-6h3z"/>
+    <!-- disquete -->
+    <path d="M206 186h22l4 4v22h-26z"/>
+    <path fill="#008080" d="M210 188h14v8h-14zM210 202h18v8h-18z"/>
+    <!-- foguete -->
+    <path d="M110 160h4v4h4v12h4v8h-4v-4h-12v4h-4v-8h4v-12h4z"/>
+  </g>
+</svg>

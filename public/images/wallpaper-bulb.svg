@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 260" width="320" height="260" shape-rendering="crispEdges">
+  <!-- Lâmpada em pixel art (a mesma do botão Iniciar, 8x) com balão "Ilumine suas ideias". -->
+  <g opacity=".35" fill="#fff6a0">
+    <path d="M196 70h8v20h-8zM196 210h8v14h-8zM120 146h18v8h-18zM262 146h18v8h-18zM142 96h8v8h-8zM150 104h8v8h-8zM250 96h8v8h-8zM242 104h8v8h-8zM142 196h8v8h-8zM150 188h8v8h-8zM250 196h8v8h-8zM242 188h8v8h-8z"/>
+  </g>
+  <g transform="translate(136 92) scale(8)">
+    <path fill="#ffe14d" d="M6 2h4v1H6zM5 3h6v1H5zM4 4h8v5H4zM5 9h6v1H5zM6 10h4v1H6z"/>
+    <path fill="#fff" d="M7 3h1v1H7zM6 4h1v3H6z"/>
+    <path fill="#e08000" d="M7 6h2v1H7zM7 7h1v3H7zM8 7h1v3H8z"/>
+    <path fill="#000" d="M6 1h4v1H6zM5 2h1v1H5zM10 2h1v1h-1zM4 3h1v1H4zM11 3h1v1h-1zM3 4h1v5H3zM12 4h1v5h-1zM4 9h1v1H4zM11 9h1v1h-1zM5 10h1v1H5zM10 10h1v1h-1z"/>
+    <path fill="#c0c0c0" d="M5 11h6v1H5zM5 13h6v1H5z"/>
+    <path fill="#808080" d="M5 12h6v1H5z"/>
+    <path fill="#404040" d="M6 14h4v1H6z"/>
+  </g>
+  <!-- balão de fala estilo dica do Win95, com o rabicho apontando para a lâmpada -->
+  <path fill="#000" d="M8 8h216v2h2v48h-2v2h-40l8 32-24-32H8v-2H6V10h2z"/>
+  <path fill="#ffffe1" d="M10 10h212v48h-40l4 18-14-18H10z"/>
+  <text x="116" y="40" text-anchor="middle" textLength="196" lengthAdjust="spacingAndGlyphs" font-family="'Courier New', monospace" font-weight="bold" font-size="16" fill="#000">Ilumine suas ideias</text>
+</svg>

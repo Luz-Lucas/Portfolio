@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { initialIntro, introReducer, phaseProgress, type IntroPhase } from './intro';
+import { dollyProgress, initialIntro, introReducer, phaseProgress, type IntroPhase } from './intro';
 
 export const INTRO_SEEN_KEY = 'p3d:intro-seen';
 
@@ -59,6 +59,7 @@ export function useIntro() {
   const markLoaded = useCallback(() => dispatch({ type: 'loaded', now: performance.now() }), []);
   const skip = useCallback(() => dispatch({ type: 'skip' }), []);
   const progress = useCallback(() => phaseProgress(stateRef.current, performance.now()), []);
+  const dolly = useCallback(() => dollyProgress(stateRef.current, performance.now()), []);
 
-  return { phase: state.phase as IntroPhase, progress, skip, markLoaded };
+  return { phase: state.phase as IntroPhase, progress, dolly, skip, markLoaded };
 }

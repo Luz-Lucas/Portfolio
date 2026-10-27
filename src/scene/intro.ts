@@ -1,15 +1,21 @@
-export type IntroPhase = 'loading' | 'dolly' | 'poweron' | 'boot' | 'desktop';
+export type IntroPhase = 'loading' | 'poweron' | 'bios' | 'boot' | 'desktop';
 
 export type IntroEvent = { type: 'loaded'; now: number } | { type: 'tick'; now: number } | { type: 'skip' };
 
 export type IntroState = { phase: IntroPhase; startedAt: number | null; instant: boolean };
 
-/** Total 3500 ms (≤ 4 s). */
-export const INTRO_TIMINGS = { dolly: 1600, poweron: 700, boot: 1200 } as const;
+/**
+ * O CRT liga logo que a cena carrega e a BIOS roda na tela enquanto a câmera se aproxima;
+ * a BIOS termina um pouco depois do movimento. Total 4100 ms, e dá para pular.
+ */
+export const INTRO_TIMINGS = { poweron: 400, bios: 2800, boot: 900 } as const;
+
+/** Duração da aproximação da câmera, contada do fim do loading (atravessa as fases). */
+export const DOLLY_MS = 2400;
 
 const TIMED: { phase: IntroPhase; ms: number }[] = [
-  { phase: 'dolly', ms: INTRO_TIMINGS.dolly },
   { phase: 'poweron', ms: INTRO_TIMINGS.poweron },
+  { phase: 'bios', ms: INTRO_TIMINGS.bios },
   { phase: 'boot', ms: INTRO_TIMINGS.boot },
 ];
 
@@ -30,7 +36,7 @@ export function introReducer(state: IntroState, event: IntroEvent): IntroState {
       if (state.phase !== 'loading') return state;
       return state.instant
         ? { ...state, phase: 'desktop', startedAt: event.now }
-        : { ...state, phase: 'dolly', startedAt: event.now };
+        : { ...state, phase: 'poweron', startedAt: event.now };
     case 'skip':
       return state.phase === 'loading' ? { ...state, instant: true } : { ...state, phase: 'desktop' };
     case 'tick': {
@@ -41,10 +47,17 @@ export function introReducer(state: IntroState, event: IntroEvent): IntroState {
   }
 }
 
-/** Progresso 0..1 dentro da fase atual (para animar dolly, flash do CRT e barra de boot). */
+/** Progresso 0..1 dentro da fase atual (flash do CRT, linhas da BIOS, barra de boot). */
 export function phaseProgress(state: IntroState, now: number): number {
   if (state.phase === 'desktop') return 1;
   if (state.startedAt === null) return 0;
   const { start, ms } = phaseAt(now - state.startedAt);
   return Math.min(Math.max((now - state.startedAt - start) / ms, 0), 1);
+}
+
+/** Progresso 0..1 da aproximação da câmera, independente da fase. */
+export function dollyProgress(state: IntroState, now: number): number {
+  if (state.phase === 'desktop') return 1;
+  if (state.startedAt === null) return 0;
+  return Math.min(Math.max((now - state.startedAt) / DOLLY_MS, 0), 1);
 }

@@ -4,6 +4,7 @@ import { About } from './About';
 import { Contact } from './Contact';
 import { Projects } from './Projects';
 import { Terminal } from './Terminal';
+import { Tetris } from './Tetris';
 import { CvViewer } from './CvViewer';
 import { Experience } from './Experience';
 import { Readme } from './Readme';
@@ -32,6 +33,8 @@ export function renderApp(id: AppId, { content, projects }: AppData): ReactNode 
       return <Contact content={content} />;
     case 'trash':
       return <Trash />;
+    case 'tetris':
+      return <Tetris />;
     default:
       return <p>Em breve.</p>;
   }

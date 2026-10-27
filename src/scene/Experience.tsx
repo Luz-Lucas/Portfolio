@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { ProjectsResult, SiteContent } from '@/content/types';
 import { Desktop } from '@/desktop/Desktop';
+import { BiosScreen } from './BiosScreen';
 import { BootScreen } from './BootScreen';
 import { LoadingScreen } from './LoadingScreen';
 import { PowerOnEffect } from './PowerOnEffect';
@@ -23,7 +24,7 @@ export const LOAD_TIMEOUT_MS = 20_000;
 
 export function Experience({ content, projects }: Props) {
   const mode = useDeviceMode();
-  const { phase, progress, skip, markLoaded } = useIntro();
+  const { phase, progress, dolly, skip, markLoaded } = useIntro();
   const [rect, setRect] = useState<ScreenRect | null>(null);
   const [loadPct, setLoadPct] = useState(0);
   const [maximized, setMaximized] = useState(false);
@@ -59,7 +60,7 @@ export function Experience({ content, projects }: Props) {
     );
   }
 
-  const screenOn = phase === 'poweron' || phase === 'boot' || phase === 'desktop';
+  const screenOn = phase !== 'loading';
 
   return (
     <div className="p3d-experience" data-intro-phase={phase}>
@@ -68,6 +69,7 @@ export function Experience({ content, projects }: Props) {
           <Scene
             phase={phase}
             progress={progress}
+            dolly={dolly}
             onReady={markLoaded}
             onProgress={setLoadPct}
             onScreenRect={onRect}
@@ -81,6 +83,8 @@ export function Experience({ content, projects }: Props) {
           {(scale) =>
             phase === 'poweron' ? (
               <PowerOnEffect />
+            ) : phase === 'bios' ? (
+              <BiosScreen />
             ) : phase === 'boot' ? (
               <BootScreen />
             ) : (

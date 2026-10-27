@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { Desktop } from '@/desktop/Desktop';
 import { useWindowStore } from '@/desktop/windowStore';
 import { SEED_CONTENT } from '@/content/seed';
-import { MORE_LIGHT_EVENT } from '@/lib/lamp';
+import { SCENE_MESSAGES, showSceneMessage } from '@/lib/easterEggs';
 import { TEST_PROJECTS as SEED_PROJECTS } from '../fixtures/content';
 
 const TITLES = [
@@ -56,7 +56,7 @@ describe('Desktop', () => {
     renderDesktop();
     fireEvent.click(screen.getByRole('button', { name: 'Iniciar' }));
     const menu = within(screen.getByRole('menu'));
-    expect(menu.getAllByRole('menuitem').map((m) => m.textContent)).toEqual(TITLES);
+    expect(menu.getAllByRole('menuitem').map((m) => m.textContent)).toEqual([...TITLES, 'Tetris']);
     fireEvent.click(menu.getByRole('menuitem', { name: 'Skills' }));
     expect(screen.getByRole('dialog', { name: 'Skills' })).toBeInTheDocument();
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
@@ -64,6 +64,14 @@ describe('Desktop', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Iniciar' }));
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('Tetris lives only in the start menu, not on the desktop', () => {
+    renderDesktop();
+    expect(icons().queryByRole('button', { name: 'Tetris' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar' }));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Tetris' }));
+    expect(screen.getByRole('dialog', { name: 'Tetris' })).toBeInTheDocument();
   });
 
   it('opens the readme on first visit and remembers it', () => {
@@ -124,12 +132,25 @@ describe('Desktop mobile first visit', () => {
   it('lamp easter egg: flickers the screen and suggests a bit more Luz', () => {
     renderDesktop();
     act(() => {
-      window.dispatchEvent(new Event(MORE_LIGHT_EVENT));
+      showSceneMessage({ text: SCENE_MESSAGES.light, flicker: true });
     });
     expect(document.querySelector('.p3d-desktop')).toHaveClass('is-flicker');
     const box = screen.getByRole('alertdialog', { name: 'Luz 95' });
     expect(box).toHaveTextContent('Talvez você precise de um pouco mais de Luz');
     fireEvent.click(within(box).getByRole('button', { name: 'OK' }));
     expect(screen.queryByRole('alertdialog', { name: 'Luz 95' })).not.toBeInTheDocument();
+  });
+
+  it('scene props show their messages without flickering (coffee, Clean Code)', () => {
+    renderDesktop();
+    act(() => {
+      showSceneMessage({ text: SCENE_MESSAGES.coffee });
+    });
+    expect(document.querySelector('.p3d-desktop')).not.toHaveClass('is-flicker');
+    expect(screen.getByRole('alertdialog', { name: 'Luz 95' })).toHaveTextContent('Quem não ama um café quente?');
+    act(() => {
+      showSceneMessage({ text: SCENE_MESSAGES.cleanCode });
+    });
+    expect(screen.getByRole('alertdialog', { name: 'Luz 95' })).toHaveTextContent('Ainda temos muito o que estudar, não é?');
   });
 });

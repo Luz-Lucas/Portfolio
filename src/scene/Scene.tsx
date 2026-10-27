@@ -5,7 +5,8 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { PerformanceMonitor, PerspectiveCamera, useGLTF, useProgress } from '@react-three/drei';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
-import { createLamp, MORE_LIGHT_EVENT } from '@/lib/lamp';
+import { SCENE_MESSAGES, showSceneMessage } from '@/lib/easterEggs';
+import { createLamp } from '@/lib/lamp';
 import type { IntroPhase } from './intro';
 import { fitFov } from './fov';
 import { frameMode, IDLE_FPS } from './frames';
@@ -19,6 +20,8 @@ useGLTF.preload(MODEL, DRACO);
 type Props = {
   phase: IntroPhase;
   progress: () => number;
+  /** 0..1 da aproximação da câmera (atravessa as fases da intro). */
+  dolly: () => number;
   onReady: () => void;
   onProgress: (pct: number) => void;
   onScreenRect: (rect: ScreenRect) => void;
@@ -27,17 +30,24 @@ type Props = {
 };
 
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
-// A luminária está assada em Bake_Objetos: o clique cai numa esfera invisível sobre a cúpula
-// (posição do build_scene.py convertida de Z-up do Blender para Y-up do glTF).
-const LAMP_HIT = new THREE.Vector3(-0.35, 1.25, 0.04);
+// Objetos assados em Bake_Objetos não são clicáveis: os cliques caem em volumes invisíveis.
+// Posições lidas do desk.blend e convertidas de Z-up (Blender) para Y-up (glTF): (x, z, -y).
+const LAMP_HIT = new THREE.Vector3(-0.35, 1.25, 0.04); // cúpula da luminária
+const MUG_HIT = new THREE.Vector3(0.45, 0.8, -0.04); // caneca de café
+const CLEAN_CODE_HIT = new THREE.Vector3(0.3881, 1.2385, -0.294); // lombada do Clean Code
 const LAMP_OFF_DIM = 0.28;
+/**
+ * Ajuste da pose final: o mais perto possível com a caneca de café ainda no quadro (duplo clique).
+ * Deslocamento em metros nos eixos da câmera; giro em graus (yaw para a direita, pitch para baixo).
+ */
+const END_NUDGE = { back: 0.1, right: 0, up: -0.04, yaw: 5, pitch: 1 };
 const SCREEN_OFF = new THREE.Color('#0b0f0e');
 const SCREEN_ON = new THREE.Color('#2a6f8a');
 const LED_OFF = new THREE.Color('#14301a');
 // acima de 1 para o Bloom pegar o LED aceso
 const LED_ON = new THREE.Color('#39ff5a').multiplyScalar(2.5);
 
-function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgress' | 'covered'>) {
+function Model({ phase, progress, dolly, onReady, onScreenRect }: Omit<Props, 'onProgress' | 'covered'>) {
   const { scene } = useGLTF(MODEL, DRACO);
   const camera = useRef<THREE.PerspectiveCamera>(null);
   const size = useThree((s) => s.size);
@@ -85,7 +95,15 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
       position: c.getWorldPosition(new THREE.Vector3()),
       quaternion: c.getWorldQuaternion(new THREE.Quaternion()),
     });
-    return { start: pose(camStart), end: pose(camEnd), fov: camEnd.fov, screen, led, vapors, glow, baked };
+    const end = pose(camEnd);
+    end.position
+      .addScaledVector(new THREE.Vector3(0, 0, 1).applyQuaternion(end.quaternion), END_NUDGE.back)
+      .addScaledVector(new THREE.Vector3(1, 0, 0).applyQuaternion(end.quaternion), END_NUDGE.right)
+      .addScaledVector(new THREE.Vector3(0, 1, 0).applyQuaternion(end.quaternion), END_NUDGE.up);
+    end.quaternion
+      .premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(-END_NUDGE.yaw)))
+      .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), THREE.MathUtils.degToRad(-END_NUDGE.pitch)));
+    return { start: pose(camStart), end, fov: camEnd.fov, screen, led, vapors, glow, baked };
   }, [scene]);
 
   // Luminária: desligada, a iluminação assada escurece e só a tela do CRT continua acesa.
@@ -102,35 +120,40 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
     },
     [parts],
   );
-  const toggleLamp = (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation();
-    if (phase !== 'desktop') return;
+  const toggleLamp = () => {
     const { on, egg } = lamp.toggle();
     setLampOn(on);
-    if (egg) window.dispatchEvent(new Event(MORE_LIGHT_EVENT));
+    if (egg) showSceneMessage({ text: SCENE_MESSAGES.light, flicker: true });
   };
 
   useEffect(onReady, [onReady]);
 
   const fov = fitFov(parts.fov, size.width / size.height);
 
-  // Retângulo da tela visto da pose final, com o aspecto atual da janela.
+  // Retângulo da tela visto da pose final, com o aspecto atual da janela (refeito ao fim da intro).
+  const settled = phase === 'desktop' || dolly() >= 1;
   useEffect(() => {
+    if (!settled) return;
     const cam = new THREE.PerspectiveCamera(fov, size.width / size.height, 0.01, 50);
     cam.position.copy(parts.end.position);
     cam.quaternion.copy(parts.end.quaternion);
     cam.updateMatrixWorld();
     onScreenRect(projectScreenRect(parts.screen, cam, { w: size.width, h: size.height }));
-  }, [parts, size, fov, onScreenRect]);
+  }, [parts, size, fov, onScreenRect, settled]);
 
   useFrame(({ clock }) => {
     const cam = camera.current;
     if (!cam) return;
-    const t = phase === 'dolly' ? easeInOut(progress()) : phase === 'loading' ? 0 : 1;
+    const t = easeInOut(dolly());
     cam.position.lerpVectors(parts.start.position, parts.end.position, t);
     cam.quaternion.slerpQuaternions(parts.start.quaternion, parts.end.quaternion, t);
+    // A BIOS aparece no CRT durante a aproximação: o overlay acompanha a tela a cada quadro.
+    if (phase !== 'loading' && t < 1) {
+      cam.updateMatrixWorld();
+      onScreenRect(projectScreenRect(parts.screen, cam, { w: size.width, h: size.height }));
+    }
 
-    const on = phase === 'poweron' ? progress() : phase === 'boot' || phase === 'desktop' ? 1 : 0;
+    const on = phase === 'poweron' ? progress() : phase === 'loading' ? 0 : 1;
     (parts.screen.material as THREE.MeshBasicMaterial).color.lerpColors(SCREEN_OFF, SCREEN_ON, on);
     (parts.led.material as THREE.MeshBasicMaterial).color.copy(on > 0 ? LED_ON : LED_OFF);
     (parts.glow.material as THREE.MeshBasicMaterial).opacity = on * 0.5;
@@ -141,16 +164,54 @@ function Model({ phase, progress, onReady, onScreenRect }: Omit<Props, 'onProgre
     <>
       <PerspectiveCamera ref={camera} makeDefault fov={fov} near={0.01} far={50} />
       <primitive object={scene} />
-      <mesh
-        position={LAMP_HIT}
-        onClick={toggleLamp}
-        onPointerOver={() => phase === 'desktop' && (document.body.style.cursor = 'pointer')}
-        onPointerOut={() => (document.body.style.cursor = '')}
-      >
-        <sphereGeometry args={[0.1, 12, 8]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
-      </mesh>
+      <Hotspot enabled={phase === 'desktop'} position={LAMP_HIT} size={[0.18, 0.16, 0.18]} onClick={toggleLamp} />
+      <Hotspot
+        enabled={phase === 'desktop'}
+        position={MUG_HIT}
+        size={[0.1, 0.11, 0.1]}
+        onDoubleClick={() => showSceneMessage({ text: SCENE_MESSAGES.coffee })}
+      />
+      <Hotspot
+        enabled={phase === 'desktop'}
+        position={CLEAN_CODE_HIT}
+        size={[0.032, 0.235, 0.172]}
+        onClick={() => showSceneMessage({ text: SCENE_MESSAGES.cleanCode })}
+      />
     </>
+  );
+}
+
+/** Volume invisível que recebe cliques sobre um objeto assado da cena. */
+function Hotspot({
+  enabled,
+  position,
+  size,
+  onClick,
+  onDoubleClick,
+}: {
+  enabled: boolean;
+  position: THREE.Vector3;
+  size: [number, number, number];
+  onClick?: (e: ThreeEvent<MouseEvent>) => void;
+  onDoubleClick?: (e: ThreeEvent<MouseEvent>) => void;
+}) {
+  const guard = (fn?: (e: ThreeEvent<MouseEvent>) => void) =>
+    fn &&
+    ((e: ThreeEvent<MouseEvent>) => {
+      e.stopPropagation();
+      if (enabled) fn(e);
+    });
+  return (
+    <mesh
+      position={position}
+      onClick={guard(onClick)}
+      onDoubleClick={guard(onDoubleClick)}
+      onPointerOver={() => enabled && (document.body.style.cursor = 'pointer')}
+      onPointerOut={() => (document.body.style.cursor = '')}
+    >
+      <boxGeometry args={size} />
+      <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+    </mesh>
   );
 }
 
