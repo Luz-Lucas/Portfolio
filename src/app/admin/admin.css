@@ -28,6 +28,44 @@ body:has(.admin) {
   color: var(--accent);
 }
 
+/* O 98.css (tema Win95 do site) estiliza button/input/textarea/select/fieldset globalmente: zera aqui. */
+.admin button,
+.admin button:not(:disabled):active,
+.admin input,
+.admin textarea,
+.admin select {
+  box-shadow: none;
+  text-shadow: none;
+  min-width: 0;
+  min-height: 0;
+}
+
+.admin button:focus,
+.admin input:focus,
+.admin textarea:focus,
+.admin select:focus {
+  outline: none;
+}
+
+.admin select {
+  appearance: auto;
+  background-image: none;
+  height: auto;
+}
+
+.admin input {
+  height: auto;
+}
+
+.admin fieldset {
+  margin: 0;
+  border-image: none;
+}
+
+.admin legend {
+  background: transparent;
+}
+
 .admin :focus-visible {
   outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
   outline-offset: 2px;
