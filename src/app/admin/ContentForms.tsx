@@ -92,7 +92,7 @@ export function ReadmeForm({ initial }: { initial: SiteContent['readme'] }) {
   const [body, setBody] = useState(initial.body);
   const s = useSave('readme');
   return (
-    <Card title="Leia-me.txt" hint="Janela que abre sozinha na primeira visita. Aceita **negrito** e [links](https://...)." onSave={() => s.save({ body })} {...s}>
+    <Card title="Leia-me.txt" hint="Janela que abre sozinha toda vez que o PC liga. Aceita **negrito** e [links](https://...)." onSave={() => s.save({ body })} {...s}>
       <Field label="Texto">
         <textarea rows={6} value={body} onChange={(e) => setBody(e.target.value)} />
       </Field>

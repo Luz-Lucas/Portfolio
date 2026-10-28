@@ -19,7 +19,6 @@ const { Experience, LOAD_TIMEOUT_MS } = await import('@/scene/Experience');
 describe('Experience fallback', () => {
   beforeEach(() => {
     useWindowStore.getState().reset();
-    localStorage.setItem('p3d:readme-seen', '1');
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
   afterEach(() => {

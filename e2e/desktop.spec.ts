@@ -5,9 +5,6 @@ test.use({ reducedMotion: 'reduce', launchOptions: { args: ['--use-angle=swiftsh
 test.skip(({ isMobile }) => isMobile, 'overlay no monitor só no desktop');
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    localStorage.setItem('p3d:readme-seen', '1');
-  });
   await page.goto('/');
   await expect(page.locator('[data-intro-phase]')).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 15_000 });
 });
@@ -56,9 +53,6 @@ test('mobile-size fallback: no glb and no three.js below 768px', async ({ browse
 test('portrait tablet: the monitor overlay fits inside the viewport', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
-  await page.addInitScript(() => {
-    localStorage.setItem('p3d:readme-seen', '1');
-  });
   await page.goto('/');
   await expect(page.locator('[data-intro-phase]')).toHaveAttribute('data-intro-phase', 'desktop', { timeout: 30_000 });
   await expect(page.locator('[data-fallback]')).toHaveCount(0);
