@@ -1,0 +1,27 @@
+# Segundo agendador do keepalive: 12h depois do Vercel Cron (09:00 UTC), chama /api/keepalive
+# para o Supabase gratuito nunca ficar inativo. Se a rota falhar (ex.: projeto pausado), o job
+# falha e o GitHub avisa por e-mail.
+name: Keepalive do Supabase
+
+on:
+  schedule:
+    - cron: '17 21 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Chamar /api/keepalive
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.lucasluz.dev' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          auth=()
+          if [ -n "$CRON_SECRET" ]; then auth=(-H "Authorization: Bearer $CRON_SECRET"); fi
+          curl -fsS --retry 3 --retry-delay 20 --retry-all-errors --max-time 30 \
+            -A 'portfolio-keepalive/1.0' "${auth[@]}" "$SITE_URL/api/keepalive"
+          echo
