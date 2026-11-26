@@ -29,7 +29,7 @@ Copie `.env.example` para `.env.local` e preencha conforme os passos abaixo.
 ### 1. Supabase (plano gratuito)
 
 1. Crie um projeto em https://supabase.com.
-2. Em **SQL Editor**, rode o conteúdo de `supabase/migrations/0001_init.sql`. Ele cria as tabelas `content` e `projects`, as policies de leitura pública e os buckets `cv` e `images`.
+2. Em **SQL Editor**, rode `supabase/migrations/0001_init.sql` e depois `0002_keepalive.sql`. Eles criam as tabelas `content`, `projects` e `keepalive`, as policies de leitura pública e os buckets `cv` e `images`.
 3. Em **Project Settings → API**, copie:
    - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
@@ -59,9 +59,16 @@ Por padrão o formulário usa o **FormSubmit** (`formsubmit.co/ajax/<e-mail>`), 
 - `CONTACT_TO_EMAIL` = e-mail que recebe as mensagens (padrão: o e-mail do Contato).
 - Opcional: `RESEND_API_KEY` troca o envio para o Resend (remetente `onboarding@resend.dev`; sem domínio verificado, o Resend só entrega para o e-mail da própria conta).
 
-### 5. Cron e URL do site
+### 5. Keepalive (Supabase nunca pausa) e URL do site
 
-- `CRON_SECRET` = uma string aleatória longa. A Vercel envia esse valor ao chamar `/api/keepalive` diariamente, o que mantém o Supabase gratuito ativo.
+O Supabase gratuito pausa o projeto após alguns dias sem atividade, e aí o currículo e o admin param. Para evitar isso, `/api/keepalive` é chamado **duas vezes por dia** por agendadores independentes:
+
+- **Vercel Cron** às 09:00 UTC (`vercel.json`);
+- **GitHub Actions** às 21:17 UTC (`.github/workflows/keepalive.yml`). Se a rota falhar (ex.: projeto pausado), o job falha e o GitHub avisa por e-mail.
+
+A cada chamada a rota lê o conteúdo, toca o Storage e grava uma linha de heartbeat na tabela `keepalive` (`supabase/migrations/0002_keepalive.sql`, escrita com a service role).
+
+- `CRON_SECRET` (opcional) = uma string aleatória longa. Se configurado na Vercel, a rota passa a exigir o segredo; nesse caso, cadastre o mesmo valor em **GitHub → Settings → Secrets and variables → Actions** como `CRON_SECRET`. Sem ele, a rota aceita os dois agendadores pelo user-agent.
 - `NEXT_PUBLIC_SITE_URL` = a URL pública do site (usada nos metadados e no Open Graph).
 
 ## Deploy na Vercel
